@@ -1,6 +1,6 @@
 -- Création de la base de données
-CREATE DATABASE aaaaaaa;
-\c aaaaaaa;
+CREATE DATABASE emergency_database;
+\c emergency_database;
 
 CREATE TABLE fire_station(
    id_fire_station INT,
