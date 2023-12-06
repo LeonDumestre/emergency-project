@@ -21,9 +21,9 @@ public class Main {
         // the other to receive them.
 
         Listener listener = new Listener(lConn);
-        Notifier notifier = new Notifier(nConn);
+        //Notifier notifier = new Notifier(nConn);
         listener.start();
-        notifier.start();
+        //notifier.start();
     }
 }
 
@@ -37,7 +37,7 @@ class Listener extends Thread
         this.conn = conn;
         this.pgconn = conn.unwrap(org.postgresql.PGConnection.class);
         Statement stmt = conn.createStatement();
-        stmt.execute("LISTEN mymessage");
+        stmt.execute("LISTEN new_operation");
         stmt.close();
     }
 
@@ -55,8 +55,10 @@ class Listener extends Thread
 
                 if (notifications != null)
                 {
-                    for (int i=0; i < notifications.length; i++)
+                    for (int i=0; i < notifications.length; i++){
                         System.out.println("Got notification: " + notifications[i].getName());
+                        System.out.println("Got notification parameters: " + notifications[i].getParameter());
+                    }
                 }
 
                 // wait a while before checking again for new
@@ -74,37 +76,4 @@ class Listener extends Thread
             ie.printStackTrace();
         }
     }
-}
-
-class Notifier extends Thread
-{
-    private Connection conn;
-
-    public Notifier(Connection conn)
-    {
-        this.conn = conn;
-    }
-
-    public void run()
-    {
-        while (true)
-        {
-            try
-            {
-                Statement stmt = conn.createStatement();
-                stmt.execute("NOTIFY mymessage");
-                stmt.close();
-                Thread.sleep(2000);
-            }
-            catch (SQLException sqle)
-            {
-                sqle.printStackTrace();
-            }
-            catch (InterruptedException ie)
-            {
-                ie.printStackTrace();
-            }
-        }
-    }
-
 }
