@@ -188,3 +188,5 @@ dist
 
 # Docker files
 postgres-data/
+
+.vscode
