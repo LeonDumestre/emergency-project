@@ -14,8 +14,8 @@ public class Main {
         // works across connections although this example would
         // work fine with just one connection.
 
-        Connection lConn = DriverManager.getConnection(url, "user-name", "strong-password");
-        Connection nConn = DriverManager.getConnection(url, "user-name", "strong-password");
+        Connection lConn = DriverManager.getConnection(url, "admin", "password");
+        Connection nConn = DriverManager.getConnection(url, "admin", "password");
 
         // Create two threads, one to issue notifications and
         // the other to receive them.
