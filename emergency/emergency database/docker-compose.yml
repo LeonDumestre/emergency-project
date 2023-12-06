@@ -13,7 +13,7 @@ services:
       POSTGRES_PASSWORD: password
     volumes:
       - ./script.sql:/docker-entrypoint-initdb.d/script.sql
-      - local_pgdata:/var/lib/postgresql/data
+      - ./postgres-data:/var/lib/postgresql/data
 
   pgadmin:
     image: dpage/pgadmin4

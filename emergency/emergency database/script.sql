@@ -5,22 +5,22 @@ CREATE DATABASE emergency_database;
 CREATE TABLE fire_station(
    id_fire_station INT,
    name VARCHAR(50),
-   latitude DOUBLE,
-   longitude DOUBLE,
+   latitude double precision,
+   longitude double precision,
    PRIMARY KEY(id_fire_station)
 );
 
 CREATE TABLE sensor(
    id_sensor INT,
-   latitude DOUBLE,
-   longitude DOUBLE,
+   latitude double precision,
+   longitude double precision,
    PRIMARY KEY(id_sensor)
 );
 
 CREATE TABLE operation(
    id_operation VARCHAR(50),
-   start_date DATE,
-   end_date DATE,
+   start_date TIMESTAMP,
+   end_date TIMESTAMP,
    PRIMARY KEY(id_operation)
 );
 
@@ -76,7 +76,7 @@ CREATE TABLE truck_truck_type(
 CREATE TABLE operation_truck_status(
    id_operation VARCHAR(50),
    plate INT,
-   time_stamp DATETIME,
+   time_stamp TIMESTAMP,
    status VARCHAR(50),
    PRIMARY KEY(id_operation, plate),
    FOREIGN KEY(id_operation) REFERENCES operation(id_operation),
