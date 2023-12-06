@@ -185,3 +185,6 @@ dist
 # Editor and IDE files
 .idea
 .DS_Store
+
+# Docker files
+postgres-data/
