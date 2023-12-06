@@ -10,10 +10,10 @@ services:
       - "3020:80"
     environment:
       NODE_ENV: development
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.simulator-view-1.rule=PathPrefix(`/web`)"
-      - "traefik.http.services.simulator-view-1.loadbalancer.server.port=80"
+    # labels:
+    #   - "traefik.enable=true"
+    #   - "traefik.http.routers.simulator-view-1.rule=PathPrefix(`/web`)"
+    #   - "traefik.http.services.simulator-view-1.loadbalancer.server.port=80"
   simulator-web-server-1:
     build:
       context: ./simulator-web-server
@@ -26,25 +26,25 @@ services:
       NODE_ENV: development
     networks:
       - nest-network
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.simulator-web-server-1.rule=PathPrefix(`/api`)"
-      - "traefik.http.services.simulator-web-server-1.loadbalancer.server.port=80"
-  traefik:
-    image: traefik:v2.5
-    command:
-      - "--api.insecure=true"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=false"
-      - "--entrypoints.web.address=:80"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    ports:
-      - "80:80"
-      - "8080:8080"  # Traefik dashboard
-    depends_on:
-      - simulator-view-1
-      - simulator-web-server-1
+    # labels:
+    #   - "traefik.enable=true"
+    #   - "traefik.http.routers.simulator-web-server-1.rule=PathPrefix(`/api`)"
+    #   - "traefik.http.services.simulator-web-server-1.loadbalancer.server.port=80"
+  # traefik:
+  #   image: traefik:v2.5
+  #   command:
+  #     - "--api.insecure=true"
+  #     - "--providers.docker=true"
+  #     - "--providers.docker.exposedbydefault=false"
+  #     - "--entrypoints.web.address=:80"
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #   ports:
+  #     - "80:80"
+  #     - "8080:8080"  # Traefik dashboard
+  #   depends_on:
+  #     - simulator-view-1
+  #     - simulator-web-server-1
 
 networks:
   nest-network:
