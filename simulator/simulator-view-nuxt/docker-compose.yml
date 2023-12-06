@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  simulator-view-nuxt:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3020:3020"
+    environment:
+      NODE_ENV: production
+    networks:
+      - nest-network
+
+networks:
+  nest-network:
+    driver: bridge
