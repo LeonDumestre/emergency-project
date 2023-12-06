@@ -4,7 +4,15 @@ import { Fire } from "./fire.model";
 @Injectable()
 export class FireService {
   getFires(): Promise<Fire[]> {
-    return Promise.resolve([]);
+    return Promise.resolve([
+      {
+        id: 1,
+        latitude: 5,
+        longitude: 9,
+        intensity: 5,
+        triggerAt: new Date(),
+      },
+    ]);
   }
 
   startFire() {

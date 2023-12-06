@@ -11,7 +11,7 @@ import L from "leaflet";
 
 export default defineComponent({
   name: "App",
-  mounted() {
+  async mounted() {
     // Initialisez la carte Leaflet
     const map = L.map("map").setView([45.75, 4.856], 13);
 
@@ -19,6 +19,14 @@ export default defineComponent({
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "&copy; OpenStreetMap contributors",
     }).addTo(map);
+
+    try {
+      const response = await fetch("http://localhost:3010/fires");
+      const data = await response.json();
+      console.log("Data from server:", data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   },
 });
 </script>

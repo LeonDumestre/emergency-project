@@ -1,5 +1,5 @@
 export type Fire = {
-  id: string;
+  id: number;
   latitude: number;
   longitude: number;
   intensity: number;
