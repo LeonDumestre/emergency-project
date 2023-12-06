@@ -1,0 +1,43 @@
+version: '3'
+services:
+  web:
+    build:
+      context: ./simulator-view
+      dockerfile: Dockerfile
+    volumes:
+      - ./simulator-view:/usr/src/app
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+    networks:
+      - nest-network
+  api:
+    build:
+      context: ./simulator-web-server
+      dockerfile: Dockerfile
+    volumes:
+      - ./simulator-web-server:/usr/src/app
+    ports:
+      - "3010:3010"
+    environment:
+      NODE_ENV: production
+    networks:
+      - nest-network
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro  # Mount your custom nginx.conf file
+      # - ./simulator-view/dist:/usr/share/nginx/html  # Mount the built Vue.js app
+      # - /usr/src/app/node_modules  # If needed, mount node_modules for the API service
+    depends_on:
+      # - web
+      - api
+    networks:
+      - nest-network
+
+networks:
+  nest-network:
+    driver: bridge

@@ -17,4 +17,4 @@ COPY . .
 RUN npm run build
 
 # Démarrez l'application Nuxt.js
-CMD ["npm", "dev"]
+CMD ["npm", "run", "serve"]
