@@ -181,3 +181,6 @@ npm-debug.log
 dist
 
 # End of https://mrkandreev.name/snippets/gitignore-generator/#Java,Vuejs,Python,Nuxtjs
+
+# Editor and IDE files
+.idea
