@@ -7,7 +7,6 @@
 </template>
 
 <script lang="ts" setup>
-import "leaflet/dist/leaflet.css"
 import { LMap, LTileLayer } from "@vue-leaflet/vue-leaflet"
 
 useHead({ title: 'Simulation Interface' })
