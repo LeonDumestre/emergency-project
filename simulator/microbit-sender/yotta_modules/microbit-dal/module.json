@@ -1,0 +1,29 @@
+{
+  "name": "microbit-dal",
+  "version": "2.1.1",
+  "license": "MIT",
+  "description": "The runtime library for the BBC micro:bit, developed by Lancaster University",
+  "keywords": [
+    "mbed-classic",
+    "microbit",
+    "runtime",
+    "library",
+    "lancaster",
+    "University"
+  ],
+  "author": "Joe Finney <j.finney@lancaster.ac.uk (mailto:j.finney@lancaster.ac.uk) >",
+  "homepage": "https://git.mob-dev.fr/Schoumi/microbit-dal/",
+  "dependencies": {
+    "mbed-classic": "https://git.mob-dev.fr/Schoumi/mbed-classic.git#microbit_hfclk+mb6",
+    "ble": "https://git.mob-dev.fr/Schoumi/BLE_API.git#v2.5.0+mb4",
+    "ble-nrf51822": "https://git.mob-dev.fr/Schoumi/nrf51822.git#v2.5.0+mb7",
+    "nrf51-sdk": "https://git.mob-dev.fr/Schoumi/nrf51-sdk.git#v2.2.0+mb4"
+  },
+  "extraIncludes": [
+    "inc/core",
+    "inc/types",
+    "inc/drivers",
+    "inc/bluetooth",
+    "inc/platform"
+  ]
+}
