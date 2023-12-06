@@ -5,7 +5,7 @@ FROM node:20
 RUN npm install -g @nestjs/cli
 
 # Create app directory
-WORKDIR /app
+WORKDIR /usr/src/app
 
 # Copy package.json and package-lock.json
 COPY package*.json ./

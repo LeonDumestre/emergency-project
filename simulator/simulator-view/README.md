@@ -1,35 +1,24 @@
-# Nuxt 3 Minimal Starter
+# simulator-view
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
-
-## Setup
-
-Make sure to install the dependencies:
-
-```bash
+## Project setup
+```
 npm install
 ```
 
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-npm run dev
+### Compiles and hot-reloads for development
+```
+npm run serve
 ```
 
-## Production
-
-Build the application for production:
-
-```bash
+### Compiles and minifies for production
+```
 npm run build
 ```
 
-Locally preview production build:
-
-```bash
-npm run preview
+### Lints and fixes files
+```
+npm run lint
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).

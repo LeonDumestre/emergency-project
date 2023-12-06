@@ -1,15 +1,11 @@
 version: '3.8'
 
 services:
-  simulator-view:
+  simulator-view-1:
     build:
       context: .
       dockerfile: Dockerfile
+    environment:
+      NODE_ENV: production
     ports:
       - "3020:3020"
-    networks:
-      - nest-network
-
-networks:
-  nest-network:
-    driver: bridge
