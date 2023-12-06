@@ -1,4 +1,4 @@
-# Utilisez l'image Node.js 16 comme image de base
+# Utilisez l'image Node.js 20 comme image de base
 FROM node:20
 
 # Créez le répertoire de travail

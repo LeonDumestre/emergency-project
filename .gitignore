@@ -184,3 +184,4 @@ dist
 
 # Editor and IDE files
 .idea
+.DS_Store
