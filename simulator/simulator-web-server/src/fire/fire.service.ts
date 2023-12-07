@@ -1,22 +1,22 @@
 import { Injectable } from "@nestjs/common";
-import { Fire } from "./fire.model";
+import { CreateFire } from "./dto/create-fire.dto";
+import { Fire } from "./fire.entity";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
 
 @Injectable()
 export class FireService {
+  constructor(
+    @InjectRepository(Fire)
+    private readonly fireRepository: Repository<Fire>,
+  ) {}
+
   getFires(): Promise<Fire[]> {
-    return Promise.resolve([
-      {
-        id: 1,
-        latitude: 5,
-        longitude: 9,
-        intensity: 5,
-        triggerAt: new Date(),
-      },
-    ]);
+    return this.fireRepository.find();
   }
 
-  startFire() {
-    console.log("start fire");
+  startFire(fire: CreateFire) {
+    this.fireRepository.create(fire);
   }
 
   updateFire() {
