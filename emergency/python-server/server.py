@@ -58,16 +58,7 @@ if __name__ == '__main__':
         print("Server started")
         while ser.isOpen():
             try:
-                # lock the serial because we need it not to flush our input
-                mutex.acquire()
-                data_str = ser.read_until(b'~')
-                ser.flush()
-                mutex.release()
-                data_str = str(data_str).split("'")[1]
-
-                # if the serial input is not as expected, we ignore it
-                if re.match(REGEX_DATA, data_str) == False:
-                    pass
+                sendUARTMessage("a")
 
             except Exception as e:
                 print("Error while reading from serial port: {}".format(e))
