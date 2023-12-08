@@ -1,5 +1,5 @@
 import {
-  IsDate,
+  IsDateString,
   IsInt,
   IsNotEmpty,
   IsNumber,
@@ -24,6 +24,6 @@ export class CreateFireRequestDto implements CreateFireRequest {
   intensity: number;
 
   @IsNotEmpty({ message: "triggerAt is required" })
-  @IsDate()
+  @IsDateString()
   triggerAt: Date;
 }

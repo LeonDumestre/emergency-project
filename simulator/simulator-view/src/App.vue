@@ -1,6 +1,6 @@
 <template>
   <main>
-    <div id="map" style="height: 100vh" />
+    <div id="map" />
   </main>
 </template>
 
@@ -8,27 +8,46 @@
 import { defineComponent } from "vue";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import { initSse } from "./utils/sse.request";
+import { startFire, getFires } from "./utils/fires.request";
 
 export default defineComponent({
   name: "App",
+  data: () => ({
+    messages: [],
+  }),
   async mounted() {
-    // Initialisez la carte Leaflet
-    const map = L.map("map").setView([45.75, 4.856], 13);
+    initMap();
 
-    // Ajoutez une couche de carte (par exemple, OpenStreetMap)
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: "&copy; OpenStreetMap contributors",
-    }).addTo(map);
+    const eventSource = new EventSource("http://localhost:3010/fires/sse");
 
-    try {
-      const response = await fetch("http://localhost:3010/fires");
-      const data = await response.json();
-      console.log("Data from server:", data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+    eventSource.onmessage = (event) => {
+      console.log(event);
+      const data = JSON.parse(event.data);
+      console.log("Received data:", data);
+    };
+
+    eventSource.onerror = (error) => {
+      console.error("Error:", error);
+    };
+
+    //await startFire();
+    await getFires();
+  },
+  beforeUnmount() {
+    L.map("map").remove();
   },
 });
+
+function initMap() {
+  // Initialisez la carte Leaflet
+  const map = L.map("map").setView([45.75, 4.856], 13);
+
+  // Ajoutez une couche de carte (par exemple, OpenStreetMap)
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "&copy; OpenStreetMap contributors",
+  }).addTo(map);
+}
 </script>
 
 <style lang="scss" scoped>
