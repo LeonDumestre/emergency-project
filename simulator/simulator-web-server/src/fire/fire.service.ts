@@ -11,19 +11,29 @@ export class FireService {
     private readonly fireRepository: Repository<Fire>,
   ) {}
 
-  getFires(): Promise<Fire[]> {
+  async getFires(): Promise<Fire[]> {
     return this.fireRepository.find();
   }
 
-  startFire(fire: CreateFire) {
-    this.fireRepository.create(fire);
+  async startFire(fire: CreateFire): Promise<Fire> {
+    const newFire = this.fireRepository.create(fire);
+    return this.fireRepository.save(newFire);
   }
 
-  updateFire() {
-    console.log("update fire");
+  async updateFire(fire: Fire): Promise<Fire> {
+    const condition = { where: { id: fire.id } };
+    const existingFire = await this.fireRepository.findOne(condition);
+    if (!existingFire) throw new Error(`Fire #${fire.id} does not exist`);
+
+    const fireToUpdate = { ...existingFire, ...fire };
+    return this.fireRepository.save(fireToUpdate);
   }
 
-  deleteFire() {
-    console.log("delete fire");
+  async deleteFire(id: number): Promise<void> {
+    const condition = { where: { id } };
+    const existingFire = await this.fireRepository.findOne(condition);
+    if (!existingFire) throw new Error(`Fire #${id} does not exist`);
+
+    await this.fireRepository.remove(existingFire);
   }
 }

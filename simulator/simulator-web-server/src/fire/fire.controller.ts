@@ -4,12 +4,15 @@ import {
   Delete,
   Get,
   HttpCode,
+  Param,
+  ParseIntPipe,
   Patch,
   Post,
 } from "@nestjs/common";
 import { FireService } from "./fire.service";
 import { Fire } from "./fire.entity";
 import { CreateFireDto } from "./dto/create-fire.dto";
+import { FireDto } from "./dto/fire.dto";
 
 @Controller("fires")
 export class FireController {
@@ -21,20 +24,18 @@ export class FireController {
   }
 
   @Post()
-  @HttpCode(204)
-  startFire(@Body() fire: CreateFireDto): void {
+  startFire(@Body() fire: CreateFireDto): Promise<Fire> {
     return this.fireService.startFire(fire);
   }
 
-  @Patch()
-  @HttpCode(204)
-  updateFire(): void {
-    return this.fireService.updateFire();
+  @Patch(":id")
+  updateFire(@Body() fire: FireDto): Promise<Fire> {
+    return this.fireService.updateFire(fire);
   }
 
   @Delete()
   @HttpCode(204)
-  deleteFire(): void {
-    return this.fireService.deleteFire();
+  deleteFire(@Param("id", ParseIntPipe) id: number): Promise<void> {
+    return this.fireService.deleteFire(id);
   }
 }
