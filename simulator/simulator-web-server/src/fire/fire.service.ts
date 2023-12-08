@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { CreateFire } from "./dto/create-fire.dto";
+import { CreateFireRequest } from "./dto/create-fire.request.dto";
 import { Fire } from "./fire.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
@@ -15,7 +15,7 @@ export class FireService {
     return this.fireRepository.find();
   }
 
-  async startFire(fire: CreateFire): Promise<Fire> {
+  async startFire(fire: CreateFireRequest): Promise<Fire> {
     const newFire = this.fireRepository.create(fire);
     return this.fireRepository.save(newFire);
   }

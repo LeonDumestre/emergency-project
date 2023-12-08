@@ -1,5 +1,6 @@
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
+import { ValidationPipe } from "@nestjs/common";
 
 const allowedOrigins = ["http://localhost:3020"];
 
@@ -15,6 +16,8 @@ async function bootstrap() {
       }
     },
   });
+
+  app.useGlobalPipes(new ValidationPipe());
 
   await app.listen(3010);
 }

@@ -1,13 +1,9 @@
 import { IsNumber, IsString } from "class-validator";
 import { FireStation } from "../fire-station.entity";
 
-export type FireStationResponse = Omit<FireStation, "id_fire_station"> & {
-  id: number;
-};
-
-export class FireStationResponseDto implements FireStationResponse {
+export class FireStationResponseDto implements FireStation {
   @IsNumber()
-  id: number;
+  id_fire_station: number;
 
   @IsString()
   name: string;

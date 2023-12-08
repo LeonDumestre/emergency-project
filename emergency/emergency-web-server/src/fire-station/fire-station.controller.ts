@@ -1,6 +1,7 @@
-import { Controller, Get } from "@nestjs/common";
+import { Body, Controller, Get, Post } from "@nestjs/common";
 import { FireStationService } from "./fire-station.service";
 import { FireStationResponseDto } from "./dto/fire-station.response.dto";
+import { CreateFireStationRequestDto } from "./dto/create-fire-station.request.dto";
 
 @Controller("fire-stations")
 export class FireStationController {
@@ -9,5 +10,12 @@ export class FireStationController {
   @Get()
   getFireStations(): Promise<FireStationResponseDto[]> {
     return this.fireStationService.getFireStations();
+  }
+
+  @Post()
+  createFireStation(
+    @Body() fireStation: CreateFireStationRequestDto,
+  ): Promise<FireStationResponseDto> {
+    return this.fireStationService.createFireStation(fireStation);
   }
 }

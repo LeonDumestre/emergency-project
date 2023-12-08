@@ -1,59 +1,67 @@
 -- Création de la base de données
 CREATE DATABASE emergency_database;
+\c emergency_database;
 
 CREATE TABLE fire_station(
-   id SERIAL PRIMARY KEY,
+   id_fire_station SERIAL PRIMARY KEY,
    name VARCHAR(50),
    latitude double precision,
    longitude double precision
 );
 
 CREATE TABLE sensor(
-   id SERIAL PRIMARY KEY,
+   id_sensor INT,
    latitude double precision,
-   longitude double precision
+   longitude double precision,
+   PRIMARY KEY(id_sensor)
 );
 
 CREATE TABLE operation(
-   id SERIAL PRIMARY KEY,
+   id_operation VARCHAR(50),
    start_date TIMESTAMP,
-   end_date TIMESTAMP
+   end_date TIMESTAMP,
+   PRIMARY KEY(id_operation)
 );
 
 CREATE TABLE firefighter(
-   id SERIAL PRIMARY KEY,
+   id_firefighter INT,
    first_name VARCHAR(50),
    last_name VARCHAR(50),
    birthdate DATE,
    grade VARCHAR(50),
    id_fire_station INT,
-   FOREIGN KEY(id_fire_station) REFERENCES fire_station(id)
+   PRIMARY KEY(id_firefighter),
+   FOREIGN KEY(id_fire_station) REFERENCES fire_station(id_fire_station)
 );
 
 CREATE TABLE availability(
-   id SERIAL PRIMARY KEY,
+   id_availability INT,
    start_date DATE,
    end_date DATE,
    id_firefighter INT,
-   FOREIGN KEY(id_firefighter) REFERENCES firefighter(id)
+   PRIMARY KEY(id_availability),
+   FOREIGN KEY(id_firefighter) REFERENCES firefighter(id_firefighter)
 );
 
 CREATE TABLE truck(
-   plate SERIAL PRIMARY KEY,
+   plate INT,
    acquisition DATE,
    id_fire_station INT,
-   FOREIGN KEY(id_fire_station) REFERENCES fire_station(id)
+   PRIMARY KEY(plate),
+   FOREIGN KEY(id_fire_station) REFERENCES fire_station(id_fire_station)
 );
 
 CREATE TABLE truck_type(
-   truck_type VARCHAR(50) PRIMARY KEY,
-   capacity INT
+   truck_type VARCHAR(50),
+   capacity INT,
+   PRIMARY KEY(truck_type)
 );
 
 CREATE TABLE victim(
-   id SERIAL PRIMARY KEY,
+   id_victim INT,
    name VARCHAR(50),
-   status VARCHAR(3)
+   status VARCHAR(3),
+   PRIMARY KEY(id_victim)
 );
 
 CREATE TABLE truck_truck_type(
@@ -65,39 +73,39 @@ CREATE TABLE truck_truck_type(
 );
 
 CREATE TABLE operation_truck_status(
-   id_operation INT,
+   id_operation VARCHAR(50),
    plate INT,
    time_stamp TIMESTAMP,
    status VARCHAR(50),
    PRIMARY KEY(id_operation, plate),
-   FOREIGN KEY(id_operation) REFERENCES operation(id),
+   FOREIGN KEY(id_operation) REFERENCES operation(id_operation),
    FOREIGN KEY(plate) REFERENCES truck(plate)
 );
 
 CREATE TABLE operation_firefighter_truck(
-   id_operation INT,
+   id_operation VARCHAR(50),
    id_firefighter INT,
    plate INT,
    PRIMARY KEY(id_operation, id_firefighter, plate),
-   FOREIGN KEY(id_operation) REFERENCES operation(id),
-   FOREIGN KEY(id_firefighter) REFERENCES firefighter(id),
+   FOREIGN KEY(id_operation) REFERENCES operation(id_operation),
+   FOREIGN KEY(id_firefighter) REFERENCES firefighter(id_firefighter),
    FOREIGN KEY(plate) REFERENCES truck(plate)
 );
 
 CREATE TABLE operation_sensor(
    id_sensor INT,
-   id_operation INT,
+   id_operation VARCHAR(50),
    PRIMARY KEY(id_sensor, id_operation),
-   FOREIGN KEY(id_sensor) REFERENCES sensor(id),
-   FOREIGN KEY(id_operation) REFERENCES operation(id)
+   FOREIGN KEY(id_sensor) REFERENCES sensor(id_sensor),
+   FOREIGN KEY(id_operation) REFERENCES operation(id_operation)
 );
 
 CREATE TABLE victim_operation(
-   id_operation INT,
+   id_operation VARCHAR(50),
    id_victim INT,
    PRIMARY KEY(id_operation, id_victim),
-   FOREIGN KEY(id_operation) REFERENCES operation(id),
-   FOREIGN KEY(id_victim) REFERENCES victim(id)
+   FOREIGN KEY(id_operation) REFERENCES operation(id_operation),
+   FOREIGN KEY(id_victim) REFERENCES victim(id_victim)
 );
 
 -- Création d'un trigger pour envoyer une notification lors de l'insertion dans la table operation
@@ -107,7 +115,7 @@ BEGIN
   -- Utilisez TG_OP pour obtenir le type d'opération (INSERT, UPDATE, DELETE)
   IF TG_OP = 'INSERT' THEN
     -- Envoyer une notification avec le nom de la nouvelle opération
-    PERFORM pg_notify('new_operation', NEW.id::text);
+    PERFORM pg_notify('new_operation', NEW.id_operation::text);
   END IF;
   RETURN NEW;
 END;

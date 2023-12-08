@@ -11,7 +11,7 @@ import {
 } from "@nestjs/common";
 import { FireService } from "./fire.service";
 import { Fire } from "./fire.entity";
-import { CreateFireDto } from "./dto/create-fire.dto";
+import { CreateFireRequestDto } from "./dto/create-fire.request.dto";
 import { FireDto } from "./dto/fire.dto";
 
 @Controller("fires")
@@ -24,7 +24,7 @@ export class FireController {
   }
 
   @Post()
-  startFire(@Body() fire: CreateFireDto): Promise<Fire> {
+  startFire(@Body() fire: CreateFireRequestDto): Promise<Fire> {
     return this.fireService.startFire(fire);
   }
 

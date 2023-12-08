@@ -1,5 +1,4 @@
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
-import { join } from "path";
 import { FireStation } from "src/fire-station/fire-station.entity";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
