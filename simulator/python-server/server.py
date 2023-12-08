@@ -1,10 +1,6 @@
 import time
-import socket
-import socketserver
 import serial
 import threading
-import sqlite3
-import re
 
 LAST_VALS = ""
 REGEX_DATA = r"^\d+\.\d+\;\d+~$"
@@ -58,7 +54,7 @@ if __name__ == '__main__':
         print("Server started")
         while ser.isOpen():
             try:
-                sendUARTMessage("a")
+                sendUARTMessage("a~")
 
             except Exception as e:
                 print("Error while reading from serial port: {}".format(e))
