@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  emergency-web-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3110:3110"
+    environment:
+      NODE_ENV: production
+    networks:
+      - nest-network
+
+networks:
+  nest-network:
+    driver: bridge
