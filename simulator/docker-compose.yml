@@ -1,5 +1,20 @@
 version: '3.8'
 services:
+  # traefik:
+  #   image: "traefik:v2.10"
+  #   container_name: "traefik"
+  #   command:
+  #     - "--api.insecure=true"
+  #     - "--providers.docker=true"
+  #     - "--providers.docker.exposedbydefault=false"
+  #     - "--entrypoints.web.address=:80"
+  #   ports:
+  #     - "80:80"
+  #     - "8080:8080"
+  #   volumes:
+  #     - "/var/run/docker.sock:/var/run/docker.sock:ro"
+  #   labels:
+  #     - "traefik.http.routers.traefik.rule=Host(`app.traefik.me`)"
   simulator-view-1:
     build:
       context: ./simulator-view
@@ -7,13 +22,13 @@ services:
     volumes:
       - ./simulator-view:/usr/src/app
     ports:
-      - "3020:80"
+      - "3020:3020"
     environment:
       NODE_ENV: development
     # labels:
     #   - "traefik.enable=true"
-    #   - "traefik.http.routers.simulator-view-1.rule=PathPrefix(`/web`)"
-    #   - "traefik.http.services.simulator-view-1.loadbalancer.server.port=80"
+    #   - "traefik.http.routers.simulator-view-1.rule=Host(`app.traefik.me`) && PathPrefix(`/view`)"
+    #   - "traefik.http.routers.simulator-view-1.entrypoints=web"
   simulator-web-server-1:
     build:
       context: ./simulator-web-server
@@ -21,31 +36,10 @@ services:
     volumes:
       - ./simulator-web-server:/usr/src/app
     ports:
-      - "3010:80"
+      - "3010:3010"
     environment:
       NODE_ENV: development
-    networks:
-      - nest-network
     # labels:
     #   - "traefik.enable=true"
-    #   - "traefik.http.routers.simulator-web-server-1.rule=PathPrefix(`/api`)"
-    #   - "traefik.http.services.simulator-web-server-1.loadbalancer.server.port=80"
-  # traefik:
-  #   image: traefik:v2.5
-  #   command:
-  #     - "--api.insecure=true"
-  #     - "--providers.docker=true"
-  #     - "--providers.docker.exposedbydefault=false"
-  #     - "--entrypoints.web.address=:80"
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock
-  #   ports:
-  #     - "80:80"
-  #     - "8080:8080"  # Traefik dashboard
-  #   depends_on:
-  #     - simulator-view-1
-  #     - simulator-web-server-1
-
-networks:
-  nest-network:
-    driver: bridge
+    #   - "traefik.http.routers.simulator-web-server-1.rule=Host(`app.traefik.me`) && PathPrefix(`/api`)"
+    #   - "traefik.http.routers.simulator-web-server-1.entrypoints=web"
