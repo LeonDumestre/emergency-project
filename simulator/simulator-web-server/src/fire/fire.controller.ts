@@ -10,31 +10,30 @@ import {
   Post,
 } from "@nestjs/common";
 import { FireService } from "./fire.service";
-import { Fire } from "./fire.entity";
-import { CreateFireRequestDto } from "./dto/create-fire.request.dto";
-import { FireDto } from "./dto/fire.dto";
+import { FireRequestDto } from "./dto/fire.request.dto";
+import { FireResponseDto } from "./dto/fire.response.dto";
 
 @Controller("fires")
 export class FireController {
   constructor(private readonly fireService: FireService) {}
 
   @Get()
-  getFires(): Promise<Fire[]> {
+  getFires(): Promise<FireResponseDto[]> {
     return this.fireService.getFires();
   }
 
   @Get(":id")
-  getFire(@Param("id", ParseIntPipe) id: number): Promise<Fire[]> {
+  getFire(@Param("id", ParseIntPipe) id: number): Promise<FireResponseDto[]> {
     return this.fireService.getFire(id);
   }
 
   @Post()
-  startFire(@Body() fire: CreateFireRequestDto): Promise<Fire> {
+  startFire(@Body() fire: FireRequestDto): Promise<FireResponseDto> {
     return this.fireService.startFire(fire);
   }
 
   @Patch(":id")
-  updateFire(@Body() fire: FireDto): Promise<Fire> {
+  updateFire(@Body() fire: FireRequestDto): Promise<FireResponseDto> {
     return this.fireService.updateFire(fire);
   }
 
