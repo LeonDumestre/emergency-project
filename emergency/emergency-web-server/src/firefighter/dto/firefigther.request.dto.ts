@@ -18,7 +18,7 @@ export class CreateFirefighterRequestDto implements Firefighter {
   @IsString()
   grade: string;
 
-  @IsNotEmpty({ message: "fire station id is required" })
-  @IsNumber()
-  fireStationId: number;
+  //@IsNotEmpty({ message: "fire station id is required" })
+  //@IsNumber()
+  //fireStationId: number;
 }

@@ -14,6 +14,6 @@ export class FirefighterResponseDto implements Firefighter {
   @IsString()
   grade: string;
 
-  @IsNumber()
-  fireStationId: number;
+  //@IsNumber()
+  //fireStationId: number;
 }
