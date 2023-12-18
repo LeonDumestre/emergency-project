@@ -4,8 +4,6 @@ import { AppService } from "./app.service";
 import { FireModule } from "./fire/fire.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Fire } from "./fire/fire.entity";
-import { Captor } from "./captor/captor.entity";
-import { CaptorModule } from "./captor/captor.module";
 
 @Module({
   imports: [
@@ -13,10 +11,9 @@ import { CaptorModule } from "./captor/captor.module";
       type: "sqlite",
       database: "db.sqlite",
       synchronize: true,
-      entities: [Fire, Captor],
+      entities: [Fire],
     }),
     FireModule,
-    CaptorModule,
   ],
   controllers: [AppController],
   providers: [AppService],

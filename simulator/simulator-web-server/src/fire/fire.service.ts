@@ -15,6 +15,10 @@ export class FireService {
     return this.fires.find();
   }
 
+  async getFire(id: Fire["id"]): Promise<Fire[]> {
+    return this.fires.find({ where: { id } });
+  }
+
   async startFire(fire: CreateFireRequest): Promise<Fire> {
     const newFire = this.fires.create(fire);
     return this.fires.save(newFire);

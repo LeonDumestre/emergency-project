@@ -23,6 +23,11 @@ export class FireController {
     return this.fireService.getFires();
   }
 
+  @Get(":id")
+  getFire(@Param("id", ParseIntPipe) id: number): Promise<Fire[]> {
+    return this.fireService.getFire(id);
+  }
+
   @Post()
   startFire(@Body() fire: CreateFireRequestDto): Promise<Fire> {
     return this.fireService.startFire(fire);
