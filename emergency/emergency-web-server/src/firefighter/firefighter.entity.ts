@@ -1,7 +1,6 @@
-import { FireStation } from "src/fire-station/fire-station.entity";
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
-@Entity("fire_fighter")
+@Entity("firefighter")
 export class Firefighter {
   @PrimaryGeneratedColumn()
   id: number;
@@ -15,6 +14,6 @@ export class Firefighter {
   @Column({ name: "grade", nullable: false })
   grade: string;
 
-  @Column({ name: "id_fire_station", nullable: false })
-  fireStationId: FireStation["id"];
+  //@Column({ name: "id_fire_station", nullable: false })
+  //fireStationId: FireStation["id"];
 }

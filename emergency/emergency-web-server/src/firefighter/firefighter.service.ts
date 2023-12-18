@@ -15,13 +15,13 @@ export class FirefighterService {
   }
 
   async createFirefighter(firefighter: Firefighter): Promise<Firefighter> {
-    const fireStationId = firefighter.fireStationId;
+    /*const fireStationId = firefighter.fireStationId;
     const fireStation = await this.firefighters.findOne({
       where: { id: fireStationId },
     });
     if (!fireStation) {
       throw new Error(`Fire station #${fireStationId} does not exist`);
-    }
+    }*/
 
     const createdFirefighter = this.firefighters.create(firefighter);
     return this.firefighters.save(createdFirefighter);
