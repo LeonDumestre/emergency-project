@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { CreateFire } from "./dto/create-fire.dto";
+import { CreateFireRequest } from "./dto/create-fire.request.dto";
 import { Fire } from "./fire.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
@@ -8,22 +8,36 @@ import { Repository } from "typeorm";
 export class FireService {
   constructor(
     @InjectRepository(Fire)
-    private readonly fireRepository: Repository<Fire>,
+    private readonly fires: Repository<Fire>,
   ) {}
 
-  getFires(): Promise<Fire[]> {
-    return this.fireRepository.find();
+  async getFires(): Promise<Fire[]> {
+    return this.fires.find();
   }
 
-  startFire(fire: CreateFire) {
-    this.fireRepository.create(fire);
+  async getFire(id: Fire["id"]): Promise<Fire[]> {
+    return this.fires.find({ where: { id } });
   }
 
-  updateFire() {
-    console.log("update fire");
+  async startFire(fire: CreateFireRequest): Promise<Fire> {
+    const newFire = this.fires.create(fire);
+    return this.fires.save(newFire);
   }
 
-  deleteFire() {
-    console.log("delete fire");
+  async updateFire(fire: Fire): Promise<Fire> {
+    const condition = { where: { id: fire.id } };
+    const existingFire = await this.fires.findOne(condition);
+    if (!existingFire) throw new Error(`Fire #${fire.id} does not exist`);
+
+    const fireToUpdate = { ...existingFire, ...fire };
+    return this.fires.save(fireToUpdate);
+  }
+
+  async deleteFire(id: number): Promise<void> {
+    const condition = { where: { id } };
+    const existingFire = await this.fires.findOne(condition);
+    if (!existingFire) throw new Error(`Fire #${id} does not exist`);
+
+    await this.fires.remove(existingFire);
   }
 }

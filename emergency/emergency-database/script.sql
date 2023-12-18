@@ -3,11 +3,10 @@ CREATE DATABASE emergency_database;
 \c emergency_database;
 
 CREATE TABLE fire_station(
-   id_fire_station INT,
-   name VARCHAR(50),
+   id SERIAL PRIMARY KEY,
+   name VARCHAR(200),
    latitude double precision,
-   longitude double precision,
-   PRIMARY KEY(id_fire_station)
+   longitude double precision
 );
 
 CREATE TABLE sensor(
@@ -25,14 +24,13 @@ CREATE TABLE operation(
 );
 
 CREATE TABLE firefighter(
-   id_firefighter INT,
-   first_name VARCHAR(50),
-   last_name VARCHAR(50),
+   id INT,
+   name VARCHAR(200),
    birthdate DATE,
    grade VARCHAR(50),
    id_fire_station INT,
-   PRIMARY KEY(id_firefighter),
-   FOREIGN KEY(id_fire_station) REFERENCES fire_station(id_fire_station)
+   PRIMARY KEY(id),
+   FOREIGN KEY(id_fire_station) REFERENCES fire_station(id)
 );
 
 CREATE TABLE availability(
@@ -41,7 +39,7 @@ CREATE TABLE availability(
    end_date DATE,
    id_firefighter INT,
    PRIMARY KEY(id_availability),
-   FOREIGN KEY(id_firefighter) REFERENCES firefighter(id_firefighter)
+   FOREIGN KEY(id_firefighter) REFERENCES firefighter(id)
 );
 
 CREATE TABLE truck(
@@ -49,7 +47,7 @@ CREATE TABLE truck(
    acquisition DATE,
    id_fire_station INT,
    PRIMARY KEY(plate),
-   FOREIGN KEY(id_fire_station) REFERENCES fire_station(id_fire_station)
+   FOREIGN KEY(id_fire_station) REFERENCES fire_station(id)
 );
 
 CREATE TABLE truck_type(
@@ -89,7 +87,7 @@ CREATE TABLE operation_firefighter_truck(
    plate INT,
    PRIMARY KEY(id_operation, id_firefighter, plate),
    FOREIGN KEY(id_operation) REFERENCES operation(id_operation),
-   FOREIGN KEY(id_firefighter) REFERENCES firefighter(id_firefighter),
+   FOREIGN KEY(id_firefighter) REFERENCES firefighter(id),
    FOREIGN KEY(plate) REFERENCES truck(plate)
 );
 
