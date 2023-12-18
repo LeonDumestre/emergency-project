@@ -3,7 +3,7 @@ import { FireStation } from "../fire-station.entity";
 
 export class FireStationResponseDto implements FireStation {
   @IsNumber()
-  id_fire_station: number;
+  id: number;
 
   @IsString()
   name: string;

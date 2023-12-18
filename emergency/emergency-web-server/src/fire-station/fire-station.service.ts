@@ -2,23 +2,20 @@ import { Injectable } from "@nestjs/common";
 import { FireStation } from "./fire-station.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { CreateFireStation } from "./dto/create-fire-station.request.dto";
 
 @Injectable()
 export class FireStationService {
   constructor(
     @InjectRepository(FireStation)
-    private readonly fireStationRepository: Repository<FireStation>,
+    private readonly fireStations: Repository<FireStation>,
   ) {}
 
   async getFireStations(): Promise<FireStation[]> {
-    return this.fireStationRepository.find();
+    return this.fireStations.find();
   }
 
-  async createFireStation(
-    fireStation: CreateFireStation,
-  ): Promise<FireStation> {
-    const createdStation = this.fireStationRepository.create(fireStation);
-    return this.fireStationRepository.save(createdStation);
+  async createFireStation(fireStation: FireStation): Promise<FireStation> {
+    const createdStation = this.fireStations.create(fireStation);
+    return this.fireStations.save(createdStation);
   }
 }
