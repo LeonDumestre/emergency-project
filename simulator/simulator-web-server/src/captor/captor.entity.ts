@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
-@Entity("fire")
-export class Fire {
+@Entity("captor")
+export class Captor {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -10,10 +10,4 @@ export class Fire {
 
   @Column({ name: "longitude", type: "double", nullable: false })
   longitude: number;
-
-  @Column({ name: "intensity", type: "int", nullable: false })
-  intensity: number;
-
-  @Column({ name: "triggerAt", type: "date", nullable: false })
-  triggerAt: Date;
 }
