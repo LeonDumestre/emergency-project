@@ -1,7 +1,9 @@
 import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { FireStation } from "../fire-station.entity";
 
-export class CreateFireStationRequestDto implements FireStation {
+export type CreateFireStation = Omit<FireStation, "firefighters">;
+
+export class CreateFireStationRequestDto implements CreateFireStation {
   @IsNotEmpty({ message: "id is required" })
   @IsNumber()
   id: number;

@@ -1,7 +1,9 @@
 import { IsNumber, IsString } from "class-validator";
 import { FireStation } from "../fire-station.entity";
 
-export class FireStationResponseDto implements FireStation {
+export type FireStationResponse = Omit<FireStation, "firefighters">;
+
+export class FireStationResponseDto implements FireStationResponse {
   @IsNumber()
   id: number;
 
