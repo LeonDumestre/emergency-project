@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { FireStation } from "src/fire-station/fire-station.entity";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from "typeorm";
 
 @Entity("firefighter")
 export class Firefighter {
@@ -14,6 +21,7 @@ export class Firefighter {
   @Column({ name: "grade", nullable: false })
   grade: string;
 
-  //@Column({ name: "id_fire_station", nullable: false })
-  //fireStationId: FireStation["id"];
+  @ManyToOne(() => FireStation, (fireStation) => fireStation.firefighters)
+  @JoinColumn({ name: "id_fire_station" })
+  fireStation: FireStation;
 }

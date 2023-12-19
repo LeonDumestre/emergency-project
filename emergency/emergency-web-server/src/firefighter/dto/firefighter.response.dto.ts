@@ -1,7 +1,9 @@
 import { IsDate, IsNumber, IsString } from "class-validator";
 import { Firefighter } from "../firefighter.entity";
 
-export class FirefighterResponseDto implements Firefighter {
+export type FirefighterResponse = Omit<Firefighter, "fireStation">;
+
+export class FirefighterResponseDto implements FirefighterResponse {
   @IsNumber()
   id: number;
 
@@ -13,7 +15,4 @@ export class FirefighterResponseDto implements Firefighter {
 
   @IsString()
   grade: string;
-
-  //@IsNumber()
-  //fireStationId: number;
 }

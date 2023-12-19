@@ -1,7 +1,11 @@
 import { IsDateString, IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { Firefighter } from "../firefighter.entity";
 
-export class CreateFirefighterRequestDto implements Firefighter {
+export type CreateFirefighter = Omit<Firefighter, "fireStation"> & {
+  fireStationId: number;
+};
+
+export class CreateFirefighterRequestDto implements CreateFirefighter {
   @IsNotEmpty({ message: "id is required" })
   @IsNumber()
   id: number;
@@ -18,7 +22,7 @@ export class CreateFirefighterRequestDto implements Firefighter {
   @IsString()
   grade: string;
 
-  //@IsNotEmpty({ message: "fire station id is required" })
-  //@IsNumber()
-  //fireStationId: number;
+  @IsNotEmpty({ message: "fire station id is required" })
+  @IsNumber()
+  fireStationId: number;
 }

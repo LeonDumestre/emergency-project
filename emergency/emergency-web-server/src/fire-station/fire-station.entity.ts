@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Firefighter } from "src/firefighter/firefighter.entity";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 
 @Entity("fire_station")
 export class FireStation {
@@ -13,4 +14,7 @@ export class FireStation {
 
   @Column({ name: "longitude", type: "double precision", nullable: false })
   longitude: number;
+
+  @OneToMany(() => Firefighter, (firefighter) => firefighter.fireStation)
+  firefighters: Firefighter[];
 }
