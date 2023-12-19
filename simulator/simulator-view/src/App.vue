@@ -13,10 +13,3 @@ export default defineComponent({
   components: { FireMap },
 });
 </script>
-
-<style lang="scss" scoped>
-main {
-  margin: 0;
-  padding: 0;
-}
-</style>
