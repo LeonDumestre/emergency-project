@@ -63,6 +63,13 @@ CREATE TABLE victim(
    PRIMARY KEY(id_victim)
 );
 
+CREATE TABLE fire(
+   id INT,
+   latitude double precision,
+   longitude double precision,
+   PRIMARY KEY(id)
+);
+
 CREATE TABLE truck_truck_type(
    plate INT,
    truck_type VARCHAR(50),
@@ -105,6 +112,14 @@ CREATE TABLE victim_operation(
    PRIMARY KEY(id_operation, id_victim),
    FOREIGN KEY(id_operation) REFERENCES operation(id_operation),
    FOREIGN KEY(id_victim) REFERENCES victim(id_victim)
+);
+
+CREATE TABLE Asso_9(
+   id_operation VARCHAR(50),
+   id_fire INT,
+   PRIMARY KEY(id_operation, id),
+   FOREIGN KEY(id_operation) REFERENCES operation(id_operation),
+   FOREIGN KEY(id) REFERENCES fire(id)
 );
 
 -- Création d'un trigger pour envoyer une notification lors de l'insertion dans la table operation

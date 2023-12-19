@@ -1,6 +1,7 @@
 import time
 import serial
 import threading
+import numpy as np
 
 LAST_VALS = ""
 REGEX_DATA = r"^\d+\.\d+\;\d+~$"
@@ -10,6 +11,14 @@ SERIALPORT = "/dev/ttyACM0"
 BAUDRATE = 115200
 ser = serial.Serial()
 
+# captor data (map id=>value)
+# Générer des données aléatoires pour 60 capteurs
+nombre_capteurs = 60
+capteurs_ids = range(1, nombre_capteurs + 1)
+capteurs_valeurs = 0
+
+# Créer le dictionnaire id=>valeur
+donnees_capteurs = dict(zip(capteurs_ids, capteurs_valeurs))
 
 mutex = threading.Lock()
 
