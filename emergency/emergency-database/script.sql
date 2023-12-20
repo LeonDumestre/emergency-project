@@ -117,9 +117,9 @@ CREATE TABLE victim_operation(
 CREATE TABLE fire_operation(
    id_operation VARCHAR(50),
    id_fire INT,
-   PRIMARY KEY(id_operation, id),
+   PRIMARY KEY(id_operation, id_fire),
    FOREIGN KEY(id_operation) REFERENCES operation(id_operation),
-   FOREIGN KEY(id) REFERENCES fire(id)
+   FOREIGN KEY(id_fire) REFERENCES fire(id)
 );
 
 -- Création d'un trigger pour envoyer une notification lors de l'insertion dans la table operation
@@ -144,3 +144,5 @@ FOR EACH ROW EXECUTE FUNCTION notify_new_operation();
 INSERT INTO truck_type VALUES ('FPT', 6);
 INSERT INTO truck_type VALUES ('VSAV', 3);
 INSERT INTO truck_type VALUES ('EPA', 4);
+
+INSERT INTO fire_station VALUES (1, 'Fire Station 1', 48.8566, 2.3522);
