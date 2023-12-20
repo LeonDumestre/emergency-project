@@ -5,7 +5,7 @@ import { Repository } from "typeorm";
 import { CreateSensor } from "./dto/create-sensor.request.dto";
 
 @Injectable()
-export class SendorService {
+export class SensorService {
   constructor(
     @InjectRepository(Sensor)
     private readonly sensors: Repository<Sensor>,

@@ -7,12 +7,15 @@ import {
   FirefighterResponse,
   FirefighterResponseDto,
 } from "./dto/firefighter.response.dto";
+import { FireStation } from "src/fire-station/fire-station.entity";
 
 @Injectable()
 export class FirefighterService {
   constructor(
     @InjectRepository(Firefighter)
     private readonly firefighters: Repository<Firefighter>,
+    @InjectRepository(FireStation)
+    private readonly fireStations: Repository<FireStation>,
   ) {}
 
   async getFirefighters(): Promise<FirefighterResponse[]> {
@@ -24,7 +27,7 @@ export class FirefighterService {
     firefighter: CreateFirefighter,
   ): Promise<FirefighterResponse> {
     const { fireStationId, ...firefighterDetails } = firefighter;
-    const fireStation = await this.firefighters.findOne({
+    const fireStation = await this.fireStations.findOne({
       where: { id: fireStationId },
     });
     if (!fireStation) {
