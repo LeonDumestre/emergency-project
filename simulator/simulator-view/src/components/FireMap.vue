@@ -14,31 +14,7 @@ export default defineComponent({
   async mounted() {
     const map = initMap();
 
-    /*const firesToAdd = [
-      {
-        latitude: 45.76,
-        longitude: 4.85,
-        intensity: 9,
-        triggerAt: new Date(),
-      },
-      {
-        latitude: 45.73,
-        longitude: 4.9,
-        intensity: 4,
-        triggerAt: new Date(),
-      },
-      {
-        latitude: 45.78,
-        longitude: 4.91,
-        intensity: 7,
-        triggerAt: new Date(),
-      },
-    ];
-
-    firesToAdd.map(async (fire) => await startFire(fire));*/
-
     const fires = await getFires();
-
     fires.map((fire) => addMarker(map, fire));
   },
   beforeUnmount() {
