@@ -19,7 +19,10 @@ export class TruckService {
   ) {}
 
   async getTrucks(): Promise<TruckResponse[]> {
-    const trucks = await this.trucks.find();
+    const trucks = await this.trucks
+      .createQueryBuilder("truck")
+      .leftJoinAndSelect("truck.type", "type")
+      .getMany();
     return trucks.map(this.mapToTruckResponseDto);
   }
 
