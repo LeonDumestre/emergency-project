@@ -5,12 +5,14 @@ import { FireStationModule } from "./fire-station/fire-station.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { configService } from "./config/config.service";
 import { FirefighterModule } from "./firefighter/firefighter.module";
+import { SensorModule } from "./sensor/sensor.module";
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
     FireStationModule,
     FirefighterModule,
+    SensorModule,
   ],
   controllers: [AppController],
   providers: [AppService],

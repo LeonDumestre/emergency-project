@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { FireStation } from "./fire-station.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { CreateFireStation } from "./dto/fire-station.request.dto";
+import { CreateFireStation } from "./dto/create-fire-station.request.dto";
 import {
   FireStationResponse,
   FireStationResponseDto,

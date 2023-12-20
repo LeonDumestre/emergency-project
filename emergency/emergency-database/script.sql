@@ -10,10 +10,10 @@ CREATE TABLE fire_station(
 );
 
 CREATE TABLE sensor(
-   id_sensor INT,
+   id INT,
    latitude double precision,
    longitude double precision,
-   PRIMARY KEY(id_sensor)
+   PRIMARY KEY(id)
 );
 
 CREATE TABLE operation(
@@ -102,7 +102,7 @@ CREATE TABLE operation_sensor(
    id_sensor INT,
    id_operation VARCHAR(50),
    PRIMARY KEY(id_sensor, id_operation),
-   FOREIGN KEY(id_sensor) REFERENCES sensor(id_sensor),
+   FOREIGN KEY(id_sensor) REFERENCES sensor(id),
    FOREIGN KEY(id_operation) REFERENCES operation(id_operation)
 );
 
@@ -114,7 +114,7 @@ CREATE TABLE victim_operation(
    FOREIGN KEY(id_victim) REFERENCES victim(id_victim)
 );
 
-CREATE TABLE Asso_9(
+CREATE TABLE fire_operation(
    id_operation VARCHAR(50),
    id_fire INT,
    PRIMARY KEY(id_operation, id),
@@ -139,3 +139,8 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER operation_notify_trigger
 AFTER INSERT ON operation
 FOR EACH ROW EXECUTE FUNCTION notify_new_operation();
+
+-- Insertion des données dans la table truck_type
+INSERT INTO truck_type VALUES ('FPT', 6);
+INSERT INTO truck_type VALUES ('VSAV', 3);
+INSERT INTO truck_type VALUES ('EPA', 4);

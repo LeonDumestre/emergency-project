@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post } from "@nestjs/common";
 import { FirefighterService } from "./firefighter.service";
-import { CreateFirefighterRequestDto } from "./dto/firefigther.request.dto";
+import { CreateFirefighterRequestDto } from "./dto/create-firefigther.request.dto";
 import { FirefighterResponse } from "./dto/firefighter.response.dto";
 
 @Controller("firefighters")
