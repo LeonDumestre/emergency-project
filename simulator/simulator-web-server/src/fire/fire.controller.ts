@@ -10,8 +10,9 @@ import {
   Post,
 } from "@nestjs/common";
 import { FireService } from "./fire.service";
-import { FireRequestDto } from "./dto/fire.request.dto";
+import { CreateFireRequestDto } from "./dto/create-fire.request.dto";
 import { FireResponseDto } from "./dto/fire.response.dto";
+import { UpdateFireRequestDto } from "./dto/update-fire.request.dto";
 
 @Controller("fires")
 export class FireController {
@@ -28,12 +29,12 @@ export class FireController {
   }
 
   @Post()
-  startFire(@Body() fire: FireRequestDto): Promise<FireResponseDto> {
+  startFire(@Body() fire: CreateFireRequestDto): Promise<FireResponseDto> {
     return this.fireService.startFire(fire);
   }
 
   @Patch(":id")
-  updateFire(@Body() fire: FireRequestDto): Promise<FireResponseDto> {
+  updateFire(@Body() fire: UpdateFireRequestDto): Promise<FireResponseDto> {
     return this.fireService.updateFire(fire);
   }
 

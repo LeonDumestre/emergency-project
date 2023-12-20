@@ -5,25 +5,41 @@
 <script lang="ts">
 import L from "leaflet";
 import { defineComponent } from "vue";
+import { Fire } from "@/utils/fire.model";
+import { formatDateWithHour } from "@/utils/date.utils";
+import { getFires } from "@/utils/fire.request";
 
 export default defineComponent({
   name: "App",
   async mounted() {
     const map = initMap();
 
-    const fires = [
+    /*const firesToAdd = [
       {
-        id: 1,
         latitude: 45.76,
         longitude: 4.85,
         intensity: 9,
         triggerAt: new Date(),
       },
+      {
+        latitude: 45.73,
+        longitude: 4.9,
+        intensity: 4,
+        triggerAt: new Date(),
+      },
+      {
+        latitude: 45.78,
+        longitude: 4.91,
+        intensity: 7,
+        triggerAt: new Date(),
+      },
     ];
 
-    fires.map((fire) =>
-      addMarker(map, fire.latitude, fire.longitude, fire.intensity)
-    );
+    firesToAdd.map(async (fire) => await startFire(fire));*/
+
+    const fires = await getFires();
+
+    fires.map((fire) => addMarker(map, fire));
   },
   beforeUnmount() {
     L.map("map").remove();
@@ -43,30 +59,18 @@ function initMap(): L.Map {
   return map;
 }
 
-function addMarker(
-  map: L.Map,
-  latitude: number,
-  longitude: number,
-  intensity: number
-) {
-  /*const icon = new L.Icon({
-    iconUrl:
-      "https://cdn.discordapp.com/attachments/1181543375392997508/1181609799130038322/fire-png.png?ex=658ae961&is=65787461&hm=c231a85ec319af1c8ff6d92a7587f216c02c1948bcae4b6fec0154438ec59394&",
-    iconSize: [30, 40],
-    iconAnchor: [0, 40],
-    popupAnchor: [15, -40],
-  });*/
-
-  //const marker = L.marker([latitude, longitude], { icon }).addTo(map);
-  //marker.bindPopup(`Intensité: ${intensity}`);
-
-  const circle = L.circle([latitude, longitude], {
-    radius: intensity * 50,
+function addMarker(map: L.Map, fire: Fire) {
+  const circle = L.circle([fire.latitude, fire.longitude], {
+    radius: fire.intensity * 50,
     color: "red",
     fillOpacity: 0.2,
   }).addTo(map);
 
-  circle.bindPopup(`Intensité: ${intensity}`);
+  const triggerAt = formatDateWithHour(fire.triggerAt);
+  circle.bindPopup(
+    `Intensité: ${fire.intensity}<br />
+    Déclenchement: ${triggerAt}`
+  );
 }
 </script>
 
