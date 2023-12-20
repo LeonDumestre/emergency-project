@@ -36,7 +36,7 @@ export class FirefighterService {
 
     const createdFirefighter = this.firefighters.create({
       ...firefighterDetails,
-      fireStation: fireStation,
+      fireStation,
     });
     const savedFirefigter = await this.firefighters.save(createdFirefighter);
     return this.mapToFirefighterResponseDto(savedFirefigter);

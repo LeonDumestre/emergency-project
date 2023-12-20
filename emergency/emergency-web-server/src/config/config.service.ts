@@ -1,6 +1,8 @@
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
 import { FireStation } from "src/fire-station/fire-station.entity";
 import { Firefighter } from "src/firefighter/firefighter.entity";
+import { TruckType } from "src/truck/truck-type.entity";
+import { Truck } from "src/truck/truck.entity";
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require("dotenv").config();
@@ -42,7 +44,7 @@ class ConfigService {
       database: this.getValue("POSTGRES_DATABASE"),
 
       //entities: [join(__dirname, "**", "*.entity.{ts,js}")],
-      entities: [FireStation, Firefighter],
+      entities: [FireStation, Firefighter, Truck, TruckType],
 
       ssl: this.isProduction(),
     };
