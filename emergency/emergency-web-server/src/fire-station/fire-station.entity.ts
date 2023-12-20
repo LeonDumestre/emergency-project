@@ -1,4 +1,5 @@
 import { Firefighter } from "src/firefighter/firefighter.entity";
+import { Truck } from "src/truck/truck.entity";
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 
 @Entity("fire_station")
@@ -17,4 +18,7 @@ export class FireStation {
 
   @OneToMany(() => Firefighter, (firefighter) => firefighter.fireStation)
   firefighters: Firefighter[];
+
+  @OneToMany(() => Truck, (truck) => truck.fireStation)
+  trucks: Truck[];
 }
