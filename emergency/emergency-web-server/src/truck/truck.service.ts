@@ -2,14 +2,10 @@ import { Injectable } from "@nestjs/common";
 import { Truck } from "./truck.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import {
-  TruckResponse,
-  TruckResponseDto,
-  TruckTypeResponse,
-  TruckTypeResponseDto,
-} from "./dto/truck.response.dto";
+import { TruckResponse, TruckResponseDto } from "./dto/truck.response.dto";
 import { CreateTruck } from "./dto/create-truck.request.dto";
 import { TruckType } from "./truck-type.entity";
+import { FireStation } from "src/fire-station/fire-station.entity";
 
 @Injectable()
 export class TruckService {
@@ -18,6 +14,8 @@ export class TruckService {
     private readonly trucks: Repository<Truck>,
     @InjectRepository(TruckType)
     private readonly truckTypes: Repository<TruckType>,
+    @InjectRepository(FireStation)
+    private readonly fireStations: Repository<FireStation>,
   ) {}
 
   async getTrucks(): Promise<TruckResponse[]> {
@@ -26,17 +24,14 @@ export class TruckService {
   }
 
   async createTruck(truck: CreateTruck): Promise<TruckResponse> {
-    const { type, ...truckDetails } = truck;
-    const truckType = await this.truckTypes.findOne({
-      where: { type },
-    });
-    if (!truckType) {
-      throw new Error(`Truck type #${type} does not exist`);
-    }
+    const { type, fireStationId, ...truckDetails } = truck;
+    const truckType = await this.getTruckTypeIfExists(type);
+    const fireStation = await this.getFireStationIfExists(fireStationId);
 
     const createdTruck = this.trucks.create({
       ...truckDetails,
       type: truckType,
+      fireStation,
     });
     const savedTruck = await this.trucks.save(createdTruck);
     return this.mapToTruckResponseDto(savedTruck);
@@ -46,14 +41,28 @@ export class TruckService {
     const responseDto = new TruckResponseDto();
     responseDto.plate = truck.plate;
     responseDto.acquisition = truck.acquisition;
-    responseDto.type = this.mapToTruckTypeResponseDto(truck.type);
+    responseDto.type = truck.type.name;
+    responseDto.capacity = truck.type.capacity;
     return responseDto;
   }
 
-  private mapToTruckTypeResponseDto(truckType: TruckType): TruckTypeResponse {
-    const responseDto = new TruckTypeResponseDto();
-    responseDto.type = truckType.type;
-    responseDto.capacity = truckType.capacity;
-    return responseDto;
+  private async getTruckTypeIfExists(type: string): Promise<TruckType> {
+    const truckType = await this.truckTypes.findOne({
+      where: { name: type },
+    });
+    if (!truckType) {
+      throw new Error(`Truck type #${type} does not exist`);
+    }
+    return truckType;
+  }
+
+  private async getFireStationIfExists(id: number): Promise<FireStation> {
+    const fireStation = await this.fireStations.findOne({
+      where: { id },
+    });
+    if (!fireStation) {
+      throw new Error(`Fire station #${id} does not exist`);
+    }
+    return fireStation;
   }
 }
