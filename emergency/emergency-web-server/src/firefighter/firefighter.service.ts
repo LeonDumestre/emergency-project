@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { Firefighter } from "./firefighter.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { CreateFirefighter } from "./dto/firefigther.request.dto";
+import { CreateFirefighter } from "./dto/create-firefigther.request.dto";
 import {
   FirefighterResponse,
   FirefighterResponseDto,

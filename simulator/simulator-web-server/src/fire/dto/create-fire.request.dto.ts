@@ -7,11 +7,9 @@ import {
 } from "class-validator";
 import { Fire } from "../fire.entity";
 
-export class FireRequestDto implements Fire {
-  @IsNotEmpty({ message: "id is required" })
-  @IsNumber()
-  id: number;
+export type CreateFire = Omit<Fire, "id">;
 
+export class CreateFireRequestDto implements CreateFire {
   @IsNotEmpty({ message: "latitude is required" })
   @IsNumber()
   latitude: number;

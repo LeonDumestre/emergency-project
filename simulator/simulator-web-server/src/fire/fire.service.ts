@@ -2,6 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { Fire } from "./fire.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
+import { CreateFire } from "./dto/create-fire.request.dto";
+import { UpdateFire } from "./dto/update-fire.request.dto";
 
 @Injectable()
 export class FireService {
@@ -18,12 +20,12 @@ export class FireService {
     return this.fires.find({ where: { id } });
   }
 
-  async startFire(fire: Fire): Promise<Fire> {
+  async startFire(fire: CreateFire): Promise<Fire> {
     const newFire = this.fires.create(fire);
     return this.fires.save(newFire);
   }
 
-  async updateFire(fire: Fire): Promise<Fire> {
+  async updateFire(fire: UpdateFire): Promise<Fire> {
     const condition = { where: { id: fire.id } };
     const existingFire = await this.fires.findOne(condition);
     if (!existingFire) throw new Error(`Fire #${fire.id} does not exist`);
