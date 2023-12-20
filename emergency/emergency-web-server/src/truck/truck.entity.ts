@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryColumn } from "typeorm";
+import { Entity, Column, PrimaryColumn, ManyToOne, JoinColumn } from "typeorm";
+import { TruckType } from "./truck-type.entity";
 
 @Entity("truck")
 export class Truck {
@@ -8,6 +9,7 @@ export class Truck {
   @Column({ name: "acquisition", type: "date", nullable: false })
   acquisition: Date;
 
-  @Column({ name: "truck_type", type: "varchar", nullable: false })
-  type: string;
+  @ManyToOne(() => TruckType, (type) => type.trucks)
+  @JoinColumn({ name: "truck_type" })
+  type: TruckType;
 }

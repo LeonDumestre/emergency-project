@@ -1,7 +1,11 @@
 import { IsDateString, IsNotEmpty, IsString } from "class-validator";
 import { Truck } from "../truck.entity";
 
-export class CreateTruckRequestDto implements Truck {
+export type CreateTruck = Omit<Truck, "type"> & {
+  type: string;
+};
+
+export class CreateTruckRequestDto implements CreateTruck {
   @IsNotEmpty({ message: "plate is required" })
   @IsString()
   plate: string;
