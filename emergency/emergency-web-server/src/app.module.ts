@@ -6,6 +6,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { configService } from "./config/config.service";
 import { FirefighterModule } from "./firefighter/firefighter.module";
 import { SensorModule } from "./sensor/sensor.module";
+import { TruckModule } from "./truck/truck.module";
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { SensorModule } from "./sensor/sensor.module";
     FireStationModule,
     FirefighterModule,
     SensorModule,
+    TruckModule,
   ],
   controllers: [AppController],
   providers: [AppService],
