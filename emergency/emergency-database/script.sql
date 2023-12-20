@@ -24,12 +24,11 @@ CREATE TABLE operation(
 );
 
 CREATE TABLE firefighter(
-   id INT,
+   id SERIAL PRIMARY KEY,
    name VARCHAR(200),
    birthdate DATE,
    grade VARCHAR(50),
    id_fire_station INT,
-   PRIMARY KEY(id),
    FOREIGN KEY(id_fire_station) REFERENCES fire_station(id)
 );
 
@@ -144,5 +143,3 @@ FOR EACH ROW EXECUTE FUNCTION notify_new_operation();
 INSERT INTO truck_type VALUES ('FPT', 6);
 INSERT INTO truck_type VALUES ('VSAV', 3);
 INSERT INTO truck_type VALUES ('EPA', 4);
-
-INSERT INTO fire_station VALUES (1, 'Fire Station 1', 48.8566, 2.3522);
