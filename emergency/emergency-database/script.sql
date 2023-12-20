@@ -41,18 +41,20 @@ CREATE TABLE availability(
    FOREIGN KEY(id_firefighter) REFERENCES firefighter(id)
 );
 
-CREATE TABLE truck(
-   plate VARCHAR(20),
-   acquisition DATE,
-   id_fire_station INT,
-   PRIMARY KEY(plate),
-   FOREIGN KEY(id_fire_station) REFERENCES fire_station(id)
-);
-
 CREATE TABLE truck_type(
    truck_type VARCHAR(50),
    capacity INT,
    PRIMARY KEY(truck_type)
+);
+
+CREATE TABLE truck(
+   plate VARCHAR(20),
+   acquisition DATE,
+   truck_type VARCHAR(50),
+   id_fire_station INT,
+   PRIMARY KEY(plate),
+   FOREIGN KEY(truck_type) REFERENCES truck_type(truck_type),
+   FOREIGN KEY(id_fire_station) REFERENCES fire_station(id)
 );
 
 CREATE TABLE victim(
@@ -67,14 +69,6 @@ CREATE TABLE fire(
    latitude double precision,
    longitude double precision,
    PRIMARY KEY(id)
-);
-
-CREATE TABLE truck_truck_type(
-   plate VARCHAR(20),
-   truck_type VARCHAR(50),
-   PRIMARY KEY(plate, truck_type),
-   FOREIGN KEY(plate) REFERENCES truck(plate),
-   FOREIGN KEY(truck_type) REFERENCES truck_type(truck_type)
 );
 
 CREATE TABLE operation_truck_status(
