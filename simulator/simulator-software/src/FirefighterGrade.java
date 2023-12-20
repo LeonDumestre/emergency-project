@@ -1,4 +1,4 @@
-public enum FireFighterGrade {
+public enum FirefighterGrade {
     FIRST_GRADE("1ère classe"),
     SECOND_GRADE("2ème classe"),
     CAPORAL("Caporal"),
@@ -8,5 +8,5 @@ public enum FireFighterGrade {
     ADJUDANT("Adjudant"),
     ADJUDANT_CHEF("Adjudant-Chef");
 
-    FireFighterGrade(String s) { }
+    FirefighterGrade(String s) { }
 }

@@ -1,3 +1,8 @@
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+
 public class FireStation {
     private int id;
     private String name;
@@ -41,6 +46,28 @@ public class FireStation {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public void postFireStation() {
+        HttpClient client = HttpClient.newHttpClient();
+
+        try {
+            String json = "{\"id\":" + this.getId() + ",\"name\":\"" + this.getName() + "\",\"latitude\":" + this.getLatitude() + ",\"longitude\":" + this.getLongitude() + "}";
+            System.out.println("POST Firestation: " + json);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("http://localhost:3110/fire-stations"))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            System.out.println("Response Code: " + response.statusCode());
+            System.out.println("Response Body: " + response.body());
+
+        } catch (Exception e) {
+            System.out.println("POST FireStation: " + e);
+        }
     }
 
     @Override

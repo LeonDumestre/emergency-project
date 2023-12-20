@@ -1,3 +1,7 @@
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.time.LocalDate;
 
 public class Truck {
@@ -43,6 +47,27 @@ public class Truck {
 
     public void setFireStation(FireStation fireStation) {
         this.fireStation = fireStation;
+    }
+
+    public void postTruck(){
+        HttpClient client = HttpClient.newHttpClient();
+
+        try {
+            String json = "{\"plateNumber\":\"" + this.getPlateNumber() + "\",\"dateOfAcquisition\":\"" + this.getDateOfAcquisition() + "\",\"truckType\":\"" + this.getTruckType() + "\",\"fireStation\":" + this.getFireStation().getId() + "}";
+            System.out.println("POST Truck: " + json);
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("http://localhost:3110/trucks"))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            System.out.println("Response Code: " + response.statusCode());
+            System.out.println("Response Body: " + response.body());
+
+        } catch (Exception e) {
+            System.out.println("POST Truck: " + e);
+        }
     }
 
     @Override
