@@ -63,10 +63,10 @@ public class Firefighter {
         HttpClient client = HttpClient.newHttpClient();
 
         try {
-            String json = "{\"id\":" + this.getId() + ",\"name\":\"" + this.getName() + "\",\"birthDate\":\"" + this.getBirthDate() + "\",\"grade\":\"" + this.getGrade() + "\",\"fireStation\":" + this.getFireStation().getId() + "}";
+            String json = "{\"id\":" + this.getId() + ",\"name\":\"" + this.getName() + "\",\"birthDate\":\"" + this.getBirthDate() + "\",\"grade\":\"" + this.getGrade() + "\",\"fireStationId\":" + this.getFireStation().getId() + "}";
             System.out.println("POST Firefighter: " + json);
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:3110/fire-fighters"))
+                    .uri(URI.create("http://localhost:3110/firefighters"))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(json))
                     .build();
@@ -77,7 +77,7 @@ public class Firefighter {
             System.out.println("Response Body: " + response.body());
 
         } catch (Exception e) {
-            System.out.println("POST Firefighter: " + e);
+            System.out.println("POST Firefighter: " + e.getMessage());
         }
     }
     @Override

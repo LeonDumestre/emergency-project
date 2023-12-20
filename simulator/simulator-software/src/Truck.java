@@ -53,7 +53,7 @@ public class Truck {
         HttpClient client = HttpClient.newHttpClient();
 
         try {
-            String json = "{\"plateNumber\":\"" + this.getPlateNumber() + "\",\"dateOfAcquisition\":\"" + this.getDateOfAcquisition() + "\",\"truckType\":\"" + this.getTruckType() + "\",\"fireStation\":" + this.getFireStation().getId() + "}";
+            String json = "{\"plate\":\"" + this.getPlateNumber() + "\",\"acquisition\":\"" + this.getDateOfAcquisition() + "\",\"type\":\"" + this.getTruckType() + "\",\"fireStationId\":" + this.getFireStation().getId() + "}";
             System.out.println("POST Truck: " + json);
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create("http://localhost:3110/trucks"))
@@ -66,7 +66,7 @@ public class Truck {
             System.out.println("Response Body: " + response.body());
 
         } catch (Exception e) {
-            System.out.println("POST Truck: " + e);
+            System.out.println("POST Truck: " + e.getMessage());
         }
     }
 

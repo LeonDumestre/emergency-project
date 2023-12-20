@@ -52,7 +52,7 @@ public class FireStation {
         HttpClient client = HttpClient.newHttpClient();
 
         try {
-            String json = "{\"id\":" + this.getId() + ",\"name\":\"" + this.getName() + "\",\"latitude\":" + this.getLatitude() + ",\"longitude\":" + this.getLongitude() + "}";
+            String json = "{\"name\":\"" + this.getName() + "\",\"latitude\":" + this.getLatitude() + ",\"longitude\":" + this.getLongitude() + "}";
             System.out.println("POST Firestation: " + json);
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create("http://localhost:3110/fire-stations"))
@@ -66,7 +66,7 @@ public class FireStation {
             System.out.println("Response Body: " + response.body());
 
         } catch (Exception e) {
-            System.out.println("POST FireStation: " + e);
+            System.out.println("POST FireStation: " + e.getMessage());
         }
     }
 
