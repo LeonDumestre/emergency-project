@@ -46,6 +46,20 @@ public class Sensor {
         } catch (IOException | InterruptedException e) {
             System.out.println("POST Sensor: " + e.getMessage());
         }
+
+        request = HttpRequest.newBuilder()
+                .uri(URI.create("http://localhost:3010/sensors"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+        try {
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println("POST Sensor: " + response.body());
+            return response.body();
+        } catch (IOException | InterruptedException e) {
+            System.out.println("POST Sensor: " + e.getMessage());
+        }
+
         return null;
     }
 

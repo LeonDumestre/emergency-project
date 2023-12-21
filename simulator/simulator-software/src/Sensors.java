@@ -60,5 +60,32 @@ public class Sensors {
         catch (IOException | InterruptedException e) {
             System.out.println("GET Sensors: " + e.getMessage());
         }
+
+        try {
+            request = HttpRequest.newBuilder()
+                    .uri(URI.create("http://localhost:3010/sensors/"))
+                    .header("Content-Type", "application/json")
+                    .GET()
+                    .build();
+
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            System.out.println(response.body());
+
+            if (!(response.body().length() > 2)) {
+                System.out.println("Sensors don't exist");
+                this.sensors = new Sensor[60];
+                double longitudeGap = 0.0077021;
+                double latitudeGap = 0.0193976;
+                for (int i = 0; i < 6; i++){
+                    for (int j = 0; j < 10; j++){
+                        this.sensors[i*10+j] = new Sensor(45.788453 + j*latitudeGap, 4.788435 + i*longitudeGap);
+                        this.sensors[i*10+j].postSensor();
+                    }
+                }
+            }
+        } catch (IOException | InterruptedException e) {
+            System.out.println("GET Sensors: " + e.getMessage());
+        }
     }
 }
