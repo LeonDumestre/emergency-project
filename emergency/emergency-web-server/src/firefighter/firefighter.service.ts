@@ -19,7 +19,10 @@ export class FirefighterService {
   ) {}
 
   async getFirefighters(): Promise<FirefighterResponse[]> {
-    const firefighters = await this.firefighters.find();
+    const firefighters = await this.firefighters
+      .createQueryBuilder("firefighter")
+      .leftJoinAndSelect("firefighter.fireStation", "fireStation")
+      .getMany();
     return firefighters.map(this.mapToFirefighterResponseDto);
   }
 
@@ -50,6 +53,7 @@ export class FirefighterService {
     responseDto.name = firefighter.name;
     responseDto.birthDate = firefighter.birthDate;
     responseDto.grade = firefighter.grade;
+    responseDto.fireStationId = firefighter.fireStation.id;
     return responseDto;
   }
 }

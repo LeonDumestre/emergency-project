@@ -1,7 +1,7 @@
 import { IsNumber } from "class-validator";
-import { Captor } from "../captor.entity";
+import { Sensor } from "../sensor.entity";
 
-export class CaptorResponseDto implements Captor {
+export class SensorResponseDto implements Sensor {
   @IsNumber()
   id: number;
 

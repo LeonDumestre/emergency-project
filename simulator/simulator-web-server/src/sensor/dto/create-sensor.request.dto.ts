@@ -1,11 +1,9 @@
 import { IsNotEmpty, IsNumber } from "class-validator";
-import { Captor } from "../captor.entity";
+import { Sensor } from "../sensor.entity";
 
-export class CaptorRequestDto implements Captor {
-  @IsNotEmpty({ message: "id is required" })
-  @IsNumber()
-  id: number;
+export type CreateSensor = Omit<Sensor, "id">;
 
+export class CreateSensorRequestDto implements CreateSensor {
   @IsNotEmpty({ message: "latitude is required" })
   @IsNumber()
   latitude: number;

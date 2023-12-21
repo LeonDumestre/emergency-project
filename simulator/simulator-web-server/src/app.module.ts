@@ -4,6 +4,7 @@ import { AppService } from "./app.service";
 import { FireModule } from "./fire/fire.module";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Fire } from "./fire/fire.entity";
+import { Sensor } from "./sensor/sensor.entity";
 
 @Module({
   imports: [
@@ -11,7 +12,7 @@ import { Fire } from "./fire/fire.entity";
       type: "sqlite",
       database: "db.sqlite",
       synchronize: true,
-      entities: [Fire],
+      entities: [Fire, Sensor],
     }),
     FireModule,
   ],
