@@ -10,10 +10,9 @@ CREATE TABLE fire_station(
 );
 
 CREATE TABLE sensor(
-   id INT,
+   id SERIAL PRIMARY KEY,
    latitude double precision,
-   longitude double precision,
-   PRIMARY KEY(id)
+   longitude double precision
 );
 
 CREATE TABLE operation(
