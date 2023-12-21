@@ -1,5 +1,6 @@
 import org.apache.commons.text.StringEscapeUtils;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -55,19 +56,15 @@ public class Firefighters {
                     this.firefighters = new Firefighter[jsonFirefighters.length];
 
                     for (int i = 0; i < jsonFirefighters.length; i++) {
-                        /*int id = Integer.parseInt(jsonFirefighters[i].split(",")[0].split(":")[1]);
                         String name = jsonFirefighters[i].split(",")[1].split(":")[1];
-                        System.out.println(name);
-                        String dateOfBirthString = jsonFirefighters[i].split(",")[3].split(":")[1];
-                        System.out.println(dateOfBirthString);
-                        //LocalDate dateOfBirth = LocalDate.parse(dateOfBirthString);
+                        String cleanName = StringEscapeUtils.unescapeJava(name.split("\"")[1].split("\"")[0].replace("\\", ""));
+                        String dateOfBirth = jsonFirefighters[i].split(",")[2].split(":")[1];
+                        LocalDate cleanDateOfBirth = LocalDate.parse(dateOfBirth.split("\"")[1].split("\"")[0].replace("\\", ""));
                         String grade = jsonFirefighters[i].split(",")[3].split(":")[1];
-                        System.out.println(grade);
-                        String fireStationString = jsonFirefighters[i].split(",")[4].split(":")[1];
-                        System.out.println(fireStationString);
-                        int fireStationId = Integer.parseInt(fireStationString.split("}")[0]);
-                        FireStation fireStation = this.fireStations.getFireStations()[fireStationId - 1];*/
-                        //this.firefighters[i] = new Firefighter(id, name, dateOfBirth, grade, fireStation);
+                        String cleanGrade = StringEscapeUtils.unescapeJava(grade.split("\"")[1].split("\"")[0].replace("\\", ""));
+                        int fireStationId = Integer.parseInt(jsonFirefighters[i].split(",")[4].split(":")[1].split("}")[0]);
+                        this.firefighters[i] = new Firefighter(i, cleanName, cleanDateOfBirth, cleanGrade, fireStations.getFireStations()[fireStationId - 1]);
+                        System.out.println("GET Firefighter: " + this.firefighters[i]);
                     }
                 }
                 else {
@@ -91,7 +88,7 @@ public class Firefighters {
                         firefighters[i].postFirefighter();
                     }
                 }
-            } catch (Exception e) {
+            } catch (IOException | InterruptedException e) {
                 System.out.println("GET Firefighter: " + e.getMessage());
             }
         }

@@ -20,6 +20,10 @@ public class Main {
         //Generate trucks
         Trucks trucks = new Trucks(fireStations);
         trucks.initializeTrucks();
+
+        //Generate sensors
+        Sensors sensors = new Sensors();
+        sensors.initializeSensors();
     }
 
     public static void test() throws Exception {

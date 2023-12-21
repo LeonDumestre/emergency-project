@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -76,7 +77,7 @@ public class Firefighter {
             System.out.println("Response Code: " + response.statusCode());
             System.out.println("Response Body: " + response.body());
 
-        } catch (Exception e) {
+        } catch (IOException | InterruptedException e) {
             System.out.println("POST Firefighter: " + e.getMessage());
         }
     }

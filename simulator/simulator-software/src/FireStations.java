@@ -1,5 +1,6 @@
 import org.apache.commons.text.StringEscapeUtils;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -52,6 +53,7 @@ public class FireStations {
                         double longitude = Double.parseDouble(jsonFireStations[i].split(",")[3].split(":")[1]);
                         this.fireStations[i] = new FireStation(id, name, latitude, longitude);
                     }
+                    System.out.println("GET FireStation: " + this.fireStations[i].toString());
                 }
             } else{
                 this.fireStations = new FireStation[6];
@@ -68,7 +70,7 @@ public class FireStations {
                     fireStations[i].postFireStation();
                 }
             }
-        } catch (Exception e) {
+        } catch (IOException | InterruptedException e) {
             System.out.println("GET FireStation: " + e.getMessage());
         }
     }

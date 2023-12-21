@@ -1,3 +1,4 @@
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -7,13 +8,15 @@ import java.time.LocalDate;
 public class Truck {
     private String plateNumber;
     private LocalDate dateOfAcquisition;
-    String truckType;
+    private String truckType;
+    private int capacity;
     private FireStation fireStation;
 
-    public Truck(String plateNumber, LocalDate dateOfAcquisition, String truckType, FireStation fireStation) {
+    public Truck(String plateNumber, LocalDate dateOfAcquisition, String truckType, int capacity, FireStation fireStation) {
         this.plateNumber = plateNumber;
         this.dateOfAcquisition = dateOfAcquisition;
         this.truckType = truckType;
+        this.capacity = capacity;
         this.fireStation = fireStation;
     }
 
@@ -27,6 +30,10 @@ public class Truck {
 
     public String getTruckType() {
         return truckType;
+    }
+
+    public int getCapacity() {
+        return capacity;
     }
 
     public FireStation getFireStation() {
@@ -43,6 +50,10 @@ public class Truck {
 
     public void setTruckType(String truckType) {
         this.truckType = truckType;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
     }
 
     public void setFireStation(FireStation fireStation) {
@@ -65,7 +76,7 @@ public class Truck {
             System.out.println("Response Code: " + response.statusCode());
             System.out.println("Response Body: " + response.body());
 
-        } catch (Exception e) {
+        } catch (IOException | InterruptedException e) {
             System.out.println("POST Truck: " + e.getMessage());
         }
     }
@@ -76,6 +87,7 @@ public class Truck {
                 "plateNumber=" + plateNumber +
                 ", dateOfAcquisition=" + dateOfAcquisition +
                 ", truckType=" + truckType +
+                ", capacity=" + capacity +
                 ", fireStation=" + fireStation +
                 '}';
     }

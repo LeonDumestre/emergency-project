@@ -1,3 +1,6 @@
+import org.apache.commons.text.StringEscapeUtils;
+
+import java.io.IOException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -47,6 +50,26 @@ public class Trucks {
 
                 if (response.body().length() > 2) {
                     System.out.println("Trucks already exist");
+                    String[] jsonTrucks = response.body().split("},");
+                    this.trucks = new Truck[jsonTrucks.length];
+
+                    for (int i = 0; i < jsonTrucks.length; i++) {
+                        String licensePlate = jsonTrucks[i].split(",")[0].split(":")[1];
+                        String cleanLicensePlate = licensePlate.split("\"")[1].split("\"")[0].replace("\\", "");
+                        String date = jsonTrucks[i].split(",")[1].split(":")[1];
+                        LocalDate cleanDate = LocalDate.parse(date.split("\"")[1].split("\"")[0].replace("\\", ""));
+                        String type = jsonTrucks[i].split(",")[2].split(":")[1];
+                        String cleanType = type.split("\"")[1].split("\"")[0].replace("\\", "");
+                        int capacity = Integer.parseInt(jsonTrucks[i].split(",")[3].split(":")[1].split("}")[0]);
+                        if (i == jsonTrucks.length - 1) {
+                            int fireStationId = Integer.parseInt(jsonTrucks[i].split(",")[4].split(":")[1].split("}")[0]);
+                            this.trucks[i] = new Truck(cleanLicensePlate, cleanDate, cleanType, capacity,  fireStations.getFireStations()[fireStationId - 1]);
+                        } else {
+                            int fireStationId = Integer.parseInt(jsonTrucks[i].split(",")[4].split(":")[1]);
+                            this.trucks[i] = new Truck(cleanLicensePlate, cleanDate, cleanType, capacity,  fireStations.getFireStations()[fireStationId - 1]);
+                        }
+                        System.out.println("GET Truck: " + this.trucks[i].toString());
+                    }
                 } else {
                     // Generate random trucks
                     for (int i = 0; i < this.randomTruckNumber; i++) {
@@ -55,12 +78,13 @@ public class Trucks {
                         long randomDay = ThreadLocalRandom.current().nextLong(minDay, maxDay);
                         LocalDate randomDate = LocalDate.ofEpochDay(randomDay);
                         String licensePlate = "AA-" + (int) ((i + 10) * (999 - 100)) + 100 + "-BB";
+                        int capacity = (int) (Math.random() * (100 - 1)) + 1;
 
-                        trucks[i] = new Truck(licensePlate, randomDate, TruckType.values()[(int) (Math.random() * (3))].toString(), fireStations.getFireStations()[(int) (Math.random() * (6 - 1)) + 1]);
+                        trucks[i] = new Truck(licensePlate, randomDate, TruckType.values()[(int) (Math.random() * (3))].toString(), capacity ,fireStations.getFireStations()[(int) (Math.random() * (6 - 1)) + 1]);
                         trucks[i].postTruck();
                     }
                 }
-            } catch (Exception e) {
+            } catch (IOException | InterruptedException e) {
                 System.out.println("GET Trucks: " + e.getMessage());
             }
         }
