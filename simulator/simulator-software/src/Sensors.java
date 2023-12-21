@@ -33,7 +33,7 @@ public class Sensors {
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.body().length() > 2) {
-                System.out.println("Sensors already exist");
+                System.out.println("Sensors in EM already exist");
                 String[] jsonSensors = response.body().split("},");
                 this.sensors = new Sensor[jsonSensors.length];
 
@@ -41,11 +41,11 @@ public class Sensors {
                     double latitude = Double.parseDouble(jsonSensors[i].split(",")[0].split(":")[1]);
                     double longitude = Double.parseDouble(jsonSensors[i].split(",")[1].split(":")[1]);
                     this.sensors[i] = new Sensor(latitude, longitude);
-                    System.out.println("GET Sensor: " + this.sensors[i].toString());
+                    System.out.println("GET EM Sensor: " + this.sensors[i].toString());
                 }
             }
             else {
-                System.out.println("Sensors don't exist");
+                System.out.println("Sensors EM don't exist");
                 this.sensors = new Sensor[60];
                 double longitudeGap = 0.0077021;
                 double latitudeGap = 0.0193976;
@@ -58,7 +58,7 @@ public class Sensors {
             }
         }
         catch (IOException | InterruptedException e) {
-            System.out.println("GET Sensors: " + e.getMessage());
+            System.out.println("GET in EM Sensors: " + e.getMessage());
         }
 
         try {
@@ -70,10 +70,19 @@ public class Sensors {
 
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            System.out.println(response.body());
+            if ((response.body().length() > 2)) {
+                System.out.println("Sensors in simulator already exist");
+                String[] jsonSensors = response.body().split("},");
+                this.sensors = new Sensor[jsonSensors.length];
 
-            if (!(response.body().length() > 2)) {
-                System.out.println("Sensors don't exist");
+                for (int i = 0; i < jsonSensors.length; i++) {
+                    double latitude = Double.parseDouble(jsonSensors[i].split(",")[0].split(":")[1]);
+                    double longitude = Double.parseDouble(jsonSensors[i].split(",")[1].split(":")[1]);
+                    this.sensors[i] = new Sensor(latitude, longitude);
+                    System.out.println("GET Simulator Sensor: " + this.sensors[i].toString());
+                }
+            } else {
+                System.out.println("Sensors in simulator don't exist");
                 this.sensors = new Sensor[60];
                 double longitudeGap = 0.0077021;
                 double latitudeGap = 0.0193976;
@@ -85,7 +94,7 @@ public class Sensors {
                 }
             }
         } catch (IOException | InterruptedException e) {
-            System.out.println("GET Sensors: " + e.getMessage());
+            System.out.println("GET Simulator Sensors: " + e.getMessage());
         }
     }
 }
