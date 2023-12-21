@@ -9,4 +9,4 @@ import { Sensor } from "./sensor.entity";
   controllers: [SensorController],
   providers: [SensorService],
 })
-export class FireModule {}
+export class SensorModule {}
