@@ -1,6 +1,7 @@
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
 import { FireStation } from "src/fire-station/fire-station.entity";
 import { Firefighter } from "src/firefighter/firefighter.entity";
+import { Sensor } from "src/sensor/sensor.entity";
 import { TruckType } from "src/truck/truck-type.entity";
 import { Truck } from "src/truck/truck.entity";
 
@@ -44,7 +45,7 @@ class ConfigService {
       database: this.getValue("POSTGRES_DATABASE"),
 
       //entities: [join(__dirname, "**", "*.entity.{ts,js}")],
-      entities: [FireStation, Firefighter, Truck, TruckType],
+      entities: [FireStation, Firefighter, Sensor, Truck, TruckType],
 
       ssl: this.isProduction(),
     };
