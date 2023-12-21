@@ -22,6 +22,7 @@ export class TruckService {
     const trucks = await this.trucks
       .createQueryBuilder("truck")
       .leftJoinAndSelect("truck.type", "type")
+      .leftJoinAndSelect("truck.fireStation", "fireStation")
       .getMany();
     return trucks.map(this.mapToTruckResponseDto);
   }
@@ -46,6 +47,7 @@ export class TruckService {
     responseDto.acquisition = truck.acquisition;
     responseDto.type = truck.type.name;
     responseDto.capacity = truck.type.capacity;
+    responseDto.fireStationId = truck.fireStation.id;
     return responseDto;
   }
 

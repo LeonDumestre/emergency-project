@@ -7,6 +7,7 @@ export type TruckTypeResponse = Omit<TruckType, "trucks">;
 export type TruckResponse = Omit<Truck, "type" | "fireStation"> & {
   type: string;
   capacity: number;
+  fireStationId: number;
 };
 
 export class TruckResponseDto implements TruckResponse {
@@ -21,4 +22,7 @@ export class TruckResponseDto implements TruckResponse {
 
   @IsNumber()
   capacity: number;
+
+  @IsNumber()
+  fireStationId: number;
 }
