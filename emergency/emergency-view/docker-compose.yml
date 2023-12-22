@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  emergency-view-1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      NODE_ENV: development
+    ports:
+      - "3020:3020"
