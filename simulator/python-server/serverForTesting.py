@@ -13,14 +13,17 @@ class Fire:
 class FireByCaptor:
     def __init__(self, intancity, distance):
         self.intancity, self.distance = intancity, distance
+    def __str__(self):
+        return "{} -> {}".format(self.intancity, self.distance)
         
 class Captor:
     def __init__(self, id, values, latitude, longitude):
         self.id, self.values, self.latitude, self.longitude = id, values, latitude, longitude
     def __str__(self):
-        return  "{}: {} - {}/{}".format(self.id, self.values, self.latitude, self.longitude)
+        values_str = "[" + ", ".join(str(fire) for fire in self.values) + "]"
+        return "{}: {} - {}/{}".format(self.id, values_str, self.latitude, self.longitude)
 
-# Calcule de ditance
+# Calculate distance
 def haversine_distance(lat1, lon1, lat2, lon2):
     # Convertir les coordonnées de degrés à radians
     lat1, lon1, lat2, lon2 = map(radians, [lat1, lon1, lat2, lon2])
@@ -41,41 +44,29 @@ def haversine_distance(lat1, lon1, lat2, lon2):
 
     return distance
 
-# Generate the list with the 60 captors
-nombre_capteurs = 60
+# Init the list of captors
+def initCaptors(captors):    
+    # Generate captors
+    # API request
+    response = requests.get("http://localhost:3110/sensors")
+    data = response.json()
+    # Sensor creation
+    for sensor in data:
+        values = []
+        captors.append(Captor(sensor.get("id"), values, sensor.get("latitude"), sensor.get("longitude")))
+
+# Calculate the impact of a fire on the captors
+def calculateFireImpact(captors, fire):
+    captorRange = 0.9
+    for captor in captors:
+        if haversine_distance(fire.latitude, fire.longitude, captor.latitude, captor.longitude) < captorRange:
+            captor.values.append(FireByCaptor(testFire.intancity, haversine_distance(fire.latitude, fire.longitude, captor.latitude, captor.longitude)))
+
+
 captors = []
-capteurs_ids = range(1, nombre_capteurs + 1)
-for id in range(1, nombre_capteurs+1):
-    values = []
-    captors.append(Captor(id, values, 0, 0))
-
-response = requests.get("http://localhost:3010/sensors")
-data = response.json()
-
-for sensor in data:
-    captors[sensor.get("id")-1].latitude = sensor.get("latitude")
-    captors[sensor.get("id")-1].longitude = sensor.get("longitude")
-    
-# Add coodinates to captors
-#capteurs_latitudes = np.random.uniform(-90, 90, nombre_capteurs)  # Valeurs de latitude entre -90 et 90 degrés
-#capteurs_longitudes = np.random.uniform(-180, 180, nombre_capteurs)  # Valeurs de longitude entre -180 et 180 degrés
-
-testDistance = haversine_distance(captors[1].latitude, captors[1].longitude, captors[2].latitude, captors[2].longitude)
-print(f"{testDistance:.5f}")
-distanceBetweenCaptors = 2.16
-layerDistance = 0.5
-captorRange = 2.1500
-testFire = Fire(1, 45.94363379999999, 4.8269455, 6)
-
-for captor in captors:
-    if haversine_distance(testFire.latitude, testFire.longitude, captor.latitude, captor.longitude) < captorRange:
-        captor.values.append(FireByCaptor(testFire.intancity, haversine_distance(testFire.latitude, testFire.longitude, captor.latitude, captor.longitude)))
-
+initCaptors(captors)
+testFire = Fire(1, 45.724328666666665, 4.810751, 6)
+calculateFireImpact(captors, testFire)
 
 for capt in captors:
     print(capt)
-
-
-
-# Test API
-
