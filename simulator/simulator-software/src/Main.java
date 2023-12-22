@@ -33,26 +33,27 @@ public class Main {
         sensors.initializeSensors();
 
         //Generate fires
-        double longitudeTopLeft = 45.788812;
-        double latitudeTopLeft = 4.788779;
-        double longitudeTopRight = 45.788812;
-        double latitudeBottomLeft = 4.893285;
+        Fire[] fires = new Fire[0];
+        double topLeftCornerLatitude = 45.788812;
+        double topLeftCornerLongitude = 4.8;
+        double latitudeGap = 0.008;
+        double longitudeGap = 0.01;
 
-        float fireProbability = 0.1f;
+        float fireProbability = 0.05f;
         int idFire = 0;
 
         while(true) {
             if (Math.random() < fireProbability) {
                 //Generate fire
-                double longitude = Math.random() * (longitudeTopRight - longitudeTopLeft) + longitudeTopLeft;
-                double latitude = Math.random() * (latitudeBottomLeft - latitudeTopLeft) + latitudeTopLeft;
-                int intensity = (int) (Math.random() * 10 + 1);
-                Fire fire = new Fire(idFire, longitude, latitude, intensity);
+                double latitude = topLeftCornerLatitude - (double) (Math.random() * 9) * latitudeGap;
+                double longitude = topLeftCornerLongitude + (double) (Math.random() * 12) * longitudeGap;
+
+                fires[idFire] = new Fire(idFire, latitude, longitude, 1);
+
                 //Send fire to the web server
-                fire.postFire();
-                System.out.println("fire.Fire generated: " + fire.toString());
+                fires[idFire].postFire();
             }
-            sleep(2000);
+            sleep(3000);
         }
     }
 
