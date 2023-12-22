@@ -14,8 +14,8 @@
 // }
 
 // void onSerialReceive(MicroBitEvent) {
-//     serial_msg = uBit.serial.readUntil("~").toCharArray();
-//     serial_msg.erase(remove(serial_msg.begin(), serial_msg.end(), '~'), serial_msg.end());
+//     serial_msg = uBit.serial.readUntil(";").toCharArray();
+//     serial_msg.erase(remove(serial_msg.begin(), serial_msg.end(), ';'), serial_msg.end());
 //     transit(serial_msg.c_str());
 //     uBit.serial.printf("#");
 // }
@@ -25,16 +25,12 @@
 //     uBit.init();
 
 //     uBit.serial.setRxBufferSize(255);
-//     uBit.serial.eventOn("~");
+//     uBit.serial.eventOn(";");
 
 //     uBit.messageBus.listen(MICROBIT_ID_SERIAL, MICROBIT_SERIAL_EVT_DELIM_MATCH, onSerialReceive);
     
 //     uBit.radio.enable();
 //     uBit.radio.setGroup(28);
-
-//     while(true) {
-//         uBit.sleep(1 * ONE_SECOND_IN_MS);
-//     }
 
 //     release_fiber();
 // }
@@ -43,7 +39,7 @@
 #include "aes.hpp"
 
 MicroBit uBit;
-uint8_t key[16] = "Jeremy";
+uint8_t key[16] = "JeremyCaca";
 
 int main()
 {
@@ -59,11 +55,13 @@ int main()
     uint8_t data[240] = "";
     memset(data, 0, sizeof(data));
 
+    uBit.display.scroll("INIT");
+
     while (true)
     {
         if (uBit.serial.rxBufferedSize() > 0)
         {
-            uBit.display.scroll("OUI");
+            uBit.display.scroll("S");
             // Réception du message passé via UART et copie dans une châine de charactère.
             ManagedString s = uBit.serial.readUntil(";");
             strcat((char *)data, (char *)s.toCharArray());
@@ -73,7 +71,7 @@ int main()
             {
                 AES_ECB_encrypt(&ctx, data + (i * 16));
             }
-            uBit.radio.datagram.send((char *)data);
+            uBit.radio.datagram.send(PacketBuffer(data), strlen(data));
 
             // Réinitialisation du buffer
             memset(data, 0, sizeof(data));

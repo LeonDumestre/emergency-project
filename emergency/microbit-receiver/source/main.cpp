@@ -10,7 +10,7 @@
 
 // void onRadioReceive(MicroBitEvent) {
 //     managed_string = uBit.radio.datagram.recv();
-//     uBit.serial.printf("%s~", decrypt((char*)managed_string.toCharArray(), (uint8_t*)key));
+//     uBit.serial.printf("%s;", decrypt((char*)managed_string.toCharArray(), (uint8_t*)key));
 // }
 
 // int main() {
@@ -21,10 +21,6 @@
 //     uBit.radio.enable();
 //     uBit.radio.setGroup(28);
 
-//     while(true) {
-//         uBit.sleep(8000);
-//     }
-
 //     release_fiber();
 // }
 
@@ -33,7 +29,7 @@
 #include "aes.hpp"
 
 MicroBit uBit;
-uint8_t key[16] = "Jeremy";
+uint8_t key[16] = "JeremyCaca";
 
 /**
  * Déchiffre le texte passé en paramètre (le texte doit être d'une taille de 240 octets)
@@ -53,7 +49,7 @@ void decrypt(uint8_t *encrypted_text)
  */
 void onRadioReceive(MicroBitEvent)
 {
-    uBit.display.scroll("OUI");
+    uBit.display.scroll("R");
     // Réception du datagram
     PacketBuffer pb = uBit.radio.datagram.recv();
 
@@ -77,6 +73,12 @@ int main()
     uBit.radio.enable();
     uBit.radio.setGroup(80);
     uBit.serial.setRxBufferSize(240);
+
+    uBit.display.scroll("INIT");
+
+    while(true) {
+        uBit.sleep(50);
+    }
 
     release_fiber();
 }
