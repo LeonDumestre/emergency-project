@@ -8,4 +8,4 @@ services:
     environment:
       NODE_ENV: development
     ports:
-      - "3020:3020"
+      - "3120:3120"
