@@ -53,6 +53,7 @@ def on_message(client, userdata, msg):
             print("Invalid payload format. Missing 'id' or 'temperature'.")
     except json.JSONDecodeError as e:
         print(f"Error decoding JSON: {e}")
+        
 ## MQTT logic - Register callbacks and start MQTT client
 mqttc.on_connect = on_connect
 mqttc.on_message = on_message

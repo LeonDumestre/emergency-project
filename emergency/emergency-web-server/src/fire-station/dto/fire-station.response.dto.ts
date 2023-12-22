@@ -1,9 +1,19 @@
-import { IsNumber, IsString } from "class-validator";
+import { IsArray, IsNumber, IsString } from "class-validator";
 import { FireStation } from "../fire-station.entity";
+import { BaseFirefighterResponseDto } from "src/firefighter/dto/firefighter.response.dto";
+import { BaseTruckResponseDto } from "src/truck/dto/truck.response.dto";
 
-export type FireStationResponse = Omit<FireStation, "firefighters" | "trucks">;
+export type BaseFireStationResponse = Omit<
+  FireStation,
+  "firefighters" | "trucks"
+>;
 
-export class FireStationResponseDto implements FireStationResponse {
+export type FireStationResponse = BaseFireStationResponse & {
+  firefighters: BaseFirefighterResponseDto[];
+  trucks: BaseTruckResponseDto[];
+};
+
+export class BaseFireStationResponseDto implements BaseFireStationResponse {
   @IsNumber()
   id: number;
 
@@ -15,4 +25,15 @@ export class FireStationResponseDto implements FireStationResponse {
 
   @IsNumber()
   longitude: number;
+}
+
+export class FireStationResponseDto
+  extends BaseFireStationResponseDto
+  implements FireStationResponse
+{
+  @IsArray()
+  firefighters: BaseFirefighterResponseDto[];
+
+  @IsArray()
+  trucks: BaseTruckResponseDto[];
 }

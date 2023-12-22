@@ -1,4 +1,9 @@
+package truck;
+
+import fireStation.FireStations;
 import org.apache.commons.text.StringEscapeUtils;
+import org.json.JSONArray;
+import truck.Truck;
 
 import java.io.IOException;
 import java.net.http.HttpClient;
@@ -42,32 +47,26 @@ public class Trucks {
 
             try {
                 request = HttpRequest.newBuilder()
-                        .uri(java.net.URI.create("http://localhost:3110/trucks"))
+                        .uri(java.net.URI.create("http://localhost:3010/trucks"))
                         .header("Content-Type", "application/json")
                         .GET()
                         .build();
                 response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-                if (response.body().length() > 2) {
+                if (response.statusCode() == 200 && response.body().length() > 2) {
                     System.out.println("Trucks already exist");
-                    String[] jsonTrucks = response.body().split("},");
-                    this.trucks = new Truck[jsonTrucks.length];
+                    JSONArray jsonTrucks = new JSONArray(response.body());
+                    this.trucks = new Truck[jsonTrucks.length()];
 
-                    for (int i = 0; i < jsonTrucks.length; i++) {
-                        String licensePlate = jsonTrucks[i].split(",")[0].split(":")[1];
-                        String cleanLicensePlate = licensePlate.split("\"")[1].split("\"")[0].replace("\\", "");
-                        String date = jsonTrucks[i].split(",")[1].split(":")[1];
-                        LocalDate cleanDate = LocalDate.parse(date.split("\"")[1].split("\"")[0].replace("\\", ""));
-                        String type = jsonTrucks[i].split(",")[2].split(":")[1];
-                        String cleanType = type.split("\"")[1].split("\"")[0].replace("\\", "");
-                        int capacity = Integer.parseInt(jsonTrucks[i].split(",")[3].split(":")[1].split("}")[0]);
-                        if (i == jsonTrucks.length - 1) {
-                            int fireStationId = Integer.parseInt(jsonTrucks[i].split(",")[4].split(":")[1].split("}")[0]);
-                            this.trucks[i] = new Truck(cleanLicensePlate, cleanDate, cleanType, capacity,  fireStations.getFireStations()[fireStationId - 1]);
-                        } else {
-                            int fireStationId = Integer.parseInt(jsonTrucks[i].split(",")[4].split(":")[1]);
-                            this.trucks[i] = new Truck(cleanLicensePlate, cleanDate, cleanType, capacity,  fireStations.getFireStations()[fireStationId - 1]);
-                        }
+                    for (int i = 0; i < jsonTrucks.length(); i++) {
+                        String cleanLicensePlate = StringEscapeUtils.unescapeJson(jsonTrucks.getJSONObject(i).getString("plate"));
+                        String cleanDate = StringEscapeUtils.unescapeJson(jsonTrucks.getJSONObject(i).getString("acquisition"));
+                        String cleanType = StringEscapeUtils.unescapeJson(jsonTrucks.getJSONObject(i).getString("type"));
+                        int capacity = jsonTrucks.getJSONObject(i).getInt("capacity");
+                        int idFireStation = jsonTrucks.getJSONObject(i).getInt("fireStationId");
+
+                        this.trucks[i] = new Truck(cleanLicensePlate, LocalDate.parse(cleanDate), cleanType, capacity, this.fireStations.getFireStations()[idFireStation - 1]);
+
                         System.out.println("GET Truck: " + this.trucks[i].toString());
                     }
                 } else {

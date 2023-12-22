@@ -1,6 +1,7 @@
 import L from "leaflet";
 import { formatDateWithHour } from "./date.utils";
 import { Fire } from "./fire.model";
+import { Sensor } from "./sensor.model";
 
 export function initMap(): L.Map {
   // Initialisez la carte Leaflet
@@ -15,7 +16,7 @@ export function initMap(): L.Map {
   return map;
 }
 
-export function addCircle(map: L.Map, fire: Fire) {
+export function addFireCircle(map: L.Map, fire: Fire) {
   const circle = L.circle([fire.latitude, fire.longitude], {
     radius: fire.intensity * 50,
     color: "red",
@@ -27,4 +28,12 @@ export function addCircle(map: L.Map, fire: Fire) {
     `Intensité: ${fire.intensity}<br />
     Déclenchement: ${triggerAt}`
   );
+}
+
+export function addSensorCircle(map: L.Map, sensor: Sensor) {
+  L.circle([sensor.latitude, sensor.longitude], {
+    radius: 30,
+    color: "black",
+    fillOpacity: 0.8,
+  }).addTo(map);
 }

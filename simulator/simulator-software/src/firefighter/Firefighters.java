@@ -1,4 +1,9 @@
+package firefighter;
+
+import fireStation.FireStations;
 import org.apache.commons.text.StringEscapeUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URI;
@@ -43,26 +48,28 @@ public class Firefighters {
             // Verify firefighter already exist
             try{
                 request = HttpRequest.newBuilder()
-                        .uri(URI.create("http://localhost:3110/firefighters/"))
+                        .uri(URI.create("http://localhost:3010/firefighters/"))
                         .header("Content-Type", "application/json")
                         .GET()
                         .build();
 
                 response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-                if (response.body().length() > 2) {
+                if (response.statusCode() == 200 && response.body().length() > 2) {
                     System.out.println("Firefighter already exist");
-                    String[] jsonFirefighters = response.body().split("},");
-                    this.firefighters = new Firefighter[jsonFirefighters.length];
+                    JSONArray jsonFirefighters = new JSONArray(response.body());
+                    this.firefighters = new Firefighter[jsonFirefighters.length()];
 
-                    for (int i = 0; i < jsonFirefighters.length; i++) {
-                        String name = jsonFirefighters[i].split(",")[1].split(":")[1];
-                        String cleanName = StringEscapeUtils.unescapeJava(name.split("\"")[1].split("\"")[0].replace("\\", ""));
-                        String dateOfBirth = jsonFirefighters[i].split(",")[2].split(":")[1];
-                        LocalDate cleanDateOfBirth = LocalDate.parse(dateOfBirth.split("\"")[1].split("\"")[0].replace("\\", ""));
-                        String grade = jsonFirefighters[i].split(",")[3].split(":")[1];
-                        String cleanGrade = StringEscapeUtils.unescapeJava(grade.split("\"")[1].split("\"")[0].replace("\\", ""));
-                        int fireStationId = Integer.parseInt(jsonFirefighters[i].split(",")[4].split(":")[1].split("}")[0]);
+                    for (int i = 0; i < jsonFirefighters.length(); i++) {
+                        String name = jsonFirefighters.getJSONObject(i).getString("name");
+                        String dateOfBirth = jsonFirefighters.getJSONObject(i).getString("birthDate");
+                        LocalDate cleanDateOfBirth = LocalDate.parse(dateOfBirth);
+                        String grade = jsonFirefighters.getJSONObject(i).getString("grade");
+
+                        int fireStationId = jsonFirefighters.getJSONObject(i).getInt("fireStationId");
+                        String cleanName = StringEscapeUtils.unescapeJava(name);
+                        String cleanGrade = StringEscapeUtils.unescapeJava(grade);
+
                         this.firefighters[i] = new Firefighter(i, cleanName, cleanDateOfBirth, cleanGrade, fireStations.getFireStations()[fireStationId - 1]);
                         System.out.println("GET Firefighter: " + this.firefighters[i]);
                     }
@@ -77,12 +84,13 @@ public class Firefighters {
 
                         response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-                        String jsObject = response.body();
-                        String name = jsObject.substring(jsObject.indexOf("name") + 7, jsObject.indexOf("address") - 3);
+                        JSONObject jsonFirefighter = new JSONObject(response.body());
+                        String name = jsonFirefighter.getString("name");
+                        String grade = FirefighterGrade.values()[(int) (Math.random() * (FirefighterGrade.values().length - 1)) + 1].toString();
+                        String dateOfBirth = jsonFirefighter.getString("birth_data");
+
                         String cleanName = StringEscapeUtils.unescapeJava(name);
-                        String dateOfBirth = jsObject.substring(jsObject.indexOf("birth_data") + 13, jsObject.indexOf("phone_h") - 3);
                         LocalDate cleanDateOfBirth = LocalDate.parse(dateOfBirth);
-                        String grade = FirefighterGrade.values()[(int) (Math.random() * (3))].toString();
 
                         firefighters[i] = new Firefighter(i, cleanName, cleanDateOfBirth, grade, fireStations.getFireStations()[(int) (Math.random() * (6 - 1)) + 1]);
                         firefighters[i].postFirefighter();

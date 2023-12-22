@@ -6,13 +6,15 @@ const FIRE_URL = `${BASE_API_URL}/fires`;
 export async function getFires(): Promise<Fire[]> {
   try {
     const response = await fetch(FIRE_URL);
+    if (!response.ok) return Promise.resolve([]);
+
     const data = await response.json();
     console.log("Data from server:", data);
     return data;
   } catch (error) {
     console.error("Error fetching data:", error);
   }
-  return [];
+  return Promise.resolve([]);
 }
 
 export async function startFire(fire: NewFire) {

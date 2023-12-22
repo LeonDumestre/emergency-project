@@ -1,3 +1,7 @@
+package firefighter;
+
+import fireStation.FireStation;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -67,7 +71,7 @@ public class Firefighter {
             String json = "{\"id\":" + this.getId() + ",\"name\":\"" + this.getName() + "\",\"birthDate\":\"" + this.getBirthDate() + "\",\"grade\":\"" + this.getGrade() + "\",\"fireStationId\":" + this.getFireStation().getId() + "}";
             System.out.println("POST Firefighter: " + json);
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:3110/firefighters"))
+                    .uri(URI.create("http://localhost:3010/firefighters"))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(json))
                     .build();

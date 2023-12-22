@@ -5,17 +5,21 @@
 <script lang="ts">
 import L from "leaflet";
 import { defineComponent } from "vue";
-import { initMap, addCircle } from "@/utils/map.utils";
+import { initMap, addFireCircle, addSensorCircle } from "@/utils/map.utils";
 import { getFires } from "@/utils/fire.request";
+import { getSensors } from "@/utils/sensor.request";
 
 export default defineComponent({
-  name: "App",
+  name: "FireMap",
 
   async mounted() {
     const map = initMap();
 
+    const sensors = await getSensors();
+    sensors.map((sensor) => addSensorCircle(map, sensor));
+
     const fires = await getFires();
-    fires.map((fire) => addCircle(map, fire));
+    fires.map((fire) => addFireCircle(map, fire));
   },
 
   beforeUnmount() {

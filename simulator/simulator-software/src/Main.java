@@ -1,7 +1,14 @@
+import fireStation.FireStations;
+import firefighter.Firefighters;
+import fire.Fire;
+import truck.Trucks;
+
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.sql.*;
+
+import static java.lang.Thread.sleep;
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -22,8 +29,31 @@ public class Main {
         trucks.initializeTrucks();
 
         //Generate sensors
-        Sensors sensors = new Sensors();
+        sensor.Sensors sensors = new sensor.Sensors();
         sensors.initializeSensors();
+
+        //Generate fires
+        double longitudeTopLeft = 45.788812;
+        double latitudeTopLeft = 4.788779;
+        double longitudeTopRight = 45.788812;
+        double latitudeBottomLeft = 4.893285;
+
+        float fireProbability = 0.1f;
+        int idFire = 0;
+
+        while(true) {
+            if (Math.random() < fireProbability) {
+                //Generate fire
+                double longitude = Math.random() * (longitudeTopRight - longitudeTopLeft) + longitudeTopLeft;
+                double latitude = Math.random() * (latitudeBottomLeft - latitudeTopLeft) + latitudeTopLeft;
+                int intensity = (int) (Math.random() * 10 + 1);
+                Fire fire = new Fire(idFire, longitude, latitude, intensity);
+                //Send fire to the web server
+                fire.postFire();
+                System.out.println("fire.Fire generated: " + fire.toString());
+            }
+            sleep(2000);
+        }
     }
 
     public static void test() throws Exception {
@@ -74,7 +104,7 @@ class Listener extends Thread
                 // wait a while before checking again for new
                 // notifications
 
-                Thread.sleep(500);
+                sleep(500);
             }
         }
         catch (SQLException sqle)
