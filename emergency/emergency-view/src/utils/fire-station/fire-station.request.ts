@@ -1,11 +1,11 @@
 import { BASE_API_URL } from "../common.request";
-import { Fire } from "./fire.model";
+import { FireStation } from "./fire-station.model";
 
-const FIRE_URL = `${BASE_API_URL}/fires`;
+const FIRE_STATION_URL = `${BASE_API_URL}/fire-stations`;
 
-export async function getFires(): Promise<Fire[]> {
+export async function getFireStations(): Promise<FireStation[]> {
   try {
-    const response = await fetch(FIRE_URL);
+    const response = await fetch(FIRE_STATION_URL);
     if (!response.ok) return Promise.resolve([]);
 
     const data = await response.json();

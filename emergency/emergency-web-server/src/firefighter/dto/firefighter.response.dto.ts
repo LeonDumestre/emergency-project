@@ -1,7 +1,7 @@
 import { IsDate, IsNumber, IsString } from "class-validator";
 import { Firefighter } from "../firefighter.entity";
 
-type BaseFirefighterResponse = Omit<Firefighter, "fireStation">;
+export type BaseFirefighterResponse = Omit<Firefighter, "fireStation">;
 
 export type FirefighterResponse = BaseFirefighterResponse & {
   fireStationId: number;

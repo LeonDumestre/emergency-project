@@ -12,5 +12,5 @@ export async function getSensors(): Promise<Sensor[]> {
   } catch (error) {
     console.error("Error fetching data:", error);
   }
-  return [];
+  return Promise.resolve([]);
 }

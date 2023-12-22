@@ -22,13 +22,13 @@ export class FireStationService {
   ) {}
 
   async getFireStations(): Promise<FireStationResponse[]> {
-    const stations = await this.fireStations
+    const fireStations = await this.fireStations
       .createQueryBuilder("fireStation")
       .leftJoinAndSelect("fireStation.firefighters", "firefighters")
       .leftJoinAndSelect("fireStation.trucks", "trucks")
       .leftJoinAndSelect("trucks.type", "type")
       .getMany();
-    return stations.map(this.mapToFireStationResponseDto);
+    return fireStations.map(this.mapToFireStationResponseDto);
   }
 
   async createFireStation(
@@ -58,30 +58,34 @@ export class FireStationService {
     responseDto.name = fireStation.name;
     responseDto.latitude = fireStation.latitude;
     responseDto.longitude = fireStation.longitude;
-    responseDto.firefighters = fireStation.firefighters.map(
-      this.mapToFirefighterResponseDto,
+    responseDto.firefighters = mapToFirefightersResponseDto(
+      fireStation.firefighters,
     );
-    responseDto.trucks = fireStation.trucks.map(this.mapToTruckResponseDto);
+    responseDto.trucks = mapToTrucksResponseDto(fireStation.trucks);
     return responseDto;
   }
+}
 
-  private mapToFirefighterResponseDto(
-    firefighter: Firefighter,
-  ): BaseFirefighterResponseDto {
+function mapToFirefightersResponseDto(
+  firefighters: Firefighter[],
+): BaseFirefighterResponseDto[] {
+  return firefighters.map((firefighter) => {
     const responseDto = new BaseFirefighterResponseDto();
     responseDto.id = firefighter.id;
     responseDto.name = firefighter.name;
     responseDto.birthDate = firefighter.birthDate;
     responseDto.grade = firefighter.grade;
     return responseDto;
-  }
+  });
+}
 
-  private mapToTruckResponseDto(truck: Truck): BaseTruckResponseDto {
+function mapToTrucksResponseDto(trucks: Truck[]): BaseTruckResponseDto[] {
+  return trucks.map((truck) => {
     const responseDto = new BaseTruckResponseDto();
     responseDto.plate = truck.plate;
     responseDto.acquisition = truck.acquisition;
     responseDto.type = truck.type.name;
     responseDto.capacity = truck.type.capacity;
     return responseDto;
-  }
+  });
 }
