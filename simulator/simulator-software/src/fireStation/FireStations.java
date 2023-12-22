@@ -1,11 +1,12 @@
-import org.apache.commons.text.StringEscapeUtils;
+package fireStation;
+
+import org.json.JSONArray;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.time.LocalDate;
 
 public class FireStations {
     private FireStation[] fireStations;
@@ -22,43 +23,39 @@ public class FireStations {
     }
 
     public void initializeFireStations() {
-        // Verify if FireStations already exist
+        // Verify if FireStation.FireStations already exist
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = null;
         HttpResponse<String> response = null;
 
         try{
             request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:3110/fire-stations"))
+                    .uri(URI.create("http://localhost:3010/fire-stations"))
                     .header("Content-Type", "application/json")
                     .GET()
                     .build();
 
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            if (response.body().length() > 2) {
+            if (response.statusCode() == 200 && response.body().length() > 2) {
                 System.out.println("FireStations already exist");
-                String[] jsonFireStations = response.body().split("},");
-                this.fireStations = new FireStation[jsonFireStations.length];
 
-                for (int i = 0; i < jsonFireStations.length; i++) {
-                    int id = Integer.parseInt(jsonFireStations[i].split(",")[0].split(":")[1]);
-                    String name = jsonFireStations[i].split(",")[1].split(":")[1];
-                    double latitude = Double.parseDouble(jsonFireStations[i].split(",")[2].split(":")[1]);
-                    if (i == jsonFireStations.length - 1) {
-                        String longitudeString = jsonFireStations[i].split(",")[3].split(":")[1].split("}")[0];
-                        double longitude = Double.parseDouble(longitudeString);
-                        this.fireStations[i] = new FireStation(id, name, latitude, longitude);
-                    } else {
-                        double longitude = Double.parseDouble(jsonFireStations[i].split(",")[3].split(":")[1]);
-                        this.fireStations[i] = new FireStation(id, name, latitude, longitude);
-                    }
+                JSONArray jsonFireStations = new JSONArray(response.body());
+                this.fireStations = new FireStation[jsonFireStations.length()];
+
+                for (int i = 0; i < jsonFireStations.length(); i++) {
+                    int id = jsonFireStations.getJSONObject(i).getInt("id");
+                    String name = jsonFireStations.getJSONObject(i).getString("name");
+                    double latitude = jsonFireStations.getJSONObject(i).getDouble("latitude");
+                    double longitude = jsonFireStations.getJSONObject(i).getDouble("longitude");
+                    this.fireStations[i] = new FireStation(id, name, latitude, longitude);
+
                     System.out.println("GET FireStation: " + this.fireStations[i].toString());
                 }
             } else{
                 this.fireStations = new FireStation[6];
 
-                // Generate FireStations
+                // Generate FireStation.FireStations
                 this.fireStations[0] = new FireStation(1, "Fire Station 1", 45.778840, 4.878460);
                 this.fireStations[1] = new FireStation(2, "Fire Station 2", 45.762779, 4.843930);
                 this.fireStations[2] = new FireStation(3, "Fire Station 3", 45.746849, 4.825790);

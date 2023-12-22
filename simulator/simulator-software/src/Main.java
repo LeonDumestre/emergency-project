@@ -1,3 +1,8 @@
+import fireStation.FireStations;
+import firefighter.Firefighters;
+import fire.Fire;
+import truck.Trucks;
+
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -24,7 +29,7 @@ public class Main {
         trucks.initializeTrucks();
 
         //Generate sensors
-        Sensors sensors = new Sensors();
+        sensor.Sensors sensors = new sensor.Sensors();
         sensors.initializeSensors();
 
         //Generate fires
@@ -45,9 +50,7 @@ public class Main {
                 Fire fire = new Fire(idFire, longitude, latitude, intensity);
                 //Send fire to the web server
                 fire.postFire();
-
-                idFire++;
-                System.out.println("Fire generated: " + fire.toString());
+                System.out.println("fire.Fire generated: " + fire.toString());
             }
             sleep(2000);
         }

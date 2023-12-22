@@ -1,3 +1,7 @@
+package truck;
+
+import fireStation.FireStation;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -67,7 +71,7 @@ public class Truck {
             String json = "{\"plate\":\"" + this.getPlateNumber() + "\",\"acquisition\":\"" + this.getDateOfAcquisition() + "\",\"type\":\"" + this.getTruckType() + "\",\"fireStationId\":" + this.getFireStation().getId() + "}";
             System.out.println("POST Truck: " + json);
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:3110/trucks"))
+                    .uri(URI.create("http://localhost:3010/trucks"))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(json))
                     .build();
