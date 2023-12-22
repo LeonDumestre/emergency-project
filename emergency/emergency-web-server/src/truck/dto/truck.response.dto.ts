@@ -4,13 +4,16 @@ import { TruckType } from "../truck-type.entity";
 
 export type TruckTypeResponse = Omit<TruckType, "trucks">;
 
-export type TruckResponse = Omit<Truck, "type" | "fireStation"> & {
+type BaseTruckResponse = Omit<Truck, "type" | "fireStation"> & {
   type: string;
   capacity: number;
+};
+
+export type TruckResponse = BaseTruckResponse & {
   fireStationId: number;
 };
 
-export class TruckResponseDto implements TruckResponse {
+export class BaseTruckResponseDto implements BaseTruckResponse {
   @IsString()
   plate: string;
 
@@ -22,7 +25,12 @@ export class TruckResponseDto implements TruckResponse {
 
   @IsNumber()
   capacity: number;
+}
 
+export class TruckResponseDto
+  extends BaseTruckResponseDto
+  implements TruckResponse
+{
   @IsNumber()
   fireStationId: number;
 }
