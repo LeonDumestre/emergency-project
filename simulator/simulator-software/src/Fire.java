@@ -1,10 +1,20 @@
+import java.io.IOException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.Locale;
+
 public class Fire {
     private int id;
-    private int latitude;
-    private int longitude;
+    private double latitude;
+    private double longitude;
     private int intensity;
 
-    public Fire(int id, int latitude, int longitude, int intensity) {
+    public Fire(int id, double latitude, double longitude, int intensity) {
         this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -15,11 +25,11 @@ public class Fire {
         return id;
     }
 
-    public int getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
-    public int getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
@@ -31,16 +41,37 @@ public class Fire {
         this.id = id;
     }
 
-    public void setLatitude(int latitude) {
+    public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
 
-    public void setLongitude(int longitude) {
+    public void setLongitude(double longitude) {
         this.longitude = longitude;
     }
 
     public void setIntensity(int intensity) {
         this.intensity = intensity;
+    }
+
+    public void postFire() {
+    	//Send fire to server
+        LocalDateTime date = LocalDateTime.now();
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ssX");
+        String cleanDate = date.atOffset(java.time.ZoneOffset.UTC).format(dtf);
+        HttpClient client = HttpClient.newHttpClient();
+        String json = "{\"latitude\":" + this.getLatitude() + ",\"longitude\":" + this.getLongitude() + ",\"intensity\":" + this.getIntensity() + ",\"triggerAt\":\"" + cleanDate + "\"}";
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(java.net.URI.create("http://localhost:3010/fires"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(json))
+                .build();
+        System.out.println("POST Fire: " + json);
+        try {
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println("POST Fire: " + response.body());
+        } catch (IOException | InterruptedException e) {
+            System.out.println("POST Fire: " + e.getMessage());
+        }
     }
 
     @Override
