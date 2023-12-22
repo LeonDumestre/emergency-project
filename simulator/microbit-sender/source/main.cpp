@@ -39,7 +39,7 @@
 #include "aes.hpp"
 
 MicroBit uBit;
-uint8_t key[16] = "JeremyCaca";
+uint8_t key[16] = "LaCleAES";
 
 int main()
 {
@@ -71,7 +71,7 @@ int main()
             {
                 AES_ECB_encrypt(&ctx, data + (i * 16));
             }
-            uBit.radio.datagram.send(PacketBuffer(data, strlen(data)));
+            uBit.radio.datagram.send(PacketBuffer(data, 240));
 
             // Réinitialisation du buffer
             memset(data, 0, sizeof(data));

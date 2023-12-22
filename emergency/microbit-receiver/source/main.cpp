@@ -29,7 +29,7 @@
 #include "aes.hpp"
 
 MicroBit uBit;
-uint8_t key[16] = "JeremyCaca";
+uint8_t key[16] = "LaCleAES";
 
 /**
  * Déchiffre le texte passé en paramètre (le texte doit être d'une taille de 240 octets)
@@ -75,10 +75,6 @@ int main()
     uBit.serial.setRxBufferSize(240);
 
     uBit.display.scroll("INIT");
-
-    while(true) {
-        uBit.sleep(50);
-    }
 
     release_fiber();
 }
