@@ -3,7 +3,6 @@ MQTT Smart temperature Sensor
 """
 
 import time
-
 import paho.mqtt.client as mqtt
 from faker import Faker
 
