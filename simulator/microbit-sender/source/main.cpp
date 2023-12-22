@@ -63,6 +63,7 @@ int main()
     {
         if (uBit.serial.rxBufferedSize() > 0)
         {
+            uBit.display.scroll("OUI");
             // Réception du message passé via UART et copie dans une châine de charactère.
             ManagedString s = uBit.serial.readUntil(";");
             strcat((char *)data, (char *)s.toCharArray());
