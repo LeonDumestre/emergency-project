@@ -1,3 +1,5 @@
+package truck;
+
 public enum TruckType {
     FPT("FPT"),
     VSAV("VSAV"),

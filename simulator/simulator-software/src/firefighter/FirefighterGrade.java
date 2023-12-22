@@ -1,3 +1,5 @@
+package firefighter;
+
 public enum FirefighterGrade {
     FIRST_GRADE("1ère classe"),
     SECOND_GRADE("2ème classe"),

@@ -1,3 +1,5 @@
+package sensor;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -29,29 +31,16 @@ public class Sensor {
         this.longitude = longitude;
     }
 
-    public String postSensor(){
+    public String postSensor(String url){
         HttpClient client = HttpClient.newHttpClient();
         String json = "{\"latitude\":" + this.getLatitude() + ",\"longitude\":" + this.getLongitude() + "}";
         System.out.println("POST Sensor: " + json);
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:3110/sensors"))
+                .uri(URI.create(url))
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
 
-        try {
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            System.out.println("POST Sensor: " + response.body());
-            return response.body();
-        } catch (IOException | InterruptedException e) {
-            System.out.println("POST Sensor: " + e.getMessage());
-        }
-
-        request = HttpRequest.newBuilder()
-                .uri(URI.create("http://localhost:3010/sensors"))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(json))
-                .build();
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
             System.out.println("POST Sensor: " + response.body());

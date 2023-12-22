@@ -1,3 +1,5 @@
+package fire;
+
 import java.io.IOException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -54,21 +56,26 @@ public class Fire {
     }
 
     public void postFire() {
-    	//Send fire to server
-        LocalDateTime date = LocalDateTime.now();
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ssX");
-        String cleanDate = date.atOffset(java.time.ZoneOffset.UTC).format(dtf);
         HttpClient client = HttpClient.newHttpClient();
-        String json = "{\"latitude\":" + this.getLatitude() + ",\"longitude\":" + this.getLongitude() + ",\"intensity\":" + this.getIntensity() + ",\"triggerAt\":\"" + cleanDate + "\"}";
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(java.net.URI.create("http://localhost:3010/fires"))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(json))
-                .build();
-        System.out.println("POST Fire: " + json);
+
         try {
+            LocalDateTime date = LocalDateTime.now();
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ssX");
+            String cleanDate = date.atOffset(java.time.ZoneOffset.UTC).format(dtf);
+            String json = "{\"latitude\":" + this.getLatitude() + ",\"longitude\":" + this.getLongitude() + ",\"intensity\":" + this.getIntensity() + ",\"triggerAt\":\"" + cleanDate + "\"}";
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(java.net.URI.create("http://localhost:3110/fires"))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(json))
+                    .build();
+
+            System.out.println("POST Fire: " + json);
+
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
             System.out.println("POST Fire: " + response.body());
+
         } catch (IOException | InterruptedException e) {
             System.out.println("POST Fire: " + e.getMessage());
         }

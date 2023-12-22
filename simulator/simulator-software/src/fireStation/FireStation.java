@@ -1,3 +1,5 @@
+package fireStation;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -56,7 +58,7 @@ public class FireStation {
             String json = "{\"name\":\"" + this.getName() + "\",\"latitude\":" + this.getLatitude() + ",\"longitude\":" + this.getLongitude() + "}";
             System.out.println("POST Firestation: " + json);
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:3110/fire-stations"))
+                    .uri(URI.create("http://localhost:3010/fire-stations"))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(json))
                     .build();
