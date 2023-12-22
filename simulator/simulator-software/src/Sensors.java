@@ -33,7 +33,7 @@ public class Sensors {
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.body().length() > 2) {
-                System.out.println("Sensors already exist");
+                System.out.println("Sensors in EM already exist");
                 String[] jsonSensors = response.body().split("},");
                 this.sensors = new Sensor[jsonSensors.length];
 
@@ -41,24 +41,24 @@ public class Sensors {
                     double latitude = Double.parseDouble(jsonSensors[i].split(",")[0].split(":")[1]);
                     double longitude = Double.parseDouble(jsonSensors[i].split(",")[1].split(":")[1]);
                     this.sensors[i] = new Sensor(latitude, longitude);
-                    System.out.println("GET Sensor: " + this.sensors[i].toString());
+                    System.out.println("GET EM Sensor: " + this.sensors[i].toString());
                 }
             }
             else {
-                System.out.println("Sensors don't exist");
+                System.out.println("Sensors EM don't exist");
                 this.sensors = new Sensor[60];
-                double longitudeGap = 0.0077021;
-                double latitudeGap = 0.0193976;
+                double longitudeGap = 0.0193976;
+                double latitudeGap = 0.0077021;
                 for (int i = 0; i < 6; i++){
                     for (int j = 0; j < 10; j++){
-                        this.sensors[i*10+j] = new Sensor(45.788453 + j*latitudeGap, 4.788435 + i*longitudeGap);
+                        this.sensors[i*10+j] = new Sensor(45.788453 - i*latitudeGap, 4.788435 + j*longitudeGap);
                         this.sensors[i*10+j].postSensor();
                     }
                 }
             }
         }
         catch (IOException | InterruptedException e) {
-            System.out.println("GET Sensors: " + e.getMessage());
+            System.out.println("GET in EM Sensors: " + e.getMessage());
         }
 
         try {
@@ -70,22 +70,41 @@ public class Sensors {
 
             response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            System.out.println(response.body());
+            if ((response.body().length() > 2)) {
+                System.out.println("Sensors in simulator already exist");
+                String[] jsonSensors = response.body().split("},");
+                this.sensors = new Sensor[jsonSensors.length];
 
-            if (!(response.body().length() > 2)) {
-                System.out.println("Sensors don't exist");
+                for (int i = 0; i < jsonSensors.length; i++) {
+                    double latitude = Double.parseDouble(jsonSensors[i].split(",")[1].split(":")[1]);
+                    if (i == jsonSensors.length - 1) {
+                        double longitude = Double.parseDouble(jsonSensors[i].split(",")[2].split(":")[1].split("}")[0]);
+                        this.sensors[i] = new Sensor(latitude, longitude);
+                    } else {
+                        double longitude = Double.parseDouble(jsonSensors[i].split(",")[2].split(":")[1]);
+                        this.sensors[i] = new Sensor(latitude, longitude);
+                    }
+                    System.out.println("GET Simulator Sensor: " + this.sensors[i].toString());
+                }
+            } else {
+                System.out.println("Sensors in simulator don't exist");
                 this.sensors = new Sensor[60];
-                double longitudeGap = 0.0077021;
-                double latitudeGap = 0.0193976;
+                double topLeftCornerLatitude = 45.788812;
+                double topLeftCornerLongitude = 4.788435;
+                double topRightCornerLongitude = 4.900015;
+                double bottomLeftCornerLatitude = 45.711432;
+                double latitudeGap = (topLeftCornerLatitude - bottomLeftCornerLatitude) / 6;
+                double longitudeGap = (topRightCornerLongitude - topLeftCornerLongitude) / 10;
+
                 for (int i = 0; i < 6; i++){
                     for (int j = 0; j < 10; j++){
-                        this.sensors[i*10+j] = new Sensor(45.788453 + j*latitudeGap, 4.788435 + i*longitudeGap);
+                        this.sensors[i*10+j] = new Sensor(topLeftCornerLatitude - i*latitudeGap, topLeftCornerLongitude + j*longitudeGap);
                         this.sensors[i*10+j].postSensor();
                     }
                 }
             }
         } catch (IOException | InterruptedException e) {
-            System.out.println("GET Sensors: " + e.getMessage());
+            System.out.println("GET Simulator Sensors: " + e.getMessage());
         }
     }
 }
