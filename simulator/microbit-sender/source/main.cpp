@@ -71,7 +71,7 @@ int main()
             {
                 AES_ECB_encrypt(&ctx, data + (i * 16));
             }
-            uBit.radio.datagram.send(PacketBuffer(data), strlen(data));
+            uBit.radio.datagram.send(PacketBuffer(data, strlen(data)));
 
             // Réinitialisation du buffer
             memset(data, 0, sizeof(data));
