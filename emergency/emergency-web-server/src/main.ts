@@ -2,7 +2,7 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { ValidationPipe } from "@nestjs/common";
 
-const allowedOrigins = ["http://localhost:3020"];
+const allowedOrigins = ["http://localhost:3010", "http://localhost:3020"];
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
