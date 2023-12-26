@@ -8,8 +8,8 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="pgJ" level="project" />
-    <orderEntry type="library" name="commons-text-1.11.0-sources" level="project" />
-    <orderEntry type="library" name="commons-lang3-3.14.0-sources" level="project" />
     <orderEntry type="library" name="JSON Java " level="project" />
+    <orderEntry type="library" name="commons-lang3-3.14.0-sources" level="project" />
+    <orderEntry type="library" name="commons-text-1.11.0-sources" level="project" />
   </component>
 </module>
