@@ -58,7 +58,7 @@ if __name__ == '__main__':
         print("Server started")
         while ser.isOpen():
             try:
-                sendUARTMessage("a")
+                sendUARTMessage("a;")
 
             except Exception as e:
                 print("Error while reading from serial port: {}".format(e))

@@ -1,49 +1,8 @@
-// #include "MicroBit.h"
-// #include "crypt.hpp"
-// #include <string>
-
-// MicroBit uBit;
-
-// const uint8_t key[16] = { 0x2b, 0x7e, 0x15, 0x16, 0x28, 0xae, 0xd2, 0xa6, 0xab, 0xf7, 0x15, 0x88, 0x09, 0xcf, 0x4f, 0x3c };
-// const int ONE_SECOND_IN_MS = 1000;
-
-// string serial_msg;
-
-// void transit(const char* input){
-//     uBit.radio.datagram.send(encrypt((char*)input, (uint8_t*)key));
-// }
-
-// void onSerialReceive(MicroBitEvent) {
-//     serial_msg = uBit.serial.readUntil("~").toCharArray();
-//     serial_msg.erase(remove(serial_msg.begin(), serial_msg.end(), '~'), serial_msg.end());
-//     transit(serial_msg.c_str());
-//     uBit.serial.printf("#");
-// }
-
-
-// int main() {
-//     uBit.init();
-
-//     uBit.serial.setRxBufferSize(255);
-//     uBit.serial.eventOn("~");
-
-//     uBit.messageBus.listen(MICROBIT_ID_SERIAL, MICROBIT_SERIAL_EVT_DELIM_MATCH, onSerialReceive);
-    
-//     uBit.radio.enable();
-//     uBit.radio.setGroup(28);
-
-//     while(true) {
-//         uBit.sleep(1 * ONE_SECOND_IN_MS);
-//     }
-
-//     release_fiber();
-// }
-
 #include "MicroBit.h"
 #include "aes.hpp"
 
 MicroBit uBit;
-uint8_t key[16] = "Jeremy";
+uint8_t key[16] = "LaCleAES";
 
 int main()
 {
@@ -59,10 +18,13 @@ int main()
     uint8_t data[240] = "";
     memset(data, 0, sizeof(data));
 
+    uBit.display.scroll("INIT");
+
     while (true)
     {
         if (uBit.serial.rxBufferedSize() > 0)
         {
+            uBit.display.scroll("S");
             // Réception du message passé via UART et copie dans une châine de charactère.
             ManagedString s = uBit.serial.readUntil(";");
             strcat((char *)data, (char *)s.toCharArray());
@@ -72,7 +34,7 @@ int main()
             {
                 AES_ECB_encrypt(&ctx, data + (i * 16));
             }
-            uBit.radio.datagram.send((char *)data);
+            uBit.radio.datagram.send(PacketBuffer(data, 240));
 
             // Réinitialisation du buffer
             memset(data, 0, sizeof(data));

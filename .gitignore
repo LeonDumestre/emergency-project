@@ -188,3 +188,7 @@ dist
 postgres-data/
 
 .vscode
+
+# Microbit
+yotta_modules/
+yotta_targets/
