@@ -16,8 +16,10 @@ export class FireService {
     return this.fires.find();
   }
 
-  async getFire(id: Fire["id"]): Promise<Fire[]> {
-    return this.fires.find({ where: { id } });
+  async getFire(id: Fire["id"]): Promise<Fire> {
+    const existingFire = await this.fires.findOne({ where: { id } });
+    if (!existingFire) throw new Error(`Fire #${id} does not exist`);
+    return existingFire;
   }
 
   async startFire(fire: CreateFire): Promise<Fire> {
@@ -25,20 +27,22 @@ export class FireService {
     return this.fires.save(newFire);
   }
 
+  async updateIntensity(id: number, intensity: number): Promise<Fire> {
+    const existingFire = await this.getFire(id);
+
+    existingFire.intensity = intensity;
+    return this.fires.save(existingFire);
+  }
+
   async updateFire(fire: UpdateFire): Promise<Fire> {
-    const condition = { where: { id: fire.id } };
-    const existingFire = await this.fires.findOne(condition);
-    if (!existingFire) throw new Error(`Fire #${fire.id} does not exist`);
+    const existingFire = await this.getFire(fire.id);
 
     const fireToUpdate = { ...existingFire, ...fire };
     return this.fires.save(fireToUpdate);
   }
 
   async deleteFire(id: number): Promise<void> {
-    const condition = { where: { id } };
-    const existingFire = await this.fires.findOne(condition);
-    if (!existingFire) throw new Error(`Fire #${id} does not exist`);
-
+    const existingFire = await this.getFire(id);
     await this.fires.remove(existingFire);
   }
 }

@@ -13,6 +13,7 @@ import { FireService } from "./fire.service";
 import { CreateFireRequestDto } from "./dto/create-fire.request.dto";
 import { FireResponseDto } from "./dto/fire.response.dto";
 import { UpdateFireRequestDto } from "./dto/update-fire.request.dto";
+import { UpdateIntensityRequestDto } from "./dto/update-intensity.request.dto";
 
 @Controller("fires")
 export class FireController {
@@ -24,13 +25,21 @@ export class FireController {
   }
 
   @Get(":id")
-  getFire(@Param("id", ParseIntPipe) id: number): Promise<FireResponseDto[]> {
+  getFire(@Param("id", ParseIntPipe) id: number): Promise<FireResponseDto> {
     return this.fireService.getFire(id);
   }
 
   @Post()
   startFire(@Body() fire: CreateFireRequestDto): Promise<FireResponseDto> {
     return this.fireService.startFire(fire);
+  }
+
+  @Post(":id/intensity")
+  updateIntensity(
+    @Param("id", ParseIntPipe) id: number,
+    @Body() { intensity }: UpdateIntensityRequestDto,
+  ): Promise<FireResponseDto> {
+    return this.fireService.updateIntensity(id, intensity);
   }
 
   @Patch(":id")
