@@ -15,8 +15,8 @@ export class SensorService {
     return this.sensors.find();
   }
 
-  createFirefighter(sensor: CreateSensor): Promise<Sensor> {
-    const createdFirefighter = this.sensors.create(sensor);
-    return this.sensors.save(createdFirefighter);
+  createSensor(sensor: CreateSensor): Promise<Sensor> {
+    const createdSensor = this.sensors.create(sensor);
+    return this.sensors.save(createdSensor);
   }
 }

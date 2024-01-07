@@ -16,6 +16,6 @@ export class SensorController {
   createSensor(
     @Body() sensor: CreateSensorRequestDto,
   ): Promise<SensorResponseDto> {
-    return this.sensorService.createFirefighter(sensor);
+    return this.sensorService.createSensor(sensor);
   }
 }

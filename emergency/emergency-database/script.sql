@@ -64,12 +64,12 @@ CREATE TABLE victim(
 );
 
 CREATE TABLE fire(
-   id INT,
+   id SERIAL PRIMARY KEY,
    latitude double precision,
-   longitude double precision,
-   PRIMARY KEY(id)
+   longitude double precision
 );
 
+-- je comprends pas à quoi sert cette table alors qu'il y a celle en dessous qui existe
 CREATE TABLE operation_truck_status(
    id_operation VARCHAR(50),
    plate VARCHAR(20),
