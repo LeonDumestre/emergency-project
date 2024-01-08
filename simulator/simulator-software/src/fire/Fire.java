@@ -1,20 +1,15 @@
 package fire;
 
-import java.io.IOException;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.Locale;
-
 public class Fire {
-    private int id;
-    private double latitude;
-    private double longitude;
+    private final int id;
+    private final double latitude;
+    private final double longitude;
     private int intensity;
+    private final static float generationProbability = 0.05f;
+    private final static double topLeftCornerLatitude = 45.788812;
+    private final static double topLeftCornerLongitude = 4.8;
+    private final static double latitudeGap = 0.008;
+    private final static double longitudeGap = 0.01;
 
     public Fire(int id, double latitude, double longitude, int intensity) {
         this.id = id;
@@ -27,57 +22,30 @@ public class Fire {
         return id;
     }
 
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
     public int getIntensity() {
         return intensity;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
     }
 
     public void setIntensity(int intensity) {
         this.intensity = intensity;
     }
 
-    public void postFire() {
-        HttpClient client = HttpClient.newHttpClient();
+    public static Fire generate() {
+        if (Math.random() < generationProbability) {
+            double latitude = topLeftCornerLatitude - Math.random() * 9 * latitudeGap;
+            double longitude = topLeftCornerLongitude + Math.random() * 12 * longitudeGap;
 
-        try {
-            LocalDateTime date = LocalDateTime.now();
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ssX");
-            String cleanDate = date.atOffset(java.time.ZoneOffset.UTC).format(dtf);
-            String json = "{\"latitude\":" + this.getLatitude() + ",\"longitude\":" + this.getLongitude() + ",\"intensity\":" + this.getIntensity() + ",\"triggerAt\":\"" + cleanDate + "\"}";
+            return FireRepository.createFire(latitude, longitude, 1);
+        }
+        return null;
+    }
 
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(java.net.URI.create("http://localhost:3110/fires"))
-                    .header("Content-Type", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(json))
-                    .build();
+    public void increaseIntensity() {
+        float increaseProbability = 0.05f;
 
-            System.out.println("POST Fire: " + json);
-
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-            System.out.println("POST Fire: " + response.body());
-
-        } catch (IOException | InterruptedException e) {
-            System.out.println("POST Fire: " + e.getMessage());
+        if (this.intensity < 9 && Math.random() < increaseProbability) {
+            this.setIntensity(this.getIntensity() + 1);
+            FireRepository.updateIntensity(this.id, this.intensity);
         }
     }
 

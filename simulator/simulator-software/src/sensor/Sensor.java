@@ -31,7 +31,7 @@ public class Sensor {
         this.longitude = longitude;
     }
 
-    public String postSensor(String url){
+    public String postSensor(String url) {
         HttpClient client = HttpClient.newHttpClient();
         String json = "{\"latitude\":" + this.getLatitude() + ",\"longitude\":" + this.getLongitude() + "}";
         System.out.println("POST Sensor: " + json);

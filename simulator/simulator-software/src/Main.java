@@ -1,57 +1,45 @@
-import fireStation.FireStations;
-import firefighter.Firefighters;
 import fire.Fire;
-import truck.Trucks;
+import fireStation.FireStation;
+import fireStation.FireStationInitializer;
+import firefighter.Firefighter;
+import firefighter.FirefighterInitializer;
+import sensor.Sensor;
+import sensor.SensorInitializer;
+import truck.Truck;
+import truck.TruckInitializer;
 
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.lang.Thread.sleep;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = null;
-        HttpResponse<String> response = null;
-
         //Generate fire stations
-        FireStations fireStations = new FireStations();
-        fireStations.initializeFireStations();
+        FireStation[] fireStations = FireStationInitializer.initialize();
 
         //Generate firefighters
-        Firefighters firefighters = new Firefighters(fireStations);
-        firefighters.initializeFirefighters();
+        Firefighter[] firefighters = FirefighterInitializer.initialize(fireStations);
 
         //Generate trucks
-        Trucks trucks = new Trucks(fireStations);
-        trucks.initializeTrucks();
+        Truck[] trucks = TruckInitializer.initialize(fireStations);
 
         //Generate sensors
-        sensor.Sensors sensors = new sensor.Sensors();
-        sensors.initializeSensors();
+        Sensor[] sensors = SensorInitializer.initialize();
 
         //Generate fires
-        Fire[] fires = new Fire[0];
-        double topLeftCornerLatitude = 45.788812;
-        double topLeftCornerLongitude = 4.8;
-        double latitudeGap = 0.008;
-        double longitudeGap = 0.01;
+        List<Fire> fires = new ArrayList<>();
 
-        float fireProbability = 0.05f;
-        int idFire = 0;
+        while (true) {
+            Fire newFire = Fire.generate();
+            if (newFire != null) fires.add(newFire);
 
-        while(true) {
-            if (Math.random() < fireProbability) {
-                //Generate fire
-                double latitude = topLeftCornerLatitude - (double) (Math.random() * 9) * latitudeGap;
-                double longitude = topLeftCornerLongitude + (double) (Math.random() * 12) * longitudeGap;
-
-                fires[idFire] = new Fire(idFire, latitude, longitude, 1);
-
-                //Send fire to the web server
-                fires[idFire].postFire();
+            for (Fire fire : fires) {
+                fire.increaseIntensity();
             }
             sleep(3000);
         }
@@ -108,13 +96,9 @@ class Listener extends Thread
                 sleep(500);
             }
         }
-        catch (SQLException sqle)
+        catch (SQLException | InterruptedException err)
         {
-            sqle.printStackTrace();
-        }
-        catch (InterruptedException ie)
-        {
-            ie.printStackTrace();
+            err.printStackTrace();
         }
     }
 }
