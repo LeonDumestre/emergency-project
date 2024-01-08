@@ -1,7 +1,9 @@
 import { IsNumber } from "class-validator";
 import { Sensor } from "../sensor.entity";
 
-export class SensorResponseDto implements Sensor {
+export type SensorResponse = Pick<Sensor, "id" | "latitude" | "longitude">;
+
+export class SensorResponseDto implements SensorResponse {
   @IsNumber()
   id: number;
 

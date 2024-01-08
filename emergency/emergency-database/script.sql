@@ -16,10 +16,9 @@ CREATE TABLE sensor(
 );
 
 CREATE TABLE operation(
-   id_operation VARCHAR(50),
+   id SERIAL PRIMARY KEY,
    start_date TIMESTAMP,
    end_date TIMESTAMP,
-   PRIMARY KEY(id_operation)
 );
 
 CREATE TABLE firefighter(
@@ -57,10 +56,9 @@ CREATE TABLE truck(
 );
 
 CREATE TABLE victim(
-   id_victim INT,
+   id_victim SERIAL PRIMARY KEY,
    name VARCHAR(50),
    status VARCHAR(3),
-   PRIMARY KEY(id_victim)
 );
 
 CREATE TABLE fire(
@@ -71,46 +69,46 @@ CREATE TABLE fire(
 
 -- je comprends pas à quoi sert cette table alors qu'il y a celle en dessous qui existe
 CREATE TABLE operation_truck_status(
-   id_operation VARCHAR(50),
+   id_operation INT,
    plate VARCHAR(20),
    time_stamp TIMESTAMP,
    status VARCHAR(50),
    PRIMARY KEY(id_operation, plate),
-   FOREIGN KEY(id_operation) REFERENCES operation(id_operation),
+   FOREIGN KEY(id_operation) REFERENCES operation(id),
    FOREIGN KEY(plate) REFERENCES truck(plate)
 );
 
 CREATE TABLE operation_firefighter_truck(
-   id_operation VARCHAR(50),
+   id_operation INT,
    id_firefighter INT,
    plate VARCHAR(20),
    PRIMARY KEY(id_operation, id_firefighter, plate),
-   FOREIGN KEY(id_operation) REFERENCES operation(id_operation),
+   FOREIGN KEY(id_operation) REFERENCES operation(id),
    FOREIGN KEY(id_firefighter) REFERENCES firefighter(id),
    FOREIGN KEY(plate) REFERENCES truck(plate)
 );
 
 CREATE TABLE operation_sensor(
    id_sensor INT,
-   id_operation VARCHAR(50),
+   id_operation INT,
    PRIMARY KEY(id_sensor, id_operation),
    FOREIGN KEY(id_sensor) REFERENCES sensor(id),
-   FOREIGN KEY(id_operation) REFERENCES operation(id_operation)
+   FOREIGN KEY(id_operation) REFERENCES operation(id)
 );
 
 CREATE TABLE victim_operation(
-   id_operation VARCHAR(50),
+   id_operation INT,
    id_victim INT,
    PRIMARY KEY(id_operation, id_victim),
-   FOREIGN KEY(id_operation) REFERENCES operation(id_operation),
-   FOREIGN KEY(id_victim) REFERENCES victim(id_victim)
+   FOREIGN KEY(id_operation) REFERENCES operation(id),
+   FOREIGN KEY(id_victim) REFERENCES victim(id)
 );
 
 CREATE TABLE fire_operation(
-   id_operation VARCHAR(50),
+   id_operation INT,
    id_fire INT,
    PRIMARY KEY(id_operation, id_fire),
-   FOREIGN KEY(id_operation) REFERENCES operation(id_operation),
+   FOREIGN KEY(id_operation) REFERENCES operation(id),
    FOREIGN KEY(id_fire) REFERENCES fire(id)
 );
 
@@ -121,7 +119,7 @@ BEGIN
   -- Utilisez TG_OP pour obtenir le type d'opération (INSERT, UPDATE, DELETE)
   IF TG_OP = 'INSERT' THEN
     -- Envoyer une notification avec le nom de la nouvelle opération
-    PERFORM pg_notify('new_operation', NEW.id_operation::text);
+    PERFORM pg_notify('new_operation', NEW.id::text);
   END IF;
   RETURN NEW;
 END;

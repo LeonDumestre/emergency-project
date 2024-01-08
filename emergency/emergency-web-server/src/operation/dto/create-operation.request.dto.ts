@@ -1,7 +1,7 @@
 import { IsDateString, IsNotEmpty, IsNumber } from "class-validator";
+import { Operation } from "../operation.entity";
 
-export type CreateOperation = {
-  start: Date;
+export type CreateOperation = Pick<Operation, "start"> & {
   fire: number;
   firefighters: number[];
   trucks: string[];

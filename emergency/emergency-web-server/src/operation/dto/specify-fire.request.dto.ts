@@ -1,9 +1,16 @@
 import { IsNotEmpty, IsNumber } from "class-validator";
-import { Sensor } from "../sensor.entity";
 
-export type CreateSensor = Pick<Sensor, "latitude" | "longitude">;
+export type SpecifyFire = {
+  id: number;
+  latitude: number;
+  longitude: number;
+};
 
-export class CreateSensorRequestDto implements CreateSensor {
+export class SpecifyFireRequestDto implements SpecifyFire {
+  @IsNotEmpty({ message: "id is required" })
+  @IsNumber()
+  id: number;
+
   @IsNotEmpty({ message: "latitude is required" })
   @IsNumber()
   latitude: number;
