@@ -67,17 +67,6 @@ CREATE TABLE fire(
    longitude double precision
 );
 
--- je comprends pas à quoi sert cette table alors qu'il y a celle en dessous qui existe
-CREATE TABLE operation_truck_status(
-   id_operation INT,
-   plate VARCHAR(20),
-   time_stamp TIMESTAMP,
-   status VARCHAR(50),
-   PRIMARY KEY(id_operation, plate),
-   FOREIGN KEY(id_operation) REFERENCES operation(id),
-   FOREIGN KEY(plate) REFERENCES truck(plate)
-);
-
 CREATE TABLE operation_firefighter_truck(
    id_operation INT,
    id_firefighter INT,
@@ -86,14 +75,6 @@ CREATE TABLE operation_firefighter_truck(
    FOREIGN KEY(id_operation) REFERENCES operation(id),
    FOREIGN KEY(id_firefighter) REFERENCES firefighter(id),
    FOREIGN KEY(plate) REFERENCES truck(plate)
-);
-
-CREATE TABLE operation_sensor(
-   id_sensor INT,
-   id_operation INT,
-   PRIMARY KEY(id_sensor, id_operation),
-   FOREIGN KEY(id_sensor) REFERENCES sensor(id),
-   FOREIGN KEY(id_operation) REFERENCES operation(id)
 );
 
 CREATE TABLE victim_operation(
