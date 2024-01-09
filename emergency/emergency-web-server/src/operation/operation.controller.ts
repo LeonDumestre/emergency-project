@@ -5,6 +5,7 @@ import {
   Get,
   HttpCode,
   Param,
+  ParseIntPipe,
   Post,
 } from "@nestjs/common";
 import { OperationService } from "./operation.service";
@@ -29,26 +30,28 @@ export class OperationController {
   }
 
   @Post(":id/live/on-site")
-  onSite(@Param("id") id: number): Promise<OperationResponseDto> {
+  onSite(@Param("id", ParseIntPipe) id: number): Promise<OperationResponseDto> {
     return this.operationService.onSite(id);
   }
 
   @Post(":id/live/reinforcement")
   askReinforcements(
-    @Param("id") id: number,
+    @Param("id", ParseIntPipe) id: number,
     @Body() reinforcements: AskReinforcementRequestDto[],
   ): Promise<OperationResponseDto> {
     return this.operationService.askReinforcements(id, reinforcements);
   }
 
   @Post(":id/live/on-return")
-  onReturn(@Param("id") id: number): Promise<OperationResponseDto> {
+  onReturn(
+    @Param("id", ParseIntPipe) id: number,
+  ): Promise<OperationResponseDto> {
     return this.operationService.onReturn(id);
   }
 
   @Delete(":id")
   @HttpCode(204)
-  remove(@Param("id") id: number) {
+  remove(@Param("id", ParseIntPipe) id: number) {
     return this.operationService.remove(id);
   }
 }
