@@ -18,7 +18,7 @@ CREATE TABLE sensor(
 CREATE TABLE operation(
    id SERIAL PRIMARY KEY,
    start_date TIMESTAMP,
-   end_date TIMESTAMP,
+   end_date TIMESTAMP
 );
 
 CREATE TABLE firefighter(
@@ -58,7 +58,7 @@ CREATE TABLE truck(
 CREATE TABLE victim(
    id_victim SERIAL PRIMARY KEY,
    name VARCHAR(50),
-   status VARCHAR(3),
+   status VARCHAR(3)
 );
 
 CREATE TABLE fire(
@@ -82,7 +82,7 @@ CREATE TABLE victim_operation(
    id_victim INT,
    PRIMARY KEY(id_operation, id_victim),
    FOREIGN KEY(id_operation) REFERENCES operation(id),
-   FOREIGN KEY(id_victim) REFERENCES victim(id)
+   FOREIGN KEY(id_victim) REFERENCES victim(id_victim)
 );
 
 CREATE TABLE fire_operation(
