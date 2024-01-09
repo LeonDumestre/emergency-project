@@ -6,8 +6,6 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
-  ManyToMany,
-  JoinTable,
 } from "typeorm";
 
 @Entity("firefighter")
@@ -28,17 +26,7 @@ export class Firefighter {
   @JoinColumn({ name: "id_fire_station" })
   fireStation: FireStation;
 
-  @ManyToMany(() => Operation, (operation) => operation.firefighters)
-  @JoinTable({
-    name: "operation_firefighter_truck",
-    joinColumn: {
-      name: "id_firefighter",
-      referencedColumnName: "id",
-    },
-    inverseJoinColumn: {
-      name: "id_operation",
-      referencedColumnName: "id",
-    },
-  })
-  operations: Operation[];
+  @ManyToOne(() => Operation, (operation) => operation.firefighters)
+  @JoinColumn({ name: "id_operation" })
+  operation: Operation;
 }

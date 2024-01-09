@@ -9,7 +9,7 @@ CREATE TABLE fire_station(
    longitude double precision
 );
 
-CREATE TABLE sensor(
+CREATE TABLE fire(
    id SERIAL PRIMARY KEY,
    latitude double precision,
    longitude double precision
@@ -18,7 +18,9 @@ CREATE TABLE sensor(
 CREATE TABLE operation(
    id SERIAL PRIMARY KEY,
    start_date TIMESTAMP,
-   end_date TIMESTAMP
+   end_date TIMESTAMP,
+   id_fire INT,
+   FOREIGN KEY(id_fire) REFERENCES fire(id)
 );
 
 CREATE TABLE firefighter(
@@ -27,16 +29,9 @@ CREATE TABLE firefighter(
    birthdate DATE,
    grade VARCHAR(50),
    id_fire_station INT,
-   FOREIGN KEY(id_fire_station) REFERENCES fire_station(id)
-);
-
-CREATE TABLE availability(
-   id_availability INT,
-   start_date DATE,
-   end_date DATE,
-   id_firefighter INT,
-   PRIMARY KEY(id_availability),
-   FOREIGN KEY(id_firefighter) REFERENCES firefighter(id)
+   id_operation INT,
+   FOREIGN KEY(id_fire_station) REFERENCES fire_station(id),
+   FOREIGN KEY(id_operation) REFERENCES operation(id)
 );
 
 CREATE TABLE truck_type(
@@ -50,47 +45,11 @@ CREATE TABLE truck(
    acquisition DATE,
    truck_type VARCHAR(50),
    id_fire_station INT,
+   id_operation INT,
    PRIMARY KEY(plate),
    FOREIGN KEY(truck_type) REFERENCES truck_type(truck_type),
-   FOREIGN KEY(id_fire_station) REFERENCES fire_station(id)
-);
-
-CREATE TABLE victim(
-   id_victim SERIAL PRIMARY KEY,
-   name VARCHAR(50),
-   status VARCHAR(3)
-);
-
-CREATE TABLE fire(
-   id SERIAL PRIMARY KEY,
-   latitude double precision,
-   longitude double precision
-);
-
-CREATE TABLE operation_firefighter_truck(
-   id_operation INT,
-   id_firefighter INT,
-   plate VARCHAR(20),
-   PRIMARY KEY(id_operation, id_firefighter, plate),
-   FOREIGN KEY(id_operation) REFERENCES operation(id),
-   FOREIGN KEY(id_firefighter) REFERENCES firefighter(id),
-   FOREIGN KEY(plate) REFERENCES truck(plate)
-);
-
-CREATE TABLE victim_operation(
-   id_operation INT,
-   id_victim INT,
-   PRIMARY KEY(id_operation, id_victim),
-   FOREIGN KEY(id_operation) REFERENCES operation(id),
-   FOREIGN KEY(id_victim) REFERENCES victim(id_victim)
-);
-
-CREATE TABLE fire_operation(
-   id_operation INT,
-   id_fire INT,
-   PRIMARY KEY(id_operation, id_fire),
-   FOREIGN KEY(id_operation) REFERENCES operation(id),
-   FOREIGN KEY(id_fire) REFERENCES fire(id)
+   FOREIGN KEY(id_fire_station) REFERENCES fire_station(id),
+   FOREIGN KEY(id_operation) REFERENCES operation(id)
 );
 
 -- Création d'un trigger pour envoyer une notification lors de l'insertion dans la table operation

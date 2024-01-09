@@ -5,7 +5,6 @@ import { Repository } from "typeorm";
 import { CreateOperation } from "./dto/create-operation.request.dto";
 import { Fire } from "src/fire/fire.entity";
 import { Firefighter } from "src/firefighter/firefighter.entity";
-import { Sensor } from "src/sensor/sensor.entity";
 import { Truck } from "src/truck/truck.entity";
 import { OperationResponse } from "./dto/operation.response.dto";
 import { AskReinforcement } from "./dto/ask-reinforcement.request.dto";
@@ -20,8 +19,6 @@ export class OperationService {
     private readonly fires: Repository<Fire>,
     @InjectRepository(Firefighter)
     private readonly firefighters: Repository<Firefighter>,
-    @InjectRepository(Sensor)
-    private readonly sensors: Repository<Sensor>,
     @InjectRepository(Truck)
     private readonly trucks: Repository<Truck>,
   ) {}
@@ -37,10 +34,6 @@ export class OperationService {
 
     operation.firefighters.map(async (firefighterId) => {
       await this.checkFirefighter(firefighterId);
-    });
-
-    operation.sensors.map(async (sensorId) => {
-      await this.checkSensor(sensorId);
     });
 
     operation.trucks.map(async (truckPlate) => {
@@ -83,13 +76,6 @@ export class OperationService {
   private async checkFirefighter(id: number) {
     const firefigther = await this.firefighters.findOne({ where: { id } });
     if (!firefigther) throw new Error(`Firefighter #${id} does not exist`);
-  }
-
-  private async checkSensor(id: number) {
-    const sensor = await this.sensors.findOne({
-      where: { id },
-    });
-    if (!sensor) throw new Error(`Sensor #${id} does not exist`);
   }
 
   private async checkTruck(plate: string) {
