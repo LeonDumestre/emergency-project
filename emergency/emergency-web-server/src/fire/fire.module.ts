@@ -8,5 +8,6 @@ import { Fire } from "./fire.entity";
   imports: [TypeOrmModule.forFeature([Fire])],
   controllers: [FireController],
   providers: [FireService],
+  exports: [FireService],
 })
 export class FireModule {}

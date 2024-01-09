@@ -12,16 +12,26 @@ CREATE TABLE fire_station(
 CREATE TABLE fire(
    id SERIAL PRIMARY KEY,
    latitude double precision NOT NULL,
-   longitude double precision NOT NULL
+   longitude double precision NOT NULL,
+   id_operation INT
 );
+
+CREATE TYPE operation_status AS ENUM ('ON_ROAD', 'ON_SITE', 'ON_RETURN');
 
 CREATE TABLE operation(
    id SERIAL PRIMARY KEY,
    start_date TIMESTAMP NOT NULL,
-   end_date TIMESTAMP,
-   id_fire INT NOT NULL,
-   FOREIGN KEY(id_fire) REFERENCES fire(id)
+   status operation_status NOT NULL,
+   id_fire INT NOT NULL
 );
+
+ALTER TABLE fire
+   ADD CONSTRAINT fire_id_operation_fk
+   FOREIGN KEY (id_operation) REFERENCES operation(id);
+
+ALTER TABLE operation
+   ADD CONSTRAINT operation_id_fire_fk
+   FOREIGN KEY (id_fire) REFERENCES fire(id);
 
 CREATE TABLE firefighter(
    id SERIAL PRIMARY KEY,

@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { Firefighter } from "./firefighter.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
@@ -26,6 +26,14 @@ export class FirefighterService {
     return firefighters.map(this.mapToFirefighterResponseDto);
   }
 
+  async getRawFirefighter(id: number): Promise<Firefighter> {
+    const firefighter = await this.firefighters.findOne({ where: { id } });
+    if (!firefighter) {
+      throw new NotFoundException(`Firefighter #${id} does not exist`);
+    }
+    return firefighter;
+  }
+
   async createFirefighter(
     firefighter: CreateFirefighter,
   ): Promise<FirefighterResponse> {
@@ -34,7 +42,9 @@ export class FirefighterService {
       where: { id: fireStationId },
     });
     if (!fireStation) {
-      throw new Error(`Fire station #${fireStationId} does not exist`);
+      throw new NotFoundException(
+        `Fire station #${fireStationId} does not exist`,
+      );
     }
 
     const createdFirefighter = this.firefighters.create({

@@ -10,5 +10,6 @@ import { FireStation } from "src/fire-station/fire-station.entity";
   imports: [TypeOrmModule.forFeature([Truck, TruckType, FireStation])],
   controllers: [TruckController],
   providers: [TruckService],
+  exports: [TruckService],
 })
 export class TruckModule {}
