@@ -1,5 +1,7 @@
 package fire;
 
+import operation.Operation;
+import operation.OperationRepository;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -102,6 +104,31 @@ public class FireRepository {
         } catch (IOException | InterruptedException e) {
             System.out.println("POST Fire Intensity Response: " + e.getMessage());
         }
+    }
+
+    public static Operation getOperationByFire(int id) {
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request;
+        HttpResponse<String> response;
+
+        try{
+            request = HttpRequest.newBuilder()
+                    .uri(java.net.URI.create(emergencyUrl + "/" + id + "/operation"))
+                    .header("Content-Type", "application/json")
+                    .GET()
+                    .build();
+
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200) {
+                System.out.println("GET Emergency Operation: " + response.body());
+                JSONObject jsonOperation = new JSONObject(response.body());
+                return OperationRepository.parseOperation(jsonOperation);
+            }
+        } catch (IOException | InterruptedException e) {
+            System.out.println("GET Emergency Operation: " + e.getMessage());
+        }
+        return null;
     }
 
 }

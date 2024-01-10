@@ -16,5 +16,6 @@ import { TruckModule } from "src/truck/truck.module";
   ],
   controllers: [OperationController],
   providers: [OperationService],
+  exports: [OperationService],
 })
 export class OperationModule {}

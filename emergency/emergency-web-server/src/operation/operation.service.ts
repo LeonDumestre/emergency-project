@@ -9,7 +9,7 @@ import {
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { CreateOperation } from "./dto/create-operation.request.dto";
-import { OperationResponse } from "./dto/operation.response.dto";
+import { OperationResponse, OperationResponseDto } from "./dto/operation.response.dto";
 import { AskReinforcement } from "./dto/ask-reinforcement.request.dto";
 import { FireService } from "src/fire/fire.service";
 import { FirefighterService } from "src/firefighter/firefighter.service";
@@ -86,5 +86,13 @@ export class OperationService {
 
   remove(id: number) {
     this.operations.delete(id);
+  }
+
+  mapToOperationResponseDto(operation: Operation): OperationResponse {
+    const responseDto = new OperationResponseDto();
+    responseDto.id = operation.id;
+    responseDto.start = operation.start;
+    responseDto.status = operation.status;
+    return responseDto;
   }
 }

@@ -1,25 +1,33 @@
 package operation;
 
 import fire.Fire;
+import firefighter.Firefighter;
+import truck.Truck;
 
 import java.time.LocalDateTime;
 
 public class Operation {
-    private int id;
-    private LocalDateTime start;
+    private final int id;
+    private final LocalDateTime start;
     private OperationStatus status;
-    private int fireId;
-    private int[] firefighterIds;
-    private String[] trucksPlates;
+    private Fire fire;
+    private Firefighter[] firefighters;
+    private Truck[] trucks;
     private LocalDateTime returnStart;
 
-    public Operation(int id, LocalDateTime start, OperationStatus status, int fireId, int[] firefighterIds, String[] trucksPlates) {
+    public Operation(int id, LocalDateTime start, OperationStatus status) {
         this.id = id;
         this.start = start;
         this.status = status;
-        this.fireId = fireId;
-        this.firefighterIds = firefighterIds;
-        this.trucksPlates = trucksPlates;
+    }
+
+    public Operation(int id, LocalDateTime start, OperationStatus status, Fire fire, Firefighter[] firefighters, Truck[] trucks) {
+        this.id = id;
+        this.start = start;
+        this.status = status;
+        this.fire = fire;
+        this.firefighters = firefighters;
+        this.trucks = trucks;
     }
 
     public int getId() {
@@ -34,38 +42,58 @@ public class Operation {
         return status;
     }
 
-    public int getFireId() {
-        return fireId;
+    public Fire getFire() {
+        return fire;
+    }
+    public void setFire(Fire fire) {
+        this.fire = fire;
     }
 
-    public int[] getFirefighterIds() {
-        return firefighterIds;
+    public Firefighter[] getFirefighters() {
+        return firefighters;
     }
 
-    public String[] getTrucksPlates() {
-        return trucksPlates;
+    public Truck[] getTrucks() {
+        return trucks;
     }
 
-    public void notifyOnSite() {
+    public void updateStatus() {
+        if (this.status == OperationStatus.ON_ROAD) {
+            this.notifyOnSiteIfArrived();
+        } else if (this.status == OperationStatus.ON_SITE) {
+            this.notifyOnReturnIfFinished();
+        } else if (this.status == OperationStatus.ON_RETURN) {
+            this.removeIfArrived();
+        }
+    }
+
+    public void notifyOnSiteIfArrived() {
         if (this.status == OperationStatus.ON_ROAD && this.start.plusMinutes(10).isAfter(LocalDateTime.now())) {
             this.status = OperationStatus.ON_SITE;
             OperationRepository.notifyOnSite(this.id);
         }
     }
 
-    public void notifyOnReturn(Fire fire) {
-        if (this.status == OperationStatus.ON_SITE && fire.getIntensity() == 0) {
+    public void notifyOnReturnIfFinished() {
+        if (this.status == OperationStatus.ON_SITE && this.fire.getIntensity() == 0) {
             this.status = OperationStatus.ON_RETURN;
             this.returnStart = LocalDateTime.now();
             OperationRepository.notifyOnReturn(this.id);
         }
     }
 
-    public boolean canRemove() {
+    public void removeIfArrived() {
         if (this.status == OperationStatus.ON_RETURN && this.returnStart.plusMinutes(10).isAfter(LocalDateTime.now())) {
             OperationRepository.remove(this.id);
-            return true;
         }
-        return false;
+    }
+
+    @Override
+    public String toString() {
+        return "Operation{" +
+                "id=" + id +
+                ", start=" + start +
+                ", status=" + status +
+                '}';
     }
 }

@@ -1,5 +1,9 @@
 package fire;
 
+import operation.Operation;
+import operation.OperationRepository;
+import operation.OperationStatus;
+
 import java.util.List;
 
 public class Fire {
@@ -48,11 +52,34 @@ public class Fire {
         return null;
     }
 
-    public void increaseIntensity() {
+    public void update() {
+        Operation operation = FireRepository.getOperationByFire(this.id);
+
+        if (operation == null || operation.getStatus() == OperationStatus.ON_ROAD) {
+            this.increaseIntensity();
+            return;
+        }
+
+        operation.setFire(this);
+        this.decreaseIntensity();
+
+        operation.notifyOnReturnIfFinished();
+    }
+
+    private void increaseIntensity() {
         float increaseProbability = 0.05f;
 
         if (this.intensity < 9 && Math.random() < increaseProbability) {
             this.setIntensity(this.getIntensity() + 1);
+            FireRepository.updateIntensity(this.id, this.intensity);
+        }
+    }
+
+    private void decreaseIntensity() {
+        float decreaseProbability = 0.05f;
+
+        if (this.intensity > 0 && Math.random() < decreaseProbability) {
+            this.setIntensity(this.getIntensity() - 1);
             FireRepository.updateIntensity(this.id, this.intensity);
         }
     }

@@ -3,14 +3,13 @@ import fireStation.FireStation;
 import fireStation.FireStationInitializer;
 import firefighter.Firefighter;
 import firefighter.FirefighterInitializer;
+import operation.Operation;
+import operation.OperationRepository;
 import sensor.Sensor;
 import sensor.SensorInitializer;
 import truck.Truck;
 import truck.TruckInitializer;
 
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,12 +34,21 @@ public class Main {
         List<Fire> fires = new ArrayList<>();
 
         while (true) {
+            Operation[] operations = OperationRepository.getOperations();
+            if (operations != null) {
+                for (Operation operation : operations) {
+                    operation.notifyOnSiteIfArrived();
+                    operation.notifyOnReturnIfFinished();
+                }
+            }
+
             Fire newFire = Fire.generate(fires);
             if (newFire != null) fires.add(newFire);
 
             for (Fire fire : fires) {
-                fire.increaseIntensity();
+                fire.update();
             }
+
             sleep(3000);
         }
     }

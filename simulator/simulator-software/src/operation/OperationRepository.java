@@ -1,6 +1,7 @@
 package operation;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URI;
@@ -91,22 +92,24 @@ public class OperationRepository {
         }
     }
 
-    private static Operation[] parseOperations(String json) {
+    public static Operation[] parseOperations(String json) {
         JSONArray jsonOperations = new JSONArray(json);
         Operation[] operations = new Operation[jsonOperations.length()];
 
         for (int i = 0; i < jsonOperations.length(); i++) {
-
-            int id = jsonOperations.getJSONObject(i).getInt("id");
-            LocalDateTime start = LocalDateTime.parse(jsonOperations.getJSONObject(i).getString("start"));
-            OperationStatus status = OperationStatus.valueOf(jsonOperations.getJSONObject(i).getString("status"));
-            int fireId = jsonOperations.getJSONObject(i).getJSONObject("fire").getInt("id");
-            int[] firefightersId = new int[jsonOperations.getJSONObject(i).getJSONArray("firefighters").length()];
-            String[] truckPlates = new String[jsonOperations.getJSONObject(i).getJSONArray("trucks").length()];
-
-            operations[i] = new Operation(id, start, status, fireId, firefightersId, truckPlates);
-            System.out.println("GET Operation: " + operations[i].toString());
+            operations[i] = parseOperation(jsonOperations.getJSONObject(i));
         }
         return operations;
+    }
+
+    public static Operation parseOperation(JSONObject jsonOperation) {
+        int id = jsonOperation.getInt("id");
+        LocalDateTime start = LocalDateTime.parse(jsonOperation.getString("start"));
+        OperationStatus status = OperationStatus.valueOf(jsonOperation.getString("status"));
+
+        Operation operation = new Operation(id, start, status);
+        System.out.println("GET Operation: " + operation);
+
+        return operation;
     }
 }

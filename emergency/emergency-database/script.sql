@@ -23,7 +23,7 @@ CREATE TABLE operation(
    id SERIAL PRIMARY KEY,
    start_date TIMESTAMP NOT NULL,
    status operation_status NOT NULL,
-   id_fire INT NOT NULL
+   id_fire INT
 );
 
 ALTER TABLE fire
