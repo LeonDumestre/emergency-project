@@ -1,7 +1,10 @@
 import { IsNumber } from "class-validator";
 import { Fire } from "../fire.entity";
 
-export type FireResponse = Pick<Fire, "id" | "latitude" | "longitude">;
+export type FireResponse = Pick<
+  Fire,
+  "id" | "latitude" | "longitude" | "intensity"
+>;
 
 export class FireResponseDto implements FireResponse {
   @IsNumber()
@@ -12,4 +15,7 @@ export class FireResponseDto implements FireResponse {
 
   @IsNumber()
   longitude: number;
+
+  @IsNumber()
+  intensity: number;
 }

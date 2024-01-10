@@ -11,7 +11,44 @@ import java.time.format.DateTimeFormatter;
 
 public class FireRepository {
 
-    private static final String url = "http://localhost:3110/fires";
+    private static final String simulatorUrl = "http://localhost:3110/fires";
+    private static final String emergencyUrl = "http://localhost:3010/fires";
+
+    public static Fire[] getEmergencyFires() {
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request;
+        HttpResponse<String> response;
+
+        try{
+            request = HttpRequest.newBuilder()
+                    .uri(java.net.URI.create(emergencyUrl))
+                    .header("Content-Type", "application/json")
+                    .GET()
+                    .build();
+
+            response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            if (response.statusCode() == 200 && response.body().length() > 2) {
+                System.out.println("GET Emergency Fires: " + response.body());
+                JSONObject jsonFire = new JSONObject(response.body());
+                Fire[] fires = new Fire[jsonFire.length()];
+
+                for (int i = 0; i < jsonFire.length(); i++) {
+                    int id = jsonFire.getJSONObject(String.valueOf(i)).getInt("id");
+                    double latitude = jsonFire.getJSONObject(String.valueOf(i)).getDouble("latitude");
+                    double longitude = jsonFire.getJSONObject(String.valueOf(i)).getDouble("longitude");
+                    int intensity = jsonFire.getJSONObject(String.valueOf(i)).getInt("intensity");
+
+                    fires[i] = new Fire(id, latitude, longitude, intensity);
+                    System.out.println("GET Emergency Fire: " + fires[i]);
+                }
+                return fires;
+            }
+        } catch (IOException | InterruptedException e) {
+            System.out.println("GET Emergency Fires: " + e.getMessage());
+        }
+        return null;
+    }
 
     public static Fire createFire(double latitude, double longitude, int intensity) {
         HttpClient client = HttpClient.newHttpClient();
@@ -23,7 +60,7 @@ public class FireRepository {
             String json = "{\"latitude\":" + latitude+ ",\"longitude\":" + longitude + ",\"intensity\":" + intensity + ",\"triggerAt\":\"" + cleanDate + "\"}";
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(java.net.URI.create(url))
+                    .uri(java.net.URI.create(simulatorUrl))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(json))
                     .build();

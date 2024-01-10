@@ -20,26 +20,7 @@ public class SensorInitializer {
 
         Sensor[] generatedSensors = generateSensors();
 
-        // Verify sensors already exist in EM
-        try {
-            request = HttpRequest.newBuilder()
-                    .uri(URI.create(emUrl))
-                    .header("Content-Type", "application/json")
-                    .GET()
-                    .build();
-
-            response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-            if (response.statusCode() == 200 && response.body().length() > 2) {
-                System.out.println("Sensors in EM already exist");
-            }
-            else {
-                System.out.println("Sensors EM don't exist");
-                for (Sensor sensor : generatedSensors) {
-                    sensor.postSensor(emUrl);
-                }
-            }
-
+        try{
             // Verify sensors already exist in simulator
             request = HttpRequest.newBuilder()
                     .uri(URI.create(simulatorUrl))

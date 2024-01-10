@@ -18,6 +18,9 @@ export class Fire {
   @Column({ name: "longitude", type: "double precision", nullable: false })
   longitude: number;
 
+  @Column({ name: "intensity", type: "int", nullable: false })
+  intensity: number;
+
   @OneToOne(() => Operation, (operation) => operation.fire)
   @JoinColumn({ name: "id_operation" })
   operation: Operation;

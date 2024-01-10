@@ -35,7 +35,7 @@ public class Main {
         List<Fire> fires = new ArrayList<>();
 
         while (true) {
-            Fire newFire = Fire.generate();
+            Fire newFire = Fire.generate(fires);
             if (newFire != null) fires.add(newFire);
 
             for (Fire fire : fires) {

@@ -1,11 +1,13 @@
 package fire;
 
+import java.util.List;
+
 public class Fire {
     private final int id;
     private final double latitude;
     private final double longitude;
     private int intensity;
-    private final static float generationProbability = 0.05f;
+    private final static float generationProbability = 0.1f;
     private final static double topLeftCornerLatitude = 45.788812;
     private final static double topLeftCornerLongitude = 4.8;
     private final static double latitudeGap = 0.008;
@@ -30,7 +32,13 @@ public class Fire {
         this.intensity = intensity;
     }
 
-    public static Fire generate() {
+    public static Fire generate(List<Fire> fires) {
+        Fire[] emergencyFires = FireRepository.getEmergencyFires();
+
+        if (emergencyFires == null || fires.size() > emergencyFires.length) {
+            return null;
+        }
+
         if (Math.random() < generationProbability) {
             double latitude = topLeftCornerLatitude - Math.random() * 9 * latitudeGap;
             double longitude = topLeftCornerLongitude + Math.random() * 12 * longitudeGap;

@@ -7,6 +7,7 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Put,
 } from "@nestjs/common";
 import { OperationService } from "./operation.service";
 import { CreateOperationRequestDto } from "./dto/create-operation.request.dto";
@@ -29,12 +30,12 @@ export class OperationController {
     return this.operationService.createOperation(operation);
   }
 
-  @Post(":id/live/on-site")
+  @Put(":id/live/on-site")
   onSite(@Param("id", ParseIntPipe) id: number): Promise<OperationResponseDto> {
     return this.operationService.onSite(id);
   }
 
-  @Post(":id/live/reinforcement")
+  @Put(":id/live/reinforcement")
   askReinforcements(
     @Param("id", ParseIntPipe) id: number,
     @Body() reinforcements: AskReinforcementRequestDto[],
@@ -42,7 +43,7 @@ export class OperationController {
     return this.operationService.askReinforcements(id, reinforcements);
   }
 
-  @Post(":id/live/on-return")
+  @Put(":id/live/on-return")
   onReturn(
     @Param("id", ParseIntPipe) id: number,
   ): Promise<OperationResponseDto> {
