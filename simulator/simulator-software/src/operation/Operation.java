@@ -62,7 +62,7 @@ public class Operation {
             this.notifyOnSiteIfArrived();
         } else if (this.status == OperationStatus.ON_SITE) {
             this.notifyOnReturnIfFinished();
-        } else if (this.status == OperationStatus.ON_RETURN) {
+        } else if (this.status == OperationStatus.RETURNING) {
             this.removeIfArrived();
         }
     }
@@ -76,14 +76,14 @@ public class Operation {
 
     public void notifyOnReturnIfFinished() {
         if (this.status == OperationStatus.ON_SITE && this.fire.getIntensity() == 0) {
-            this.status = OperationStatus.ON_RETURN;
+            this.status = OperationStatus.RETURNING;
             this.returnStart = LocalDateTime.now();
             OperationRepository.notifyOnReturn(this.id);
         }
     }
 
     public void removeIfArrived() {
-        if (this.status == OperationStatus.ON_RETURN && this.returnStart.plusMinutes(10).isAfter(LocalDateTime.now())) {
+        if (this.status == OperationStatus.RETURNING && this.returnStart.plusMinutes(10).isAfter(LocalDateTime.now())) {
             OperationRepository.remove(this.id);
         }
     }

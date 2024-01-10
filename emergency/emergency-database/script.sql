@@ -17,7 +17,7 @@ CREATE TABLE fire(
    id_operation INT
 );
 
-CREATE TYPE operation_status AS ENUM ('ON_ROAD', 'ON_SITE', 'ON_RETURN');
+CREATE TYPE operation_status AS ENUM ('ON_ROAD', 'ON_SITE', 'RETURNING');
 
 CREATE TABLE operation(
    id SERIAL PRIMARY KEY,

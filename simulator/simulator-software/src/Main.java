@@ -1,4 +1,6 @@
 import fire.Fire;
+import fire.FireEmergencyExtension;
+import fire.FireRepository;
 import fireStation.FireStation;
 import fireStation.FireStationInitializer;
 import firefighter.Firefighter;
@@ -22,32 +24,21 @@ public class Main {
         FireStation[] fireStations = FireStationInitializer.initialize();
 
         //Generate firefighters
-        Firefighter[] firefighters = FirefighterInitializer.initialize(fireStations);
+        FirefighterInitializer.initialize(fireStations);
 
         //Generate trucks
-        Truck[] trucks = TruckInitializer.initialize(fireStations);
+        TruckInitializer.initialize(fireStations);
 
         //Generate sensors
-        Sensor[] sensors = SensorInitializer.initialize();
+        SensorInitializer.initialize();
 
-        //Generate fires
-        List<Fire> fires = new ArrayList<>();
+        List<Fire> fires = new ArrayList<Fire>();
 
         while (true) {
-            Operation[] operations = OperationRepository.getOperations();
-            if (operations != null) {
-                for (Operation operation : operations) {
-                    operation.notifyOnSiteIfArrived();
-                    operation.notifyOnReturnIfFinished();
-                }
-            }
-
-            Fire newFire = Fire.generate(fires);
-            if (newFire != null) fires.add(newFire);
-
-            for (Fire fire : fires) {
-                fire.update();
-            }
+            List<FireEmergencyExtension> emergencyFires = List.of(FireRepository.getEmergencyFires());
+            fires = Fire.completeWithEmergencyFires(fires, emergencyFires);
+            fires = Fire.generate(fires);
+            fires = Fire.updateAll(fires);
 
             sleep(3000);
         }

@@ -12,8 +12,8 @@ import {
 
 export const ON_ROAD = "ON_ROAD";
 export const ON_SITE = "ON_SITE";
-export const ON_RETURN = "ON_RETURN";
-type OperationStatus = typeof ON_ROAD | typeof ON_SITE | typeof ON_RETURN;
+export const RETURNING = "RETURNING";
+type OperationStatus = typeof ON_ROAD | typeof ON_SITE | typeof RETURNING;
 
 export type OperationInput = {
   start?: Date;
@@ -34,7 +34,7 @@ export class Operation {
 
   @Column({
     name: "status",
-    enum: [ON_ROAD, ON_SITE, ON_RETURN],
+    enum: [ON_ROAD, ON_SITE, RETURNING],
     nullable: false,
   })
   status: OperationStatus;

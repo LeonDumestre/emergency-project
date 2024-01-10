@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import {
-  ON_RETURN,
+  RETURNING,
   ON_ROAD,
   ON_SITE,
   Operation,
@@ -80,7 +80,7 @@ export class OperationService {
 
   async onReturn(id: number): Promise<OperationResponse> {
     const operation = await this.getRawOperation(id);
-    operation.status = ON_RETURN;
+    operation.status = RETURNING;
     return this.operations.save(operation);
   }
 

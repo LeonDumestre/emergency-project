@@ -1,15 +1,15 @@
 package fire;
 
-import operation.Operation;
-import operation.OperationRepository;
-import operation.OperationStatus;
-
+import java.util.ArrayList;
 import java.util.List;
 
-public class Fire {
-    private final int id;
-    private final double latitude;
-    private final double longitude;
+import operation.Operation;
+import operation.OperationStatus;
+
+public class Fire extends FireEmergencyExtension {
+    private int id;
+    private double latitude;
+    private double longitude;
     private int intensity;
     private final static float generationProbability = 0.1f;
     private final static double topLeftCornerLatitude = 45.788812;
@@ -18,6 +18,16 @@ public class Fire {
     private final static double longitudeGap = 0.01;
 
     public Fire(int id, double latitude, double longitude, int intensity) {
+        super();
+        this.id = id;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.intensity = intensity;
+        this.linkedEmergencyFireId = -1;
+    }
+
+    public Fire(int id, double latitude, double longitude, int intensity, int linkedEmergencyFireId, Operation operation) {
+        super(linkedEmergencyFireId, operation);
         this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -27,43 +37,91 @@ public class Fire {
     public int getId() {
         return id;
     }
-
     public int getIntensity() {
         return intensity;
     }
-
+    
     public void setIntensity(int intensity) {
         this.intensity = intensity;
     }
 
-    public static Fire generate(List<Fire> fires) {
-        Fire[] emergencyFires = FireRepository.getEmergencyFires();
-
-        if (emergencyFires == null || fires.size() > emergencyFires.length) {
-            return null;
+    public static List<Fire> generate(List<Fire> fires) {
+        // check if all fires have an operation
+        for (Fire fire : fires) {
+            if (!fire.hasOperation()) return fires;
         }
 
         if (Math.random() < generationProbability) {
             double latitude = topLeftCornerLatitude - Math.random() * 9 * latitudeGap;
             double longitude = topLeftCornerLongitude + Math.random() * 12 * longitudeGap;
 
-            return FireRepository.createFire(latitude, longitude, 1);
+            Fire newFire = FireRepository.createFire(latitude, longitude, 1);
+            fires.add(newFire);
         }
-        return null;
+        return fires;
+    }
+
+    public static List<Fire> completeWithEmergencyFires(List<Fire> fires, List<FireEmergencyExtension> emergencyFires) {
+        if (fires.size() == 0 || emergencyFires.size() == 0) return fires;
+
+        List<Fire> unlinkedFires = new ArrayList<Fire>();
+        for (Fire fire : fires) {
+            if (!fire.isLinkedToEmergencyFire()) {
+                unlinkedFires.add(fire);
+                continue;
+            }
+            if (fire.hasOperation()) continue;
+
+            for (FireEmergencyExtension emergencyFire : emergencyFires) {
+                boolean isLinkedWith = emergencyFire.getLinkedEmergencyFireId() == fire.linkedEmergencyFireId;
+                if (fire.isLinkedToEmergencyFire() && fire.hasOperation() && isLinkedWith) {
+                    emergencyFires.remove(emergencyFire);
+                    break;
+                }
+
+                if (fire.isLinkedToEmergencyFire() && isLinkedWith) {
+                    fire.setOperation(emergencyFire.getOperation());
+                    emergencyFires.remove(emergencyFire);
+                    break;
+                }
+            }
+        }
+
+        if (unlinkedFires.size() > 0 && emergencyFires.size() > 0) return fires;
+        fires = Fire.linkToEmergencyFires(unlinkedFires, emergencyFires);
+
+        return fires;
+    }
+
+    public static List<Fire> linkToEmergencyFires(List<Fire> unlinkedFires, List<FireEmergencyExtension> emergencyFires) {
+        for (FireEmergencyExtension emergencyFire : emergencyFires) {
+            for (Fire fire : unlinkedFires) {
+                if (fire.isLinkedToEmergencyFire()) continue;
+
+                fire.setLinkedEmergencyFireId(emergencyFire.getLinkedEmergencyFireId());
+                fire.setOperation(emergencyFire.getOperation());
+                emergencyFires.remove(emergencyFire);
+                break;
+            }
+        }
+        return unlinkedFires;
+    }
+
+    public static List<Fire> updateAll(List<Fire> fires) {
+        for (Fire fire : fires) {
+            fire.update();
+        }
+        return fires;
     }
 
     public void update() {
-        Operation operation = FireRepository.getOperationByFire(this.id);
-
-        if (operation == null || operation.getStatus() == OperationStatus.ON_ROAD) {
+        if (!this.hasOperation() || operation.getStatus() == OperationStatus.ON_ROAD) {
             this.increaseIntensity();
             return;
         }
 
-        operation.setFire(this);
         this.decreaseIntensity();
-
-        operation.notifyOnReturnIfFinished();
+        operation.updateStatus();
     }
 
     private void increaseIntensity() {
