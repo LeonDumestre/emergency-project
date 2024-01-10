@@ -10,13 +10,15 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FireRepository {
 
     private static final String simulatorUrl = "http://localhost:3110/fires";
     private static final String emergencyUrl = "http://localhost:3010/fires";
 
-    public static FireEmergencyExtension[] getEmergencyFires() {
+    public static List<FireEmergencyExtension> getEmergencyFires() {
         HttpClient client = HttpClient.newHttpClient();
 
         try {
@@ -31,12 +33,12 @@ public class FireRepository {
             System.out.println("GET Emergency Fires Response: " + response.body());
             if (response.statusCode() == 200) {
                 JSONObject[] jsonFires = new JSONObject(response.body()).getJSONArray("fires").toList().toArray(new JSONObject[0]);
-                FireEmergencyExtension[] emergencyFires = new Fire[jsonFires.length];
+                List<FireEmergencyExtension> emergencyFires = new ArrayList<>();
                 for (int i = 0; i < jsonFires.length; i++) {
                     JSONObject jsonFire = jsonFires[i];
                     int id = jsonFire.getInt("id");
                     Operation operation = OperationRepository.parseOperation(jsonFire.getJSONObject("operation"));
-                    emergencyFires[i] = new FireEmergencyExtension(id, operation);
+                    emergencyFires.add(new FireEmergencyExtension(id, operation));
                 }
                 return emergencyFires;
             }

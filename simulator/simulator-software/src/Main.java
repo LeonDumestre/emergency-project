@@ -35,7 +35,7 @@ public class Main {
         List<Fire> fires = new ArrayList<Fire>();
 
         while (true) {
-            List<FireEmergencyExtension> emergencyFires = List.of(FireRepository.getEmergencyFires());
+            List<FireEmergencyExtension> emergencyFires = FireRepository.getEmergencyFires();
             fires = Fire.completeWithEmergencyFires(fires, emergencyFires);
             fires = Fire.generate(fires);
             fires = Fire.updateAll(fires);

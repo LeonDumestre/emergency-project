@@ -10,7 +10,7 @@ import { getFires } from "@/utils/fire.request";
 import { getSensors } from "@/utils/sensor.request";
 
 export default defineComponent({
-  name: "FireMap",
+  name: "SimulatorMap",
 
   async mounted() {
     const map = initMap();
@@ -20,6 +20,15 @@ export default defineComponent({
 
     const fires = await getFires();
     fires.map((fire) => addFireCircle(map, fire));
+
+    const liveFireEndPoint = "http://localhost:3110/fires/live";
+    const fireSource = new EventSource(liveFireEndPoint);
+    fireSource.addEventListener("created", () => {
+      console.log("fire created");
+    });
+    fireSource.addEventListener("updated", () => {
+      console.log("fire updated");
+    });
   },
 
   beforeUnmount() {

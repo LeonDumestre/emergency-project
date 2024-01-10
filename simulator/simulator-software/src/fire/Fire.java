@@ -7,11 +7,11 @@ import operation.Operation;
 import operation.OperationStatus;
 
 public class Fire extends FireEmergencyExtension {
-    private int id;
-    private double latitude;
-    private double longitude;
+    private final int id;
+    private final double latitude;
+    private final double longitude;
     private int intensity;
-    private final static float generationProbability = 0.1f;
+    private final static float generationProbability = 0.2f;
     private final static double topLeftCornerLatitude = 45.788812;
     private final static double topLeftCornerLongitude = 4.8;
     private final static double latitudeGap = 0.008;
@@ -62,9 +62,10 @@ public class Fire extends FireEmergencyExtension {
     }
 
     public static List<Fire> completeWithEmergencyFires(List<Fire> fires, List<FireEmergencyExtension> emergencyFires) {
-        if (fires.size() == 0 || emergencyFires.size() == 0) return fires;
+        if (fires == null) fires = new ArrayList<>();
+        if (fires.isEmpty() || emergencyFires == null || emergencyFires.isEmpty()) return fires;
 
-        List<Fire> unlinkedFires = new ArrayList<Fire>();
+        List<Fire> unlinkedFires = new ArrayList<>();
         for (Fire fire : fires) {
             if (!fire.isLinkedToEmergencyFire()) {
                 unlinkedFires.add(fire);
@@ -87,7 +88,7 @@ public class Fire extends FireEmergencyExtension {
             }
         }
 
-        if (unlinkedFires.size() > 0 && emergencyFires.size() > 0) return fires;
+        if (!unlinkedFires.isEmpty() && !emergencyFires.isEmpty()) return fires;
         fires = Fire.linkToEmergencyFires(unlinkedFires, emergencyFires);
 
         return fires;

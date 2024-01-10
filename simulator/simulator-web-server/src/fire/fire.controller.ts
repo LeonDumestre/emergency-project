@@ -8,8 +8,10 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Sse,
 } from "@nestjs/common";
-import { FireService } from "./fire.service";
+import { Observable } from "rxjs";
+import { FireEvent, FireService } from "./fire.service";
 import { CreateFireRequestDto } from "./dto/create-fire.request.dto";
 import { FireResponseDto } from "./dto/fire.response.dto";
 import { UpdateFireRequestDto } from "./dto/update-fire.request.dto";
@@ -51,5 +53,10 @@ export class FireController {
   @HttpCode(204)
   deleteFire(@Param("id", ParseIntPipe) id: number): Promise<void> {
     return this.fireService.deleteFire(id);
+  }
+
+  @Sse("live")
+  liveNotification(): Observable<FireEvent> {
+    return this.fireService.inLive();
   }
 }

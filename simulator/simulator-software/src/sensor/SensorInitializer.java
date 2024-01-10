@@ -7,18 +7,20 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SensorInitializer {
 
     private static final String emUrl = "http://localhost:3010/sensors";
     private static final String simulatorUrl = "http://localhost:3110/sensors";
 
-    public static Sensor[] initialize() {
+    public static List<Sensor> initialize() {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request;
         HttpResponse<String> response;
 
-        Sensor[] generatedSensors = generateSensors();
+        List<Sensor> generatedSensors = generateSensors();
 
         try{
             // Verify sensors already exist in simulator
@@ -44,8 +46,8 @@ public class SensorInitializer {
         return generatedSensors;
     }
 
-    private static Sensor[] generateSensors() {
-        Sensor[] sensors = new Sensor[130];
+    private static List<Sensor> generateSensors() {
+        List<Sensor> sensors = new ArrayList<>();
         double topLeftCornerLatitude = 45.788812;
         double topLeftCornerLongitude = 4.8;
         double latitudeGap = 0.008;
@@ -53,7 +55,7 @@ public class SensorInitializer {
 
         for (int i = 0; i < 10; i++){
             for (int j = 0; j < 13; j++){
-                sensors[i*10+j] = new Sensor(topLeftCornerLatitude - i*latitudeGap, topLeftCornerLongitude + j*longitudeGap);
+                sensors.add(new Sensor(topLeftCornerLatitude - i*latitudeGap, topLeftCornerLongitude + j*longitudeGap));
             }
         }
         return sensors;

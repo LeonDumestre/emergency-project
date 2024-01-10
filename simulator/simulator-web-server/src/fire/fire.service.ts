@@ -1,9 +1,32 @@
 import { Injectable } from "@nestjs/common";
+import { Observable, merge } from "rxjs";
 import { Fire } from "./fire.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { CreateFire } from "./dto/create-fire.request.dto";
 import { UpdateFire } from "./dto/update-fire.request.dto";
+
+export type EventType = "created" | "changed" | "deleted";
+
+type FireCreatedEvent = {
+  type: "created";
+  data: Fire;
+};
+
+type FireUpdateEvent = {
+  type: "updated";
+  data: {
+    id: number;
+    intensity: number;
+  };
+};
+
+type FireDeletedEvent = {
+  type: "deleted";
+  data: { id: number };
+};
+
+export type FireEvent = FireCreatedEvent | FireUpdateEvent | FireDeletedEvent;
 
 @Injectable()
 export class FireService {
@@ -44,5 +67,32 @@ export class FireService {
   async deleteFire(id: number): Promise<void> {
     const existingFire = await this.getFire(id);
     await this.fires.remove(existingFire);
+  }
+
+  inLive(): Observable<FireEvent> {
+    const example = new Observable<FireEvent>((observer) => {
+      observer.next({
+        type: "created",
+        data: {
+          id: 1,
+          latitude: 1,
+          longitude: 1,
+          intensity: 1,
+          triggerAt: new Date(),
+        },
+      });
+      observer.next({
+        type: "updated",
+        data: {
+          id: 1,
+          intensity: 2,
+        },
+      });
+      observer.next({
+        type: "deleted",
+        data: { id: 1 },
+      });
+    });
+    return merge(...[example]);
   }
 }
