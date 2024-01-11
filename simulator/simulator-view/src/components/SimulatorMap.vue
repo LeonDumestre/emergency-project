@@ -5,9 +5,11 @@
 <script lang="ts">
 import L from "leaflet";
 import { defineComponent } from "vue";
-import { initMap, addFireCircle, addSensorCircle } from "@/utils/map.utils";
-import { getFires } from "@/utils/fire.request";
-import { getSensors } from "@/utils/sensor.request";
+import { initMap } from "@/utils/map.utils";
+import { addFireCircle } from "@/utils/fire/fire.map";
+import { getFires } from "@/utils/fire/fire.request";
+import { addSensorCircle } from "@/utils/sensor/sensor.map";
+import { getSensors } from "@/utils/sensor/sensor.request";
 
 export default defineComponent({
   name: "SimulatorMap",

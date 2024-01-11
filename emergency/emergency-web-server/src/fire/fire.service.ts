@@ -6,6 +6,10 @@ import { CreateFire } from "./dto/create-fire.request.dto";
 import { FireResponse, FireResponseDto } from "./dto/fire.response.dto";
 import { OperationResponse } from "src/operation/dto/operation.response.dto";
 import { mapToOperationResponseDto } from "src/operation/operation.service";
+import {
+  FireWithOperationResponse,
+  FireWithOperationResponseDto,
+} from "./dto/fire-with-operation.dto";
 
 @Injectable()
 export class FireService {
@@ -17,6 +21,11 @@ export class FireService {
   async getFires(): Promise<FireResponse[]> {
     const fire = await this.fires.find();
     return fire.map((fire) => mapToFireResponseDto(fire));
+  }
+
+  async getFiresWithOperation(): Promise<FireWithOperationResponse[]> {
+    const fires = await this.fires.find({ relations: ["operation"] });
+    return fires.map((fire) => mapToFireWithOperationResponseDto(fire));
   }
 
   async getFire(id: number): Promise<FireResponse> {
@@ -51,11 +60,23 @@ export class FireService {
   }
 }
 
-function mapToFireResponseDto(fire: Fire): FireResponseDto {
+export function mapToFireResponseDto(fire: Fire): FireResponseDto {
   const responseDto = new FireResponseDto();
   responseDto.id = fire.id;
   responseDto.latitude = fire.latitude;
   responseDto.longitude = fire.longitude;
   responseDto.intensity = fire.intensity;
+  return responseDto;
+}
+
+function mapToFireWithOperationResponseDto(
+  fire: Fire,
+): FireWithOperationResponseDto {
+  const responseDto = new FireWithOperationResponseDto();
+  responseDto.id = fire.id;
+  responseDto.latitude = fire.latitude;
+  responseDto.longitude = fire.longitude;
+  responseDto.intensity = fire.intensity;
+  responseDto.operation = mapToOperationResponseDto(fire.operation);
   return responseDto;
 }

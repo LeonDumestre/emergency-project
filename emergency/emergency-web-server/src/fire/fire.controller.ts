@@ -13,6 +13,7 @@ import { CreateFireRequestDto } from "./dto/create-fire.request.dto";
 import { FireResponseDto } from "./dto/fire.response.dto";
 import { OperationResponseDto } from "src/operation/dto/operation.response.dto";
 import { UpdateIntensityRequestDto } from "./dto/update-intensity.request.dto";
+import { FireWithOperationResponseDto } from "./dto/fire-with-operation.dto";
 
 @Controller("fires")
 export class FireController {
@@ -21,6 +22,11 @@ export class FireController {
   @Get()
   getFires(): Promise<FireResponseDto[]> {
     return this.fireService.getFires();
+  }
+
+  @Get("with-operation")
+  getFiresWithOperation(): Promise<FireWithOperationResponseDto[]> {
+    return this.fireService.getFiresWithOperation();
   }
 
   @Get(":id/operation")

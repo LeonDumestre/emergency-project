@@ -5,5 +5,3 @@ export type Fire = {
   intensity: number;
   triggerAt: Date;
 };
-
-export type NewFire = Omit<Fire, "id">;

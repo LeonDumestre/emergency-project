@@ -22,6 +22,7 @@ import {
 } from "./dto/complete-operation.response.dto";
 import { mapToBaseFirefighterResponseDto } from "src/firefighter/firefighter.service";
 import { mapToBaseTruckResponseDto } from "src/truck/truck.service";
+import { mapToFireResponseDto } from "src/fire/fire.service";
 
 @Injectable()
 export class OperationService {
@@ -111,6 +112,7 @@ function mapToCompleteOperationResponseDto(
   responseDto.id = operation.id;
   responseDto.start = operation.start;
   responseDto.status = operation.status;
+  responseDto.fire = mapToFireResponseDto(operation.fire);
   responseDto.firefighters = operation.firefighters.map((firefighter) =>
     mapToBaseFirefighterResponseDto(firefighter),
   );
