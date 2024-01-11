@@ -58,6 +58,7 @@ public class Operation {
     }
 
     public void updateStatus() {
+        System.out.println("STATUS: " + this.status);
         if (this.status == OperationStatus.ON_ROAD) {
             this.notifyOnSiteIfArrived();
         } else if (this.status == OperationStatus.ON_SITE) {
@@ -68,7 +69,12 @@ public class Operation {
     }
 
     public void notifyOnSiteIfArrived() {
-        if (this.status == OperationStatus.ON_ROAD && this.start.plusMinutes(10).isAfter(LocalDateTime.now())) {
+        System.out.println("NOTIFY ON SITE IF ARRIVED");
+        System.out.println("START: " + this.start);
+        System.out.println("NOW: " + LocalDateTime.now());
+        System.out.println("START + 1 MINUTE: " + this.start.plusMinutes(1));
+        System.out.println("IS AFTER: " + this.start.plusMinutes(1).isAfter(LocalDateTime.now()));
+        if (this.status == OperationStatus.ON_ROAD && this.start.plusMinutes(1).isAfter(LocalDateTime.now())) {
             this.status = OperationStatus.ON_SITE;
             OperationRepository.notifyOnSite(this.id);
         }
@@ -83,7 +89,7 @@ public class Operation {
     }
 
     public void removeIfArrived() {
-        if (this.status == OperationStatus.RETURNING && this.returnStart.plusMinutes(10).isAfter(LocalDateTime.now())) {
+        if (this.status == OperationStatus.RETURNING && this.returnStart.plusMinutes(1).isAfter(LocalDateTime.now())) {
             OperationRepository.remove(this.id);
         }
     }

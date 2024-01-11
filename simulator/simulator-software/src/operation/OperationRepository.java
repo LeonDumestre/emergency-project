@@ -9,6 +9,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class OperationRepository {
     private static final String emergencyUrl = "http://localhost:3010/operations";
@@ -104,7 +105,7 @@ public class OperationRepository {
 
     public static Operation parseOperation(JSONObject jsonOperation) {
         int id = jsonOperation.getInt("id");
-        LocalDateTime start = LocalDateTime.parse(jsonOperation.getString("start"));
+        LocalDateTime start = LocalDateTime.parse(jsonOperation.getString("start"), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX"));
         OperationStatus status = OperationStatus.valueOf(jsonOperation.getString("status"));
 
         Operation operation = new Operation(id, start, status);

@@ -15,7 +15,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class TruckInitializer {
 
     public static Truck[] initialize(FireStation[] fireStations) {
-        if (fireStations.length == 0) {
+        if (fireStations.length != 0) {
             // Verify if trucks already exist
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request;
@@ -39,7 +39,7 @@ public class TruckInitializer {
                         String cleanDate = StringEscapeUtils.unescapeJson(jsonTrucks.getJSONObject(i).getString("acquisition"));
                         String cleanType = StringEscapeUtils.unescapeJson(jsonTrucks.getJSONObject(i).getString("type"));
                         int capacity = jsonTrucks.getJSONObject(i).getInt("capacity");
-                        int idFireStation = jsonTrucks.getJSONObject(i).getInt("fireStationId");
+                        int idFireStation = jsonTrucks.getJSONObject(i).getJSONObject("fireStation").getInt("id");
 
                         trucks[i] = new Truck(cleanLicensePlate, LocalDate.parse(cleanDate), cleanType, capacity, fireStations[idFireStation - 1]);
 
