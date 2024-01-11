@@ -38,6 +38,7 @@ export class FireService {
     responseDto.id = fire.id;
     responseDto.latitude = fire.latitude;
     responseDto.longitude = fire.longitude;
+    responseDto.intensity = fire.intensity;
     return responseDto;
   }
 }
