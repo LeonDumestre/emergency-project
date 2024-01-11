@@ -11,7 +11,7 @@ import {
   FireWithOperationResponseDto,
 } from "./dto/fire-with-operation.dto";
 import { mapToBaseFirefighterResponseDto } from "src/firefighter/firefighter.service";
-import { mapToBaseTruckResponseDto } from "src/truck/truck.service";
+import { mapToTruckResponseDto } from "src/truck/truck.service";
 import { Operation } from "src/operation/operation.entity";
 
 @Injectable()
@@ -22,12 +22,23 @@ export class FireService {
   ) {}
 
   async getFires(): Promise<FireResponse[]> {
-    const fire = await this.fires.find();
+    const fire = await this.fires
+      .createQueryBuilder("fire")
+      .leftJoinAndSelect("fire.operation", "operation")
+      .getMany();
     return fire.map((fire) => mapToFireResponseDto(fire));
   }
 
   async getFiresWithOperation(): Promise<FireWithOperationResponse[]> {
-    const fires = await this.fires.find({ relations: ["operation"] });
+    const fires = await this.fires
+      .createQueryBuilder("fire")
+      .leftJoinAndSelect("fire.operation", "operation")
+      .leftJoinAndSelect("operation.firefighters", "firefighters")
+      .leftJoinAndSelect("operation.trucks", "trucks")
+      .leftJoinAndSelect("trucks.type", "type")
+      .leftJoinAndSelect("trucks.fireStation", "fireStation")
+      .getMany();
+
     return fires.map((fire) => mapToFireWithOperationResponseDto(fire));
   }
 
@@ -94,6 +105,6 @@ function mapOperationForFireResponseDto(
     firefighters: operation.firefighters.map((firefighter) =>
       mapToBaseFirefighterResponseDto(firefighter),
     ),
-    trucks: operation.trucks.map((truck) => mapToBaseTruckResponseDto(truck)),
+    trucks: operation.trucks.map((truck) => mapToTruckResponseDto(truck)),
   };
 }
