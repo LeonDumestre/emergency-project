@@ -10,6 +10,9 @@ import {
   FireWithOperationResponse,
   FireWithOperationResponseDto,
 } from "./dto/fire-with-operation.dto";
+import { mapToBaseFirefighterResponseDto } from "src/firefighter/firefighter.service";
+import { mapToBaseTruckResponseDto } from "src/truck/truck.service";
+import { Operation } from "src/operation/operation.entity";
 
 @Injectable()
 export class FireService {
@@ -77,6 +80,20 @@ function mapToFireWithOperationResponseDto(
   responseDto.latitude = fire.latitude;
   responseDto.longitude = fire.longitude;
   responseDto.intensity = fire.intensity;
-  responseDto.operation = mapToOperationResponseDto(fire.operation);
+  responseDto.operation = mapOperationForFireResponseDto(fire.operation);
   return responseDto;
+}
+
+function mapOperationForFireResponseDto(
+  operation: Operation,
+): FireWithOperationResponseDto["operation"] {
+  return {
+    id: operation.id,
+    start: operation.start,
+    status: operation.status,
+    firefighters: operation.firefighters.map((firefighter) =>
+      mapToBaseFirefighterResponseDto(firefighter),
+    ),
+    trucks: operation.trucks.map((truck) => mapToBaseTruckResponseDto(truck)),
+  };
 }
