@@ -6,6 +6,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { Fire } from "./fire/fire.entity";
 import { Sensor } from "./sensor/sensor.entity";
 import { SensorModule } from "./sensor/sensor.module";
+import { EventModule } from "./event/event.module";
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { SensorModule } from "./sensor/sensor.module";
     }),
     FireModule,
     SensorModule,
+    EventModule,
   ],
   controllers: [AppController],
   providers: [AppService],

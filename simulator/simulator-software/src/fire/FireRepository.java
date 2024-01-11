@@ -103,4 +103,23 @@ public class FireRepository {
         }
     }
 
+    public static void removeAll() {
+        HttpClient client = HttpClient.newHttpClient();
+
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(java.net.URI.create(simulatorUrl + "/all"))
+                    .header("Content-Type", "application/json")
+                    .DELETE()
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            System.out.println("DELETE All Fires");
+
+        } catch (IOException | InterruptedException e) {
+            System.out.println("DELETE All Fires Response: " + e.getMessage());
+        }
+    }
+
 }

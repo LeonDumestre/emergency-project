@@ -3,23 +3,24 @@ import fire.FireEmergencyExtension;
 import fire.FireRepository;
 import fireStation.FireStation;
 import fireStation.FireStationInitializer;
-import firefighter.Firefighter;
 import firefighter.FirefighterInitializer;
-import operation.Operation;
-import operation.OperationRepository;
-import sensor.Sensor;
 import sensor.SensorInitializer;
-import truck.Truck;
 import truck.TruckInitializer;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.postgresql.PGConnection;
+import org.postgresql.PGNotification;
+
 import static java.lang.Thread.sleep;
 
 public class Main {
     public static void main(String[] args) throws Exception {
+        //Remove all simulator fires
+        FireRepository.removeAll();
+
         //Generate fire stations
         FireStation[] fireStations = FireStationInitializer.initialize();
 
@@ -32,7 +33,7 @@ public class Main {
         //Generate sensors
         SensorInitializer.initialize();
 
-        List<Fire> fires = new ArrayList<Fire>();
+        List<Fire> fires = new ArrayList<>();
 
         while (true) {
             List<FireEmergencyExtension> emergencyFires = FireRepository.getEmergencyFires();
@@ -58,12 +59,12 @@ public class Main {
 class Listener extends Thread
 {
     private Connection conn;
-    private org.postgresql.PGConnection pgconn;
+    private PGConnection pgconn;
 
     Listener(Connection conn) throws SQLException
     {
         this.conn = conn;
-        this.pgconn = conn.unwrap(org.postgresql.PGConnection.class);
+        this.pgconn = conn.unwrap(PGConnection.class);
         Statement stmt = conn.createStatement();
         stmt.execute("LISTEN new_operation");
         stmt.close();
@@ -75,11 +76,11 @@ class Listener extends Thread
         {
             while (true)
             {
-                org.postgresql.PGNotification notifications[] = pgconn.getNotifications();
+                PGNotification notifications[] = pgconn.getNotifications();
 
                 // If this thread is the only one that uses the connection, a timeout can be used to
                 // receive notifications immediately:
-                // org.postgresql.PGNotification notifications[] = pgconn.getNotifications(10000);
+                // PGNotification notifications[] = pgconn.getNotifications(10000);
 
                 if (notifications != null)
                 {
