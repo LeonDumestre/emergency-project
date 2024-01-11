@@ -72,7 +72,7 @@ export function mapToBaseTruckResponseDto(truck: Truck): BaseTruckResponseDto {
   return responseDto;
 }
 
-function mapToTruckResponseDto(truck: Truck): TruckResponseDto {
+export function mapToTruckResponseDto(truck: Truck): TruckResponseDto {
   const responseDto = new TruckResponseDto();
   responseDto.plate = truck.plate;
   responseDto.acquisition = truck.acquisition;

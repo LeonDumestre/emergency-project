@@ -1,4 +1,4 @@
-import { IsDateString, IsNotEmpty, IsNumber } from "class-validator";
+import { IsDateString, IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { Operation } from "../operation.entity";
 
 export type CreateOperation = Pick<Operation, "start"> & {
@@ -21,6 +21,6 @@ export class CreateOperationRequestDto implements CreateOperation {
   firefighters: number[];
 
   @IsNotEmpty({ message: "trucks plates are required" })
-  @IsNumber({}, { each: true })
+  @IsString({ each: true })
   trucks: string[];
 }
