@@ -15,7 +15,7 @@ import java.time.LocalDate;
 public class FirefighterInitializer {
 
     public static Firefighter[] initialize(FireStation[] fireStations) {
-        if (fireStations.length == 0) {
+        if (fireStations.length != 0) {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request;
             HttpResponse<String> response;

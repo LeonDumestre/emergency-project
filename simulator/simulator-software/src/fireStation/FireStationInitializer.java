@@ -40,6 +40,8 @@ public class FireStationInitializer {
 
                     System.out.println("GET FireStation: " + fireStations[i].toString());
                 }
+
+                return fireStations;
             } else{
                 FireStation[] fireStations = new FireStation[6];
 
@@ -54,6 +56,7 @@ public class FireStationInitializer {
                 for (FireStation fireStation : fireStations) {
                     fireStation.postFireStation();
                 }
+
                 return fireStations;
             }
         } catch (IOException | InterruptedException e) {
