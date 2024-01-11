@@ -1,9 +1,10 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { Firefighter } from "./firefighter.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { CreateFirefighter } from "./dto/create-firefigther.request.dto";
 import {
+  BaseFirefighterResponseDto,
   FirefighterResponse,
   FirefighterResponseDto,
 } from "./dto/firefighter.response.dto";
@@ -23,47 +24,48 @@ export class FirefighterService {
       .createQueryBuilder("firefighter")
       .leftJoinAndSelect("firefighter.fireStation", "fireStation")
       .getMany();
-    return firefighters.map(this.mapToFirefighterResponseDto);
-  }
 
-  async getRawFirefighter(id: number): Promise<Firefighter> {
-    const firefighter = await this.firefighters.findOne({ where: { id } });
-    if (!firefighter) {
-      throw new NotFoundException(`Firefighter #${id} does not exist`);
-    }
-    return firefighter;
+    return firefighters.map((firefighter) =>
+      mapToFirefighterResponseDto(firefighter),
+    );
   }
 
   async createFirefighter(
     firefighter: CreateFirefighter,
   ): Promise<FirefighterResponse> {
     const { fireStationId, ...firefighterDetails } = firefighter;
-    const fireStation = await this.fireStations.findOne({
+    const fireStation = await this.fireStations.findOneOrFail({
       where: { id: fireStationId },
     });
-    if (!fireStation) {
-      throw new NotFoundException(
-        `Fire station #${fireStationId} does not exist`,
-      );
-    }
 
     const createdFirefighter = this.firefighters.create({
       ...firefighterDetails,
       fireStation,
     });
     const savedFirefigter = await this.firefighters.save(createdFirefighter);
-    return this.mapToFirefighterResponseDto(savedFirefigter);
+    return mapToFirefighterResponseDto(savedFirefigter);
   }
+}
 
-  private mapToFirefighterResponseDto(
-    firefighter: Firefighter,
-  ): FirefighterResponse {
-    const responseDto = new FirefighterResponseDto();
-    responseDto.id = firefighter.id;
-    responseDto.name = firefighter.name;
-    responseDto.birthDate = firefighter.birthDate;
-    responseDto.grade = firefighter.grade;
-    responseDto.fireStationId = firefighter.fireStation.id;
-    return responseDto;
-  }
+function mapToFirefighterResponseDto(
+  firefighter: Firefighter,
+): FirefighterResponseDto {
+  const responseDto = new FirefighterResponseDto();
+  responseDto.id = firefighter.id;
+  responseDto.name = firefighter.name;
+  responseDto.birthDate = firefighter.birthDate;
+  responseDto.grade = firefighter.grade;
+  responseDto.fireStationId = firefighter.fireStation.id;
+  return responseDto;
+}
+
+export function mapToBaseFirefighterResponseDto(
+  firefighter: Firefighter,
+): BaseFirefighterResponseDto {
+  const responseDto = new BaseFirefighterResponseDto();
+  responseDto.id = firefighter.id;
+  responseDto.name = firefighter.name;
+  responseDto.birthDate = firefighter.birthDate;
+  responseDto.grade = firefighter.grade;
+  return responseDto;
 }

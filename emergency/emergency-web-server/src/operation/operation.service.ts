@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import {
   RETURNING,
   ON_ROAD,
@@ -13,9 +13,15 @@ import {
   OperationResponse,
   OperationResponseDto,
 } from "./dto/operation.response.dto";
-import { FirefighterService } from "src/firefighter/firefighter.service";
-import { TruckService } from "src/truck/truck.service";
 import { Fire } from "src/fire/fire.entity";
+import { Firefighter } from "src/firefighter/firefighter.entity";
+import { Truck } from "src/truck/truck.entity";
+import {
+  CompleteOperationResponse,
+  CompleteOperationResponseDto,
+} from "./dto/complete-operation.response.dto";
+import { mapToBaseFirefighterResponseDto } from "src/firefighter/firefighter.service";
+import { mapToBaseTruckResponseDto } from "src/truck/truck.service";
 
 @Injectable()
 export class OperationService {
@@ -24,38 +30,37 @@ export class OperationService {
     private readonly operations: Repository<Operation>,
     @InjectRepository(Fire)
     private readonly fires: Repository<Fire>,
-    private readonly firefighterService: FirefighterService,
-    private readonly truckService: TruckService,
+    @InjectRepository(Firefighter)
+    private readonly firefighters: Repository<Firefighter>,
+    @InjectRepository(Truck)
+    private readonly trucks: Repository<Truck>,
   ) {}
 
-  getOperations(): Promise<OperationResponse[]> {
-    return this.operations.find();
-  }
-
-  async getRawOperation(id: number): Promise<Operation> {
-    const operation = await this.operations.findOne({ where: { id } });
-    if (!operation) {
-      throw new NotFoundException(`Operation #${id} does not exist`);
-    }
-    return operation;
+  async getOperations(): Promise<CompleteOperationResponse[]> {
+    const operations = await this.operations.find({
+      relations: ["fire", "firefighters", "trucks"],
+    });
+    return operations.map((operation) =>
+      mapToCompleteOperationResponseDto(operation),
+    );
   }
 
   async createOperation(
     operation: CreateOperation,
-  ): Promise<OperationResponse> {
+  ): Promise<CompleteOperationResponse> {
     const fire = await this.fires.findOneOrFail({
       where: { id: operation.fire },
     });
 
     const firefighters = await Promise.all(
       operation.firefighters.map(
-        async (id) => await this.firefighterService.getRawFirefighter(id),
+        async (id) => await this.firefighters.findOneOrFail({ where: { id } }),
       ),
     );
 
     const trucks = await Promise.all(
       operation.trucks.map(
-        async (plate) => await this.truckService.getRawTruck(plate),
+        async (plate) => await this.trucks.findOneOrFail({ where: { plate } }),
       ),
     );
 
@@ -67,17 +72,19 @@ export class OperationService {
       status: ON_ROAD,
     };
     const newOperation = this.operations.create(newOperationInput);
-    return this.operations.save(newOperation);
+    const savedOperation = await this.operations.save(newOperation);
+
+    return mapToCompleteOperationResponseDto(savedOperation);
   }
 
   async onSite(id: number): Promise<OperationResponse> {
-    const operation = await this.getRawOperation(id);
+    const operation = await this.operations.findOneOrFail({ where: { id } });
     operation.status = ON_SITE;
     return this.operations.save(operation);
   }
 
   async onReturn(id: number): Promise<OperationResponse> {
-    const operation = await this.getRawOperation(id);
+    const operation = await this.operations.findOneOrFail({ where: { id } });
     operation.status = RETURNING;
     return this.operations.save(operation);
   }
@@ -85,12 +92,30 @@ export class OperationService {
   remove(id: number) {
     this.operations.delete(id);
   }
+}
 
-  mapToOperationResponseDto(operation: Operation): OperationResponse {
-    const responseDto = new OperationResponseDto();
-    responseDto.id = operation.id;
-    responseDto.start = operation.start;
-    responseDto.status = operation.status;
-    return responseDto;
-  }
+export function mapToOperationResponseDto(
+  operation: Operation,
+): OperationResponseDto {
+  const responseDto = new OperationResponseDto();
+  responseDto.id = operation.id;
+  responseDto.start = operation.start;
+  responseDto.status = operation.status;
+  return responseDto;
+}
+
+function mapToCompleteOperationResponseDto(
+  operation: Operation,
+): CompleteOperationResponse {
+  const responseDto = new CompleteOperationResponseDto();
+  responseDto.id = operation.id;
+  responseDto.start = operation.start;
+  responseDto.status = operation.status;
+  responseDto.firefighters = operation.firefighters.map((firefighter) =>
+    mapToBaseFirefighterResponseDto(firefighter),
+  );
+  responseDto.trucks = operation.trucks.map((truck) =>
+    mapToBaseTruckResponseDto(truck),
+  );
+  return responseDto;
 }

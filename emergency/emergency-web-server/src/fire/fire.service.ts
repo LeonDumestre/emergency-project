@@ -5,40 +5,57 @@ import { Repository } from "typeorm";
 import { CreateFire } from "./dto/create-fire.request.dto";
 import { FireResponse, FireResponseDto } from "./dto/fire.response.dto";
 import { OperationResponse } from "src/operation/dto/operation.response.dto";
-import { OperationService } from "src/operation/operation.service";
+import { mapToOperationResponseDto } from "src/operation/operation.service";
 
 @Injectable()
 export class FireService {
   constructor(
     @InjectRepository(Fire)
     private readonly fires: Repository<Fire>,
-    private readonly operationService: OperationService,
   ) {}
 
   async getFires(): Promise<FireResponse[]> {
     const fire = await this.fires.find();
-    return fire.map(this.mapToFireResponseDto);
+    return fire.map((fire) => mapToFireResponseDto(fire));
   }
 
-  async getOperation(id: number): Promise<OperationResponse> {
+  async getFire(id: number): Promise<FireResponse> {
+    const existingFire = await this.fires.findOne({ where: { id } });
+    if (!existingFire) throw new Error(`Fire #${id} does not exist`);
+    return existingFire;
+  }
+
+  async getOperationByFire(id: number): Promise<OperationResponse> {
     const fire = await this.fires.findOneOrFail({
       where: { id },
       relations: ["operation"],
     });
-    return this.operationService.mapToOperationResponseDto(fire.operation);
+    return mapToOperationResponseDto(fire.operation);
   }
 
-  createFire(fire: CreateFire): Promise<FireResponse> {
+  async createFire(fire: CreateFire): Promise<FireResponse> {
     const createdFire = this.fires.create(fire);
-    return this.fires.save(createdFire);
+    const savedFire = await this.fires.save(createdFire);
+    return mapToFireResponseDto(savedFire);
   }
 
-  private mapToFireResponseDto(fire: Fire): FireResponse {
-    const responseDto = new FireResponseDto();
-    responseDto.id = fire.id;
-    responseDto.latitude = fire.latitude;
-    responseDto.longitude = fire.longitude;
-    responseDto.intensity = fire.intensity;
-    return responseDto;
+  async updateIntensity(id: number, intensity: number): Promise<FireResponse> {
+    const existingFire = await this.getFire(id);
+    existingFire.intensity = intensity;
+    const savedFire = await this.fires.save(existingFire);
+    return mapToFireResponseDto(savedFire);
   }
+
+  async deleteFire(id: number): Promise<void> {
+    await this.fires.delete(id);
+  }
+}
+
+function mapToFireResponseDto(fire: Fire): FireResponseDto {
+  const responseDto = new FireResponseDto();
+  responseDto.id = fire.id;
+  responseDto.latitude = fire.latitude;
+  responseDto.longitude = fire.longitude;
+  responseDto.intensity = fire.intensity;
+  return responseDto;
 }

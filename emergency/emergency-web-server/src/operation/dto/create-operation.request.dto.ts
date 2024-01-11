@@ -5,7 +5,6 @@ export type CreateOperation = Pick<Operation, "start"> & {
   fire: number;
   firefighters: number[];
   trucks: string[];
-  sensors: number[];
 };
 
 export class CreateOperationRequestDto implements CreateOperation {
@@ -24,8 +23,4 @@ export class CreateOperationRequestDto implements CreateOperation {
   @IsNotEmpty({ message: "trucks plates are required" })
   @IsNumber({}, { each: true })
   trucks: string[];
-
-  @IsNotEmpty({ message: "sensors ids are required" })
-  @IsNumber({}, { each: true })
-  sensors: number[];
 }
