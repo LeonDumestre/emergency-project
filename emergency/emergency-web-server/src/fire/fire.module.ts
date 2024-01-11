@@ -3,12 +3,10 @@ import { FireController } from "./fire.controller";
 import { FireService } from "./fire.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Fire } from "./fire.entity";
-import { OperationModule } from "src/operation/operation.module";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Fire]), OperationModule],
+  imports: [TypeOrmModule.forFeature([Fire])],
   controllers: [FireController],
   providers: [FireService],
-  exports: [FireService],
 })
 export class FireModule {}
