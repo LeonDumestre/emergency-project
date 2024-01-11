@@ -23,9 +23,7 @@ public class Main {
 
         //Generate fire stations
         FireStation[] fireStations = FireStationInitializer.initialize();
-
-        System.out.println("Fire stations: " + fireStations.length);
-
+        
         //Generate firefighters
         FirefighterInitializer.initialize(fireStations);
 
