@@ -24,7 +24,7 @@ export class FireController {
   getOperationByFire(
     @Param("id", ParseIntPipe) id: number,
   ): Promise<OperationResponseDto> {
-    return this.fireService.getOperation(id);
+    return this.fireService.getOperationByFire(id);
   }
 
   @Post()

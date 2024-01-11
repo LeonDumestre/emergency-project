@@ -4,7 +4,7 @@ import { TruckType } from "../truck-type.entity";
 
 export type TruckTypeResponse = Omit<TruckType, "trucks">;
 
-type BaseTruckResponse = Pick<Truck, "plate" | "acquisition"> & {
+export type BaseTruckResponse = Pick<Truck, "plate" | "acquisition"> & {
   type: string;
   capacity: number;
 };

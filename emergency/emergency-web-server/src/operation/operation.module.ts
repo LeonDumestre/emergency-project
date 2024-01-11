@@ -3,16 +3,12 @@ import { OperationController } from "./operation.controller";
 import { OperationService } from "./operation.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { Operation } from "./operation.entity";
-import { FirefighterModule } from "src/firefighter/firefighter.module";
-import { TruckModule } from "src/truck/truck.module";
 import { Fire } from "src/fire/fire.entity";
+import { Firefighter } from "src/firefighter/firefighter.entity";
+import { Truck } from "src/truck/truck.entity";
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Operation, Fire]),
-    FirefighterModule,
-    TruckModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Operation, Fire, Firefighter, Truck])],
   controllers: [OperationController],
   providers: [OperationService],
   exports: [OperationService],
