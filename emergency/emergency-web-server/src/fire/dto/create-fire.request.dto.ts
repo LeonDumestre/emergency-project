@@ -1,7 +1,7 @@
 import { IsNotEmpty, IsNumber } from "class-validator";
 import { Fire } from "../fire.entity";
 
-export type CreateFire = Pick<Fire, "latitude" | "longitude">;
+export type CreateFire = Pick<Fire, "latitude" | "longitude" | "intensity">;
 
 export class CreateFireRequestDto implements CreateFire {
   @IsNotEmpty({ message: "latitude is required" })
@@ -11,4 +11,8 @@ export class CreateFireRequestDto implements CreateFire {
   @IsNotEmpty({ message: "longitude is required" })
   @IsNumber()
   longitude: number;
+
+  @IsNotEmpty({ message: "intensity is required" })
+  @IsNumber()
+  intensity: number;
 }
