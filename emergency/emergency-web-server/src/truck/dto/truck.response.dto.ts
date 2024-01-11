@@ -1,6 +1,10 @@
-import { IsDate, IsNumber, IsString } from "class-validator";
+import { IsDate, IsNumber, IsObject, IsString } from "class-validator";
 import { Truck } from "../truck.entity";
 import { TruckType } from "../truck-type.entity";
+import {
+  FireStationResponse,
+  FireStationResponseDto,
+} from "src/fire-station/dto/fire-station.response.dto";
 
 export type TruckTypeResponse = Omit<TruckType, "trucks">;
 
@@ -10,7 +14,7 @@ export type BaseTruckResponse = Pick<Truck, "plate" | "acquisition"> & {
 };
 
 export type TruckResponse = BaseTruckResponse & {
-  fireStationId: number;
+  fireStation: FireStationResponse;
 };
 
 export class BaseTruckResponseDto implements BaseTruckResponse {
@@ -31,6 +35,6 @@ export class TruckResponseDto
   extends BaseTruckResponseDto
   implements TruckResponse
 {
-  @IsNumber()
-  fireStationId: number;
+  @IsObject()
+  fireStation: FireStationResponseDto;
 }

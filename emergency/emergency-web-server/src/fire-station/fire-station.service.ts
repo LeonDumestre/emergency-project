@@ -37,7 +37,7 @@ export class FireStationService {
   }
 }
 
-function mapToFireStationResponseDto(
+export function mapToFireStationResponseDto(
   fireStation: FireStation,
 ): FireStationResponseDto {
   const responseDto = new FireStationResponseDto();
