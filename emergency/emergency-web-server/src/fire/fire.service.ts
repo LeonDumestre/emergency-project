@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { Fire } from "./fire.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
@@ -26,12 +26,6 @@ export class FireService {
       relations: ["operation"],
     });
     return this.operationService.mapToOperationResponseDto(fire.operation);
-  }
-
-  async getRawFire(id: number): Promise<Fire> {
-    const fire = await this.fires.findOne({ where: { id } });
-    if (!fire) throw new NotFoundException(`Fire #${id} not found`);
-    return fire;
   }
 
   createFire(fire: CreateFire): Promise<FireResponse> {

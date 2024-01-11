@@ -2,6 +2,7 @@ package fire;
 
 import operation.Operation;
 import operation.OperationRepository;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -32,10 +33,10 @@ public class FireRepository {
 
             System.out.println("GET Emergency Fires Response: " + response.body());
             if (response.statusCode() == 200) {
-                JSONObject[] jsonFires = new JSONObject(response.body()).getJSONArray("fires").toList().toArray(new JSONObject[0]);
+                JSONArray jsonFires = new JSONArray(response.body());
                 List<FireEmergencyExtension> emergencyFires = new ArrayList<>();
-                for (int i = 0; i < jsonFires.length; i++) {
-                    JSONObject jsonFire = jsonFires[i];
+                for (int i = 0; i < jsonFires.length(); i++) {
+                    JSONObject jsonFire = jsonFires.getJSONObject(i);
                     int id = jsonFire.getInt("id");
                     Operation operation = OperationRepository.parseOperation(jsonFire.getJSONObject("operation"));
                     emergencyFires.add(new FireEmergencyExtension(id, operation));
