@@ -11,6 +11,5 @@ import { Truck } from "src/truck/truck.entity";
   imports: [TypeOrmModule.forFeature([Operation, Fire, Firefighter, Truck])],
   controllers: [OperationController],
   providers: [OperationService],
-  exports: [OperationService],
 })
 export class OperationModule {}

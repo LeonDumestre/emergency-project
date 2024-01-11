@@ -1,7 +1,9 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  HttpCode,
   Param,
   ParseIntPipe,
   Post,
@@ -10,6 +12,8 @@ import { FireService } from "./fire.service";
 import { CreateFireRequestDto } from "./dto/create-fire.request.dto";
 import { FireResponseDto } from "./dto/fire.response.dto";
 import { OperationResponseDto } from "src/operation/dto/operation.response.dto";
+import { UpdateIntensityRequestDto } from "./dto/update-intensity.request.dto";
+import { FireWithOperationResponseDto } from "./dto/fire-with-operation.dto";
 
 @Controller("fires")
 export class FireController {
@@ -18,6 +22,11 @@ export class FireController {
   @Get()
   getFires(): Promise<FireResponseDto[]> {
     return this.fireService.getFires();
+  }
+
+  @Get("with-operation")
+  getFiresWithOperation(): Promise<FireWithOperationResponseDto[]> {
+    return this.fireService.getFiresWithOperation();
   }
 
   @Get(":id/operation")
@@ -30,5 +39,19 @@ export class FireController {
   @Post()
   createFire(@Body() fire: CreateFireRequestDto): Promise<FireResponseDto> {
     return this.fireService.createFire(fire);
+  }
+
+  @Post(":id/intensity")
+  updateIntensity(
+    @Param("id", ParseIntPipe) id: number,
+    @Body() { intensity }: UpdateIntensityRequestDto,
+  ): Promise<FireResponseDto> {
+    return this.fireService.updateIntensity(id, intensity);
+  }
+
+  @Delete(":id")
+  @HttpCode(204)
+  deleteFire(@Param("id", ParseIntPipe) id: number): Promise<void> {
+    return this.fireService.deleteFire(id);
   }
 }

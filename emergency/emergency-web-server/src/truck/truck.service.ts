@@ -10,6 +10,7 @@ import {
 import { CreateTruck } from "./dto/create-truck.request.dto";
 import { TruckType } from "./truck-type.entity";
 import { FireStation } from "src/fire-station/fire-station.entity";
+import { mapToFireStationResponseDto } from "src/fire-station/fire-station.service";
 
 @Injectable()
 export class TruckService {
@@ -71,12 +72,12 @@ export function mapToBaseTruckResponseDto(truck: Truck): BaseTruckResponseDto {
   return responseDto;
 }
 
-function mapToTruckResponseDto(truck: Truck): TruckResponseDto {
+export function mapToTruckResponseDto(truck: Truck): TruckResponseDto {
   const responseDto = new TruckResponseDto();
   responseDto.plate = truck.plate;
   responseDto.acquisition = truck.acquisition;
   responseDto.type = truck.type.name;
   responseDto.capacity = truck.type.capacity;
-  responseDto.fireStationId = truck.fireStation.id;
+  responseDto.fireStation = mapToFireStationResponseDto(truck.fireStation);
   return responseDto;
 }

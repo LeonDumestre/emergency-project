@@ -110,7 +110,9 @@ public class Fire extends FireEmergencyExtension {
     }
 
     public static List<Fire> updateAll(List<Fire> fires) {
+        System.out.println("Fires: " + fires.size());
         for (Fire fire : fires) {
+            System.out.println("Fire: " + fire);
             fire.update();
         }
         return fires;
@@ -127,7 +129,7 @@ public class Fire extends FireEmergencyExtension {
     }
 
     private void increaseIntensity() {
-        float increaseProbability = 0.05f;
+        float increaseProbability = 0.4f;
 
         if (this.intensity < 9 && Math.random() < increaseProbability) {
             this.setIntensity(this.getIntensity() + 1);

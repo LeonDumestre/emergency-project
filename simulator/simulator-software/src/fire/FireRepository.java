@@ -24,7 +24,7 @@ public class FireRepository {
 
         try {
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(java.net.URI.create(emergencyUrl))
+                    .uri(java.net.URI.create(emergencyUrl + "/with-operation"))
                     .header("Content-Type", "application/json")
                     .GET()
                     .build();
