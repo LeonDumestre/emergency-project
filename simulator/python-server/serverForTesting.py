@@ -105,8 +105,8 @@ captors = []
 initCaptors(captors)
 
 # Start the thread
-thread = threading.Thread(target=sendThread)
-thread.start()
+#thread = threading.Thread(target=sendThread)
+#thread.start()
 
 testFire = Fire(1, 45.724328666666665, 4.810751, 6)
 calculateFireImpact(captors, testFire)
