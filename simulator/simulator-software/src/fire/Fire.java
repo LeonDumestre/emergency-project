@@ -56,6 +56,7 @@ public class Fire extends FireEmergencyExtension {
             double longitude = topLeftCornerLongitude + Math.random() * 12 * longitudeGap;
 
             Fire newFire = FireRepository.createFire(latitude, longitude, 1);
+            if (newFire == null) return fires;
             fires.add(newFire);
         }
         return fires;

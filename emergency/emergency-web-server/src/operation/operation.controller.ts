@@ -12,7 +12,6 @@ import {
 import { OperationService } from "./operation.service";
 import { CreateOperationRequestDto } from "./dto/create-operation.request.dto";
 import { OperationResponseDto } from "./dto/operation.response.dto";
-import { AskReinforcementRequestDto } from "./dto/ask-reinforcement.request.dto";
 
 @Controller("operations")
 export class OperationController {
@@ -35,13 +34,13 @@ export class OperationController {
     return this.operationService.onSite(id);
   }
 
-  @Put(":id/live/reinforcement")
+  /*@Put(":id/live/reinforcement")
   askReinforcements(
     @Param("id", ParseIntPipe) id: number,
     @Body() reinforcements: AskReinforcementRequestDto[],
   ): Promise<OperationResponseDto> {
     return this.operationService.askReinforcements(id, reinforcements);
-  }
+  }*/
 
   @Put(":id/live/on-return")
   onReturn(

@@ -9,18 +9,21 @@ import {
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { CreateOperation } from "./dto/create-operation.request.dto";
-import { OperationResponse, OperationResponseDto } from "./dto/operation.response.dto";
-import { AskReinforcement } from "./dto/ask-reinforcement.request.dto";
-import { FireService } from "src/fire/fire.service";
+import {
+  OperationResponse,
+  OperationResponseDto,
+} from "./dto/operation.response.dto";
 import { FirefighterService } from "src/firefighter/firefighter.service";
 import { TruckService } from "src/truck/truck.service";
+import { Fire } from "src/fire/fire.entity";
 
 @Injectable()
 export class OperationService {
   constructor(
     @InjectRepository(Operation)
     private readonly operations: Repository<Operation>,
-    private readonly fireService: FireService,
+    @InjectRepository(Fire)
+    private readonly fires: Repository<Fire>,
     private readonly firefighterService: FirefighterService,
     private readonly truckService: TruckService,
   ) {}
@@ -40,7 +43,9 @@ export class OperationService {
   async createOperation(
     operation: CreateOperation,
   ): Promise<OperationResponse> {
-    const fire = await this.fireService.getRawFire(operation.fire);
+    const fire = await this.fires.findOneOrFail({
+      where: { id: operation.fire },
+    });
 
     const firefighters = await Promise.all(
       operation.firefighters.map(
@@ -69,13 +74,6 @@ export class OperationService {
     const operation = await this.getRawOperation(id);
     operation.status = ON_SITE;
     return this.operations.save(operation);
-  }
-
-  askReinforcements(
-    id: number,
-    reinforcements: AskReinforcement[],
-  ): Promise<OperationResponse> {
-    throw new Error("Method not implemented.");
   }
 
   async onReturn(id: number): Promise<OperationResponse> {

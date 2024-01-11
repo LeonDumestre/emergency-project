@@ -12,6 +12,12 @@ import { getSensors } from "@/utils/sensor.request";
 export default defineComponent({
   name: "SimulatorMap",
 
+  data() {
+    return {
+      eventSource: null as EventSource | null,
+    };
+  },
+
   async mounted() {
     const map = initMap();
 
@@ -22,17 +28,15 @@ export default defineComponent({
     fires.map((fire) => addFireCircle(map, fire));
 
     const liveFireEndPoint = "http://localhost:3110/fires/live";
-    const fireSource = new EventSource(liveFireEndPoint);
-    fireSource.addEventListener("created", () => {
-      console.log("fire created");
-    });
-    fireSource.addEventListener("updated", () => {
-      console.log("fire updated");
-    });
+    this.eventSource = new EventSource(liveFireEndPoint);
+    this.eventSource.onmessage = (event) => {
+      console.log("fire event: " + event.data);
+    };
   },
 
   beforeUnmount() {
     L.map("map").remove();
+    this.eventSource?.close();
   },
 });
 </script>
