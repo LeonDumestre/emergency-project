@@ -1,4 +1,5 @@
 import { FireStation } from "src/fire-station/fire-station.entity";
+import { Operation } from "src/operation/operation.entity";
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -24,4 +25,8 @@ export class Firefighter {
   @ManyToOne(() => FireStation, (fireStation) => fireStation.firefighters)
   @JoinColumn({ name: "id_fire_station" })
   fireStation: FireStation;
+
+  @ManyToOne(() => Operation, (operation) => operation.firefighters)
+  @JoinColumn({ name: "id_operation" })
+  operation: Operation;
 }

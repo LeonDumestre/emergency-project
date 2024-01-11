@@ -1,58 +1,48 @@
-import fireStation.FireStations;
-import firefighter.Firefighters;
 import fire.Fire;
-import truck.Trucks;
+import fire.FireEmergencyExtension;
+import fire.FireRepository;
+import fireStation.FireStation;
+import fireStation.FireStationInitializer;
+import firefighter.FirefighterInitializer;
+import sensor.SensorInitializer;
+import truck.TruckInitializer;
 
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.postgresql.PGConnection;
+import org.postgresql.PGNotification;
 
 import static java.lang.Thread.sleep;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = null;
-        HttpResponse<String> response = null;
+        //Remove all simulator fires
+        FireRepository.removeAll();
 
         //Generate fire stations
-        FireStations fireStations = new FireStations();
-        fireStations.initializeFireStations();
+        FireStation[] fireStations = FireStationInitializer.initialize();
+
+        System.out.println("Fire stations: " + fireStations.length);
 
         //Generate firefighters
-        Firefighters firefighters = new Firefighters(fireStations);
-        firefighters.initializeFirefighters();
+        FirefighterInitializer.initialize(fireStations);
 
         //Generate trucks
-        Trucks trucks = new Trucks(fireStations);
-        trucks.initializeTrucks();
+        TruckInitializer.initialize(fireStations);
 
         //Generate sensors
-        sensor.Sensors sensors = new sensor.Sensors();
-        sensors.initializeSensors();
+        SensorInitializer.initialize();
 
-        //Generate fires
-        Fire[] fires = new Fire[0];
-        double topLeftCornerLatitude = 45.788812;
-        double topLeftCornerLongitude = 4.8;
-        double latitudeGap = 0.008;
-        double longitudeGap = 0.01;
+        List<Fire> fires = new ArrayList<>();
 
-        float fireProbability = 0.05f;
-        int idFire = 0;
+        while (true) {
+            List<FireEmergencyExtension> emergencyFires = FireRepository.getEmergencyFires();
+            fires = Fire.completeWithEmergencyFires(fires, emergencyFires);
+            fires = Fire.generate(fires);
+            fires = Fire.updateAll(fires);
 
-        while(true) {
-            if (Math.random() < fireProbability) {
-                //Generate fire
-                double latitude = topLeftCornerLatitude - (double) (Math.random() * 9) * latitudeGap;
-                double longitude = topLeftCornerLongitude + (double) (Math.random() * 12) * longitudeGap;
-
-                fires[idFire] = new Fire(idFire, latitude, longitude, 1);
-
-                //Send fire to the web server
-                fires[idFire].postFire();
-            }
             sleep(3000);
         }
     }
@@ -71,12 +61,12 @@ public class Main {
 class Listener extends Thread
 {
     private Connection conn;
-    private org.postgresql.PGConnection pgconn;
+    private PGConnection pgconn;
 
     Listener(Connection conn) throws SQLException
     {
         this.conn = conn;
-        this.pgconn = conn.unwrap(org.postgresql.PGConnection.class);
+        this.pgconn = conn.unwrap(PGConnection.class);
         Statement stmt = conn.createStatement();
         stmt.execute("LISTEN new_operation");
         stmt.close();
@@ -88,11 +78,11 @@ class Listener extends Thread
         {
             while (true)
             {
-                org.postgresql.PGNotification notifications[] = pgconn.getNotifications();
+                PGNotification notifications[] = pgconn.getNotifications();
 
                 // If this thread is the only one that uses the connection, a timeout can be used to
                 // receive notifications immediately:
-                // org.postgresql.PGNotification notifications[] = pgconn.getNotifications(10000);
+                // PGNotification notifications[] = pgconn.getNotifications(10000);
 
                 if (notifications != null)
                 {
@@ -108,13 +98,9 @@ class Listener extends Thread
                 sleep(500);
             }
         }
-        catch (SQLException sqle)
+        catch (SQLException | InterruptedException err)
         {
-            sqle.printStackTrace();
-        }
-        catch (InterruptedException ie)
-        {
-            ie.printStackTrace();
+            err.printStackTrace();
         }
     }
 }

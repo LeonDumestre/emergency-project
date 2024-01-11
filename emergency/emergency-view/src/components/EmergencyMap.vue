@@ -39,7 +39,7 @@ export default defineComponent({
 @import "leaflet/dist/leaflet.css";
 
 #map {
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
 }
 </style>

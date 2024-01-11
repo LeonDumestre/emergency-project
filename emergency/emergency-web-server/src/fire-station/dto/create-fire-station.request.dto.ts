@@ -1,9 +1,9 @@
 import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { FireStation } from "../fire-station.entity";
 
-export type CreateFireStation = Omit<
+export type CreateFireStation = Pick<
   FireStation,
-  "id" | "firefighters" | "trucks"
+  "name" | "latitude" | "longitude"
 >;
 
 export class CreateFireStationRequestDto implements CreateFireStation {

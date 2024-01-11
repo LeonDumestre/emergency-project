@@ -1,7 +1,7 @@
 import { IsDateString, IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { Truck } from "../truck.entity";
 
-export type CreateTruck = Omit<Truck, "type" | "fireStation"> & {
+export type CreateTruck = Pick<Truck, "plate" | "acquisition"> & {
   type: string;
   fireStationId: number;
 };

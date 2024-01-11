@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { Truck } from "./truck.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
@@ -25,6 +25,14 @@ export class TruckService {
       .leftJoinAndSelect("truck.fireStation", "fireStation")
       .getMany();
     return trucks.map(this.mapToTruckResponseDto);
+  }
+
+  async getRawTruck(plate: string): Promise<Truck> {
+    const truck = await this.trucks.findOne({ where: { plate } });
+    if (!truck) {
+      throw new NotFoundException(`Truck #${plate} does not exist`);
+    }
+    return truck;
   }
 
   async createTruck(truck: CreateTruck): Promise<TruckResponse> {
@@ -66,7 +74,7 @@ export class TruckService {
       where: { id },
     });
     if (!fireStation) {
-      throw new Error(`Fire station #${id} does not exist`);
+      throw new NotFoundException(`Fire station #${id} does not exist`);
     }
     return fireStation;
   }

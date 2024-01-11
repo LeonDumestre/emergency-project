@@ -1,7 +1,10 @@
 import { IsDateString, IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { Firefighter } from "../firefighter.entity";
 
-export type CreateFirefighter = Omit<Firefighter, "id" | "fireStation"> & {
+export type CreateFirefighter = Pick<
+  Firefighter,
+  "name" | "birthDate" | "grade"
+> & {
   fireStationId: number;
 };
 

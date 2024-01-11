@@ -3,9 +3,9 @@ import { FireStation } from "../fire-station.entity";
 import { BaseFirefighterResponseDto } from "src/firefighter/dto/firefighter.response.dto";
 import { BaseTruckResponseDto } from "src/truck/dto/truck.response.dto";
 
-export type BaseFireStationResponse = Omit<
+export type BaseFireStationResponse = Pick<
   FireStation,
-  "firefighters" | "trucks"
+  "id" | "name" | "latitude" | "longitude"
 >;
 
 export type FireStationResponse = BaseFireStationResponse & {

@@ -1,22 +1,33 @@
 package fire;
 
-import java.io.IOException;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.Locale;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Fire {
-    private int id;
-    private double latitude;
-    private double longitude;
+import operation.Operation;
+import operation.OperationStatus;
+
+public class Fire extends FireEmergencyExtension {
+    private final int id;
+    private final double latitude;
+    private final double longitude;
     private int intensity;
+    private final static float generationProbability = 0.2f;
+    private final static double topLeftCornerLatitude = 45.788812;
+    private final static double topLeftCornerLongitude = 4.8;
+    private final static double latitudeGap = 0.008;
+    private final static double longitudeGap = 0.01;
 
     public Fire(int id, double latitude, double longitude, int intensity) {
+        super();
+        this.id = id;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.intensity = intensity;
+        this.linkedEmergencyFireId = -1;
+    }
+
+    public Fire(int id, double latitude, double longitude, int intensity, int linkedEmergencyFireId, Operation operation) {
+        super(linkedEmergencyFireId, operation);
         this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -26,58 +37,110 @@ public class Fire {
     public int getId() {
         return id;
     }
-
-    public double getLatitude() {
-        return latitude;
-    }
-
-    public double getLongitude() {
-        return longitude;
-    }
-
     public int getIntensity() {
         return intensity;
     }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
-    }
-
-    public void setLongitude(double longitude) {
-        this.longitude = longitude;
-    }
-
+    
     public void setIntensity(int intensity) {
         this.intensity = intensity;
     }
 
-    public void postFire() {
-        HttpClient client = HttpClient.newHttpClient();
+    public static List<Fire> generate(List<Fire> fires) {
+        // check if all fires have an operation
+        for (Fire fire : fires) {
+            if (!fire.hasOperation()) return fires;
+        }
 
-        try {
-            LocalDateTime date = LocalDateTime.now();
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("uuuu-MM-dd'T'HH:mm:ssX");
-            String cleanDate = date.atOffset(java.time.ZoneOffset.UTC).format(dtf);
-            String json = "{\"latitude\":" + this.getLatitude() + ",\"longitude\":" + this.getLongitude() + ",\"intensity\":" + this.getIntensity() + ",\"triggerAt\":\"" + cleanDate + "\"}";
+        if (Math.random() < generationProbability) {
+            double latitude = topLeftCornerLatitude - Math.random() * 9 * latitudeGap;
+            double longitude = topLeftCornerLongitude + Math.random() * 12 * longitudeGap;
 
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(java.net.URI.create("http://localhost:3110/fires"))
-                    .header("Content-Type", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(json))
-                    .build();
+            Fire newFire = FireRepository.createFire(latitude, longitude, 1);
+            if (newFire == null) return fires;
+            fires.add(newFire);
+        }
+        return fires;
+    }
 
-            System.out.println("POST Fire: " + json);
+    public static List<Fire> completeWithEmergencyFires(List<Fire> fires, List<FireEmergencyExtension> emergencyFires) {
+        if (fires == null) fires = new ArrayList<>();
+        if (fires.isEmpty() || emergencyFires == null || emergencyFires.isEmpty()) return fires;
 
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        List<Fire> unlinkedFires = new ArrayList<>();
+        for (Fire fire : fires) {
+            if (!fire.isLinkedToEmergencyFire()) {
+                unlinkedFires.add(fire);
+                continue;
+            }
+            if (fire.hasOperation()) continue;
 
-            System.out.println("POST Fire: " + response.body());
+            for (FireEmergencyExtension emergencyFire : emergencyFires) {
+                boolean isLinkedWith = emergencyFire.getLinkedEmergencyFireId() == fire.linkedEmergencyFireId;
+                if (fire.isLinkedToEmergencyFire() && fire.hasOperation() && isLinkedWith) {
+                    emergencyFires.remove(emergencyFire);
+                    break;
+                }
 
-        } catch (IOException | InterruptedException e) {
-            System.out.println("POST Fire: " + e.getMessage());
+                if (fire.isLinkedToEmergencyFire() && isLinkedWith) {
+                    fire.setOperation(emergencyFire.getOperation());
+                    emergencyFires.remove(emergencyFire);
+                    break;
+                }
+            }
+        }
+
+        if (!unlinkedFires.isEmpty() && !emergencyFires.isEmpty()) return fires;
+        fires = Fire.linkToEmergencyFires(unlinkedFires, emergencyFires);
+
+        return fires;
+    }
+
+    public static List<Fire> linkToEmergencyFires(List<Fire> unlinkedFires, List<FireEmergencyExtension> emergencyFires) {
+        for (FireEmergencyExtension emergencyFire : emergencyFires) {
+            for (Fire fire : unlinkedFires) {
+                if (fire.isLinkedToEmergencyFire()) continue;
+
+                fire.setLinkedEmergencyFireId(emergencyFire.getLinkedEmergencyFireId());
+                fire.setOperation(emergencyFire.getOperation());
+                emergencyFires.remove(emergencyFire);
+                break;
+            }
+        }
+        return unlinkedFires;
+    }
+
+    public static List<Fire> updateAll(List<Fire> fires) {
+        for (Fire fire : fires) {
+            fire.update();
+        }
+        return fires;
+    }
+
+    public void update() {
+        if (!this.hasOperation() || operation.getStatus() == OperationStatus.ON_ROAD) {
+            this.increaseIntensity();
+            return;
+        }
+
+        this.decreaseIntensity();
+        operation.updateStatus();
+    }
+
+    private void increaseIntensity() {
+        float increaseProbability = 0.05f;
+
+        if (this.intensity < 9 && Math.random() < increaseProbability) {
+            this.setIntensity(this.getIntensity() + 1);
+            FireRepository.updateIntensity(this.id, this.intensity);
+        }
+    }
+
+    private void decreaseIntensity() {
+        float decreaseProbability = 0.05f;
+
+        if (this.intensity > 0 && Math.random() < decreaseProbability) {
+            this.setIntensity(this.getIntensity() - 1);
+            FireRepository.updateIntensity(this.id, this.intensity);
         }
     }
 

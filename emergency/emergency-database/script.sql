@@ -4,114 +4,61 @@ CREATE DATABASE emergency_database;
 
 CREATE TABLE fire_station(
    id SERIAL PRIMARY KEY,
-   name VARCHAR(200),
-   latitude double precision,
-   longitude double precision
-);
-
-CREATE TABLE sensor(
-   id SERIAL PRIMARY KEY,
-   latitude double precision,
-   longitude double precision
-);
-
-CREATE TABLE operation(
-   id_operation VARCHAR(50),
-   start_date TIMESTAMP,
-   end_date TIMESTAMP,
-   PRIMARY KEY(id_operation)
-);
-
-CREATE TABLE firefighter(
-   id SERIAL PRIMARY KEY,
-   name VARCHAR(200),
-   birthdate DATE,
-   grade VARCHAR(50),
-   id_fire_station INT,
-   FOREIGN KEY(id_fire_station) REFERENCES fire_station(id)
-);
-
-CREATE TABLE availability(
-   id_availability INT,
-   start_date DATE,
-   end_date DATE,
-   id_firefighter INT,
-   PRIMARY KEY(id_availability),
-   FOREIGN KEY(id_firefighter) REFERENCES firefighter(id)
-);
-
-CREATE TABLE truck_type(
-   truck_type VARCHAR(50),
-   capacity INT,
-   PRIMARY KEY(truck_type)
-);
-
-CREATE TABLE truck(
-   plate VARCHAR(20),
-   acquisition DATE,
-   truck_type VARCHAR(50),
-   id_fire_station INT,
-   PRIMARY KEY(plate),
-   FOREIGN KEY(truck_type) REFERENCES truck_type(truck_type),
-   FOREIGN KEY(id_fire_station) REFERENCES fire_station(id)
-);
-
-CREATE TABLE victim(
-   id_victim INT,
-   name VARCHAR(50),
-   status VARCHAR(3),
-   PRIMARY KEY(id_victim)
+   name VARCHAR(200) NOT NULL,
+   latitude double precision NOT NULL,
+   longitude double precision NOT NULL
 );
 
 CREATE TABLE fire(
-   id INT,
-   latitude double precision,
-   longitude double precision,
-   PRIMARY KEY(id)
+   id SERIAL PRIMARY KEY,
+   latitude double precision NOT NULL,
+   longitude double precision NOT NULL,
+   intensity INT NOT NULL,
+   id_operation INT
 );
 
-CREATE TABLE operation_truck_status(
-   id_operation VARCHAR(50),
-   plate VARCHAR(20),
-   time_stamp TIMESTAMP,
-   status VARCHAR(50),
-   PRIMARY KEY(id_operation, plate),
-   FOREIGN KEY(id_operation) REFERENCES operation(id_operation),
-   FOREIGN KEY(plate) REFERENCES truck(plate)
+CREATE TYPE operation_status AS ENUM ('ON_ROAD', 'ON_SITE', 'RETURNING');
+
+CREATE TABLE operation(
+   id SERIAL PRIMARY KEY,
+   start_date TIMESTAMP NOT NULL,
+   status operation_status NOT NULL,
+   id_fire INT
 );
 
-CREATE TABLE operation_firefighter_truck(
-   id_operation VARCHAR(50),
-   id_firefighter INT,
-   plate VARCHAR(20),
-   PRIMARY KEY(id_operation, id_firefighter, plate),
-   FOREIGN KEY(id_operation) REFERENCES operation(id_operation),
-   FOREIGN KEY(id_firefighter) REFERENCES firefighter(id),
-   FOREIGN KEY(plate) REFERENCES truck(plate)
+ALTER TABLE fire
+   ADD CONSTRAINT fire_id_operation_fk
+   FOREIGN KEY (id_operation) REFERENCES operation(id);
+
+ALTER TABLE operation
+   ADD CONSTRAINT operation_id_fire_fk
+   FOREIGN KEY (id_fire) REFERENCES fire(id);
+
+CREATE TABLE firefighter(
+   id SERIAL PRIMARY KEY,
+   name VARCHAR(200) NOT NULL,
+   birthdate DATE NOT NULL,
+   grade VARCHAR(50) NOT NULL,
+   id_fire_station INT,
+   id_operation INT,
+   FOREIGN KEY(id_fire_station) REFERENCES fire_station(id),
+   FOREIGN KEY(id_operation) REFERENCES operation(id)
 );
 
-CREATE TABLE operation_sensor(
-   id_sensor INT,
-   id_operation VARCHAR(50),
-   PRIMARY KEY(id_sensor, id_operation),
-   FOREIGN KEY(id_sensor) REFERENCES sensor(id),
-   FOREIGN KEY(id_operation) REFERENCES operation(id_operation)
+CREATE TABLE truck_type(
+   truck_type VARCHAR(50) PRIMARY KEY,
+   capacity INT NOT NULL
 );
 
-CREATE TABLE victim_operation(
-   id_operation VARCHAR(50),
-   id_victim INT,
-   PRIMARY KEY(id_operation, id_victim),
-   FOREIGN KEY(id_operation) REFERENCES operation(id_operation),
-   FOREIGN KEY(id_victim) REFERENCES victim(id_victim)
-);
-
-CREATE TABLE fire_operation(
-   id_operation VARCHAR(50),
-   id_fire INT,
-   PRIMARY KEY(id_operation, id_fire),
-   FOREIGN KEY(id_operation) REFERENCES operation(id_operation),
-   FOREIGN KEY(id_fire) REFERENCES fire(id)
+CREATE TABLE truck(
+   plate VARCHAR(20) PRIMARY KEY,
+   acquisition DATE NOT NULL,
+   truck_type VARCHAR(50) NOT NULL,
+   id_fire_station INT,
+   id_operation INT,
+   FOREIGN KEY(truck_type) REFERENCES truck_type(truck_type),
+   FOREIGN KEY(id_fire_station) REFERENCES fire_station(id),
+   FOREIGN KEY(id_operation) REFERENCES operation(id)
 );
 
 -- Création d'un trigger pour envoyer une notification lors de l'insertion dans la table operation
@@ -121,7 +68,7 @@ BEGIN
   -- Utilisez TG_OP pour obtenir le type d'opération (INSERT, UPDATE, DELETE)
   IF TG_OP = 'INSERT' THEN
     -- Envoyer une notification avec le nom de la nouvelle opération
-    PERFORM pg_notify('new_operation', NEW.id_operation::text);
+    PERFORM pg_notify('new_operation', NEW.id::text);
   END IF;
   RETURN NEW;
 END;
