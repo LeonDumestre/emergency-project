@@ -37,6 +37,7 @@ public class Fire extends FireEmergencyExtension {
     public int getId() {
         return id;
     }
+
     public int getIntensity() {
         return intensity;
     }

@@ -5,6 +5,7 @@ import {
   ON_SITE,
   Operation,
   OperationInput,
+  FINISHED,
 } from "./operation.entity";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
@@ -90,9 +91,15 @@ export class OperationService {
     return this.operations.save(operation);
   }
 
-  async onReturn(id: number): Promise<OperationResponse> {
+  async returning(id: number): Promise<OperationResponse> {
     const operation = await this.operations.findOneOrFail({ where: { id } });
     operation.status = RETURNING;
+    return this.operations.save(operation);
+  }
+
+  async finished(id: number): Promise<OperationResponse> {
+    const operation = await this.operations.findOneOrFail({ where: { id } });
+    operation.status = FINISHED;
     return this.operations.save(operation);
   }
 

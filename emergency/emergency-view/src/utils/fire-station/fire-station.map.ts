@@ -8,5 +8,5 @@ export function addFireStationMarker(map: L.Map, fireStation: FireStation) {
     fillOpacity: 0.6,
   }).addTo(map);
 
-  circle.bindPopup(`${fireStation.name}`);
+  circle.bindPopup(`<h3>${fireStation.name}</h3>`);
 }

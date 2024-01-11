@@ -1,6 +1,7 @@
 package operation;
 
 import fire.Fire;
+import fire.FireRepository;
 import firefighter.Firefighter;
 import truck.Truck;
 
@@ -58,29 +59,19 @@ public class Operation {
     }
 
     public void updateStatus() {
-        System.out.println("STATUS: " + this.status);
-        if (this.status == OperationStatus.ON_ROAD) {
-            this.notifyOnSiteIfArrived();
-        } else if (this.status == OperationStatus.ON_SITE) {
-            this.notifyOnReturnIfFinished();
-        } else if (this.status == OperationStatus.RETURNING) {
-            this.removeIfArrived();
-        }
+        this.notifyOnSite();
+        this.notifyReturning();
+        this.notifyOnFinished();
     }
 
-    public void notifyOnSiteIfArrived() {
-        System.out.println("NOTIFY ON SITE IF ARRIVED");
-        System.out.println("START: " + this.start);
-        System.out.println("NOW: " + LocalDateTime.now());
-        System.out.println("START + 1 MINUTE: " + this.start.plusMinutes(1));
-        System.out.println("IS AFTER: " + this.start.plusMinutes(1).isAfter(LocalDateTime.now()));
+    public void notifyOnSite() {
         if (this.status == OperationStatus.ON_ROAD && this.start.plusMinutes(1).isAfter(LocalDateTime.now())) {
             this.status = OperationStatus.ON_SITE;
             OperationRepository.notifyOnSite(this.id);
         }
     }
 
-    public void notifyOnReturnIfFinished() {
+    public void notifyReturning() {
         if (this.status == OperationStatus.ON_SITE && this.fire.getIntensity() == 0) {
             this.status = OperationStatus.RETURNING;
             this.returnStart = LocalDateTime.now();
@@ -88,9 +79,10 @@ public class Operation {
         }
     }
 
-    public void removeIfArrived() {
+    public void notifyOnFinished() {
         if (this.status == OperationStatus.RETURNING && this.returnStart.plusMinutes(1).isAfter(LocalDateTime.now())) {
-            OperationRepository.remove(this.id);
+            OperationRepository.notifyFinished(this.id);
+            FireRepository.remove(this.id);
         }
     }
 
