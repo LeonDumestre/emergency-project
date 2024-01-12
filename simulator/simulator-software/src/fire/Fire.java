@@ -146,7 +146,6 @@ public class Fire extends FireEmergencyExtension {
 
     private void decreaseIntensity() {
         float decreaseProbability = 0.5f;
-
         if (this.intensity > 0 && Math.random() < decreaseProbability) {
             this.setIntensity(this.getIntensity() - 1);
             FireRepository.updateIntensity(this.id, this.intensity);

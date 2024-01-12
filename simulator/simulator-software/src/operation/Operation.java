@@ -49,10 +49,9 @@ public class Operation {
         return trucks;
     }
 
-    public void updateStatus(Fire fire) {
-        System.out.println("Updating status of operation " + this.id + " to " + this.status);
+    public void updateStatus() {
         this.notifyOnSite();
-        this.notifyReturning(fire.getIntensity());
+        this.notifyReturning();
         this.notifyOnFinished();
     }
 
