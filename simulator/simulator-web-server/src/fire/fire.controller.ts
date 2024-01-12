@@ -43,7 +43,7 @@ export class FireController {
     return this.fireService.updateIntensity(id, intensity);
   }
 
-  @Delete()
+  @Delete(":id")
   @HttpCode(204)
   deleteFire(@Param("id", ParseIntPipe) id: number): Promise<void> {
     return this.fireService.deleteFire(id);

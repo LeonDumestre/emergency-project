@@ -50,13 +50,14 @@ public class Operation {
     }
 
     public void updateStatus(Fire fire) {
+        System.out.println("Updating status of operation " + this.id + " to " + this.status);
         this.notifyOnSite();
         this.notifyReturning(fire.getIntensity());
         this.notifyOnFinished();
     }
 
     public void notifyOnSite() {
-        if (this.status == OperationStatus.ON_ROAD && this.start.plusMinutes(1).isAfter(LocalDateTime.now())) {
+        if (this.status == OperationStatus.ON_ROAD && LocalDateTime.now().plusMinutes(1).isAfter(this.start)) {
             this.status = OperationStatus.ON_SITE;
             OperationRepository.notifyOnSite(this.id);
         }

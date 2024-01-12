@@ -99,7 +99,7 @@ public class Fire extends FireEmergencyExtension {
         if (unlinkedFires.isEmpty() || unlinkedEmergencyFires.isEmpty()) return fires;
         for (Fire fire : unlinkedFires) {
             for (FireEmergencyExtension emergencyFire : unlinkedEmergencyFires) {
-                if (!emergencyFire.isLinkedToEmergencyFire()) continue;
+                if (!emergencyFire.isLinkedToEmergencyFire() || emergencyFire.getOperation().getStatus() == OperationStatus.FINISHED) continue;
                 fire.setLinkedEmergencyFireId(emergencyFire.getLinkedEmergencyFireId());
                 fire.setOperation(emergencyFire.getOperation());
                 emergencyFire.clean();

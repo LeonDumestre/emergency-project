@@ -11,7 +11,7 @@ export class Fire {
   @Column({ name: "longitude", type: "double", nullable: false })
   longitude: number;
 
-  @Column({ name: "intensity", type: "int", nullable: false })
+  @Column({ name: "intensity", type: "int", nullable: true })
   intensity: number;
 
   @Column({ name: "triggerAt", type: "date", nullable: false })
