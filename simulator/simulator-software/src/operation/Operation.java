@@ -1,6 +1,7 @@
 package operation;
 
 import fire.Fire;
+import fire.FireRepository;
 import firefighter.Firefighter;
 import truck.Truck;
 
@@ -10,7 +11,6 @@ public class Operation {
     private final int id;
     private final LocalDateTime start;
     private OperationStatus status;
-    private Fire fire;
     private Firefighter[] firefighters;
     private Truck[] trucks;
     private LocalDateTime returnStart;
@@ -21,11 +21,10 @@ public class Operation {
         this.status = status;
     }
 
-    public Operation(int id, LocalDateTime start, OperationStatus status, Fire fire, Firefighter[] firefighters, Truck[] trucks) {
+    public Operation(int id, LocalDateTime start, OperationStatus status, Firefighter[] firefighters, Truck[] trucks) {
         this.id = id;
         this.start = start;
         this.status = status;
-        this.fire = fire;
         this.firefighters = firefighters;
         this.trucks = trucks;
     }
@@ -42,13 +41,6 @@ public class Operation {
         return status;
     }
 
-    public Fire getFire() {
-        return fire;
-    }
-    public void setFire(Fire fire) {
-        this.fire = fire;
-    }
-
     public Firefighter[] getFirefighters() {
         return firefighters;
     }
@@ -57,40 +49,31 @@ public class Operation {
         return trucks;
     }
 
-    public void updateStatus() {
-        System.out.println("STATUS: " + this.status);
-        if (this.status == OperationStatus.ON_ROAD) {
-            this.notifyOnSiteIfArrived();
-        } else if (this.status == OperationStatus.ON_SITE) {
-            this.notifyOnReturnIfFinished();
-        } else if (this.status == OperationStatus.RETURNING) {
-            this.removeIfArrived();
-        }
+    public void updateStatus(Fire fire) {
+        this.notifyOnSite();
+        this.notifyReturning(fire.getIntensity());
+        this.notifyOnFinished();
     }
 
-    public void notifyOnSiteIfArrived() {
-        System.out.println("NOTIFY ON SITE IF ARRIVED");
-        System.out.println("START: " + this.start);
-        System.out.println("NOW: " + LocalDateTime.now());
-        System.out.println("START + 1 MINUTE: " + this.start.plusMinutes(1));
-        System.out.println("IS AFTER: " + this.start.plusMinutes(1).isAfter(LocalDateTime.now()));
+    public void notifyOnSite() {
         if (this.status == OperationStatus.ON_ROAD && this.start.plusMinutes(1).isAfter(LocalDateTime.now())) {
             this.status = OperationStatus.ON_SITE;
             OperationRepository.notifyOnSite(this.id);
         }
     }
 
-    public void notifyOnReturnIfFinished() {
-        if (this.status == OperationStatus.ON_SITE && this.fire.getIntensity() == 0) {
+    public void notifyReturning(int intensity){
+        if (this.status == OperationStatus.ON_SITE && intensity == 0) {
             this.status = OperationStatus.RETURNING;
             this.returnStart = LocalDateTime.now();
             OperationRepository.notifyOnReturn(this.id);
         }
     }
 
-    public void removeIfArrived() {
+    public void notifyOnFinished() {
         if (this.status == OperationStatus.RETURNING && this.returnStart.plusMinutes(1).isAfter(LocalDateTime.now())) {
-            OperationRepository.remove(this.id);
+            OperationRepository.notifyFinished(this.id);
+            FireRepository.remove(this.id);
         }
     }
 

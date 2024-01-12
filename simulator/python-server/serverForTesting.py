@@ -70,7 +70,7 @@ def calculateFireImpact(captors, fire):
 # Get the list of fires
 def getFireList(list):
     # API request
-    response = requests.get("http://localhost:3110/fire")
+    response = requests.get("http://localhost:3110/fires")
     data = response.json()
     # Fire creation
     for fire in data:

@@ -19,11 +19,11 @@ def haversine_distance(coord1, coord2):
     a = math.sin(dlat / 2) ** 2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2) ** 2
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
 
-    # Rayon de la Terre en mètres
-    earth_radius = 6371000
+    # Rayon de la Terre en kilomètres (approximatif)
+    radius_of_earth = 6371.0
 
     # Calculer la distance
-    distance = earth_radius * c
+    distance = radius_of_earth * c
 
     return distance
 
@@ -83,8 +83,10 @@ def find_repeated_intersections(intersections):
 if __name__ == "__main__":
     # Exemple avec cinq cercles, chaque cercle est représenté par un objet Circle
     circles = [
-        Circle((45.788812, 4.8), 1000),  # San Francisco
-        Circle((45.772812, 4.81), 1000),   # Los Angeles
+        Circle((45.748812,4.84), 0.4616258449977258),
+        Circle((45.748812,4.85), 0.5170748761910181),
+        Circle((45.740812,4.84), 0.6893471472452194),
+        Circle((45.740812,4.85), 0.7276505161804316),
         # Ajoutez d'autres cercles si nécessaire
     ]
 

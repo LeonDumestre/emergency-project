@@ -6,6 +6,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -60,7 +61,7 @@ public class FireRepository {
             String json = "{\"latitude\":" + latitude + ",\"longitude\":" + longitude + ",\"intensity\":" + intensity + ",\"triggerAt\":\"" + cleanDate + "\"}";
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(java.net.URI.create(simulatorUrl))
+                    .uri(URI.create(simulatorUrl))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(json))
                     .build();
@@ -88,7 +89,7 @@ public class FireRepository {
             String json = "{\"intensity\":" + intensity + "}";
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(java.net.URI.create("http://localhost:3110/fires/" + id + "/intensity"))
+                    .uri(URI.create("http://localhost:3110/fires/" + id + "/intensity"))
                     .header("Content-Type", "application/json")
                     .POST(HttpRequest.BodyPublishers.ofString(json))
                     .build();
@@ -97,10 +98,28 @@ public class FireRepository {
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            System.out.println("POST Fire Intensity Response: " + response.body());
+            System.out.println("POST Fire" + id + "Intensity Response: " + response.body());
 
         } catch (IOException | InterruptedException e) {
             System.out.println("POST Fire Intensity Response: " + e.getMessage());
+        }
+    }
+
+    public static void remove(int id) {
+        HttpClient client = HttpClient.newHttpClient();
+
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(simulatorUrl + "/" + id))
+                    .header("Content-Type", "application/json")
+                    .DELETE()
+                    .build();
+
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            System.out.println("DELETE Fire " + id + ": " + response.statusCode());
+        } catch (IOException | InterruptedException e) {
+            System.out.println("DELETE Fire: " + e.getMessage());
         }
     }
 
@@ -109,7 +128,7 @@ public class FireRepository {
 
         try {
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(java.net.URI.create(simulatorUrl + "/all"))
+                    .uri(URI.create(simulatorUrl + "/all"))
                     .header("Content-Type", "application/json")
                     .DELETE()
                     .build();
