@@ -43,11 +43,18 @@ export class OperationController {
     return this.operationService.askReinforcements(id, reinforcements);
   }*/
 
-  @Put(":id/live/on-return")
-  onReturn(
+  @Put(":id/live/returning")
+  returning(
     @Param("id", ParseIntPipe) id: number,
   ): Promise<OperationResponseDto> {
-    return this.operationService.onReturn(id);
+    return this.operationService.returning(id);
+  }
+
+  @Put(":id/live/finished")
+  finished(
+    @Param("id", ParseIntPipe) id: number,
+  ): Promise<OperationResponseDto> {
+    return this.operationService.finished(id);
   }
 
   @Delete(":id")

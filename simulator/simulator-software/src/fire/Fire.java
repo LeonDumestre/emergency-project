@@ -11,7 +11,11 @@ public class Fire extends FireEmergencyExtension {
     private final double latitude;
     private final double longitude;
     private int intensity;
+
     private final static float generationProbability = 0.2f;
+    private final static float increaseProbability = 0.1f;
+    private final static float decreaseProbability = 0.4f;
+
     private final static double topLeftCornerLatitude = 45.788812;
     private final static double topLeftCornerLongitude = 4.8;
     private final static double latitudeGap = 0.008;
@@ -37,6 +41,7 @@ public class Fire extends FireEmergencyExtension {
     public int getId() {
         return id;
     }
+
     public int getIntensity() {
         return intensity;
     }
@@ -110,9 +115,7 @@ public class Fire extends FireEmergencyExtension {
     }
 
     public static List<Fire> updateAll(List<Fire> fires) {
-        System.out.println("Fires: " + fires.size());
         for (Fire fire : fires) {
-            System.out.println("Fire: " + fire);
             fire.update();
         }
         return fires;
@@ -124,13 +127,15 @@ public class Fire extends FireEmergencyExtension {
             return;
         }
 
+        if (this.hasOperation() && operation.getStatus() == OperationStatus.FINISHED) {
+            return;
+        }
+
         this.decreaseIntensity();
         operation.updateStatus();
     }
 
     private void increaseIntensity() {
-        float increaseProbability = 0.4f;
-
         if (this.intensity < 9 && Math.random() < increaseProbability) {
             this.setIntensity(this.getIntensity() + 1);
             FireRepository.updateIntensity(this.id, this.intensity);
@@ -138,8 +143,6 @@ public class Fire extends FireEmergencyExtension {
     }
 
     private void decreaseIntensity() {
-        float decreaseProbability = 0.05f;
-
         if (this.intensity > 0 && Math.random() < decreaseProbability) {
             this.setIntensity(this.getIntensity() - 1);
             FireRepository.updateIntensity(this.id, this.intensity);

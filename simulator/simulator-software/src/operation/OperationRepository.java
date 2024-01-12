@@ -61,9 +61,9 @@ public class OperationRepository {
         HttpClient client = HttpClient.newHttpClient();
 
         try {
-            System.out.println("PUT Operation ON RETURN");
+            System.out.println("PUT Operation RETURNING");
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(emergencyUrl + "/" + id + "/live/on-return"))
+                    .uri(URI.create(emergencyUrl + "/" + id + "/live/returning"))
                     .header("Content-Type", "application/json")
                     .PUT(HttpRequest.BodyPublishers.noBody())
                     .build();
@@ -75,15 +75,15 @@ public class OperationRepository {
         }
     }
 
-    public static void remove(int id) {
+    public static void notifyFinished(int id) {
         HttpClient client = HttpClient.newHttpClient();
 
         try {
-            System.out.println("DELETE Operation");
+            System.out.println("PUT Operation FINISHED");
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(emergencyUrl + "/" + id))
+                    .uri(URI.create(emergencyUrl + "/" + id + "/live/finished"))
                     .header("Content-Type", "application/json")
-                    .DELETE()
+                    .PUT(HttpRequest.BodyPublishers.noBody())
                     .build();
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());

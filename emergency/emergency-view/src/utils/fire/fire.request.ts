@@ -15,6 +15,33 @@ export function getFires(): Promise<Fire[]> {
         id: 1,
         start: new Date(),
         status: "ON_SITE",
+        firefighters: [],
+        trucks: [
+          {
+            plate: "AB-123-CD",
+            acquisition: new Date(),
+            type: "FPT",
+            capacity: 1000,
+            fireStation: {
+              id: 2,
+              name: "Fire Station 2",
+              latitude: 45.762779,
+              longitude: 4.84393,
+            },
+          },
+          {
+            plate: "EF-456-GH",
+            acquisition: new Date(),
+            type: "FPT",
+            capacity: 1000,
+            fireStation: {
+              id: 5,
+              name: "Fire Station 5",
+              latitude: 45.765872,
+              longitude: 4.905116,
+            },
+          },
+        ],
       },
     },
     {
@@ -27,6 +54,8 @@ export function getFires(): Promise<Fire[]> {
         id: 2,
         start: new Date(),
         status: "ON_ROAD",
+        firefighters: [],
+        trucks: [],
       },
     },
     {

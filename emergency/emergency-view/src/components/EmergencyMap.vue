@@ -6,12 +6,11 @@
 import L from "leaflet";
 import { defineComponent } from "vue";
 import { initMap } from "@/utils/map.utils";
-import { getSensors } from "@/utils/sensor/sensor.request";
-import { addSensorCircle } from "@/utils/sensor/sensor.map";
 import { getFires } from "@/utils/fire/fire.request";
 import { addFireCircle } from "@/utils/fire/fire.map";
 import { getFireStations } from "@/utils/fire-station/fire-station.request";
 import { addFireStationMarker } from "@/utils/fire-station/fire-station.map";
+import { addOperationLines } from "@/utils/fire/fire.map";
 
 export default defineComponent({
   name: "EmergencyMap",
@@ -19,14 +18,14 @@ export default defineComponent({
   async mounted() {
     const map = initMap();
 
-    const sensors = await getSensors();
-    sensors.map((sensor) => addSensorCircle(map, sensor));
-
-    const fires = await getFires();
-    fires.map((fire) => addFireCircle(map, fire));
-
     const fireStations = await getFireStations();
     fireStations.map((fireStation) => addFireStationMarker(map, fireStation));
+
+    const fires = await getFires();
+    fires.map((fire) => {
+      addFireCircle(map, fire);
+      addOperationLines(map, fire);
+    });
   },
 
   beforeUnmount() {
