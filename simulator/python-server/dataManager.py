@@ -36,6 +36,7 @@ class Captor:
 # ======================================================================================================================
 # Functions
 # ======================================================================================================================
+
 # Calculate distance
 def haversine_distance(lat1, lon1, lat2, lon2):
     # Convertir les coordonnées de degrés à radians
@@ -57,6 +58,7 @@ def haversine_distance(lat1, lon1, lat2, lon2):
 
     return distance
 
+
 # Init the list of sensors
 def initCaptors(captors):    
     # Generate sensors
@@ -68,12 +70,14 @@ def initCaptors(captors):
         values = []
         captors.append(Captor(sensor.get("id"), values, sensor.get("latitude"), sensor.get("longitude")))
 
+
 # Calculate the impact of a fire on the sensors
 def calculateFireImpact(captors, fire):
     captorRange = 0.9
     for captor in captors:
         if haversine_distance(fire.latitude, fire.longitude, captor.latitude, captor.longitude) < captorRange:
             captor.values.append(FireByCaptor(fire.id, fire.intensity, haversine_distance(fire.latitude, fire.longitude, captor.latitude, captor.longitude) * 1000))
+
 
 # Get the list of fires
 def getFireList(list):
@@ -83,6 +87,7 @@ def getFireList(list):
     # Fire creation
     for fire in data:
         list.append(Fire(fire.get("id"), fire.get("latitude"), fire.get("longitude"), fire.get("intensity")))
+
 
 # Compare two captor to detect update
 def compareCaptor(captor1, captor2):
@@ -108,5 +113,13 @@ def getSensorAndFireData():
     # Calculate impact
     for fire in fires:
         calculateFireImpact(captors, fire)
+    
+    # Remove empty captors
+    returncaptors = []
+    for captor in captors:
+        if len(captor.values) > 0:
+            returncaptors.append(captor)
+    
+    # Return captors with data
+    return returncaptors
 
-    return captors

@@ -58,7 +58,14 @@ if __name__ == '__main__':
         print("Server started")
         while ser.isOpen():
             try:
-                sendUARTMessage("a;")
+                # lock the serial because we need it not to flush our input
+                mutex.acquire()
+                data_str = ser.read_until(b'~')
+                ser.flush()
+                mutex.release()
+
+                # decode the data
+                print ("Received data: " + data_str.decode("utf-8"))
 
             except Exception as e:
                 print("Error while reading from serial port: {}".format(e))
