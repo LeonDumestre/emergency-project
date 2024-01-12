@@ -49,9 +49,9 @@ public class Operation {
         return trucks;
     }
 
-    public void updateStatus() {
+    public void updateStatus(Fire fire) {
         this.notifyOnSite();
-        this.notifyReturning();
+        this.notifyReturning(fire.getIntensity());
         this.notifyOnFinished();
     }
 
