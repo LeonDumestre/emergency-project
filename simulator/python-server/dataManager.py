@@ -2,15 +2,18 @@ import threading
 import matplotlib.pyplot as plt
 import numpy as np
 import requests
-import json
 from collections import namedtuple
 from math import radians, sin, cos, sqrt, atan2
 
+# ======================================================================================================================
 # Variables
+# ======================================================================================================================
 tempFires = []  # Last fire list before update
 tempCaptors = [] # Last captor list before update
 
-# Class and decoder to get fire from simulator
+# ======================================================================================================================
+# Classes
+# ======================================================================================================================
 class Fire:
     def __init__(self, id, latitude, longitude, intensity):
         self.id, self.latitude, self.longitude, self.intensity = id, latitude, longitude, intensity
@@ -30,6 +33,9 @@ class Captor:
         values_str = "[" + ", ".join(str(fire) for fire in self.values) + "]"
         return "{}: {} - {}/{}".format(self.id, values_str, self.latitude, self.longitude)
 
+# ======================================================================================================================
+# Functions
+# ======================================================================================================================
 # Calculate distance
 def haversine_distance(lat1, lon1, lat2, lon2):
     # Convertir les coordonnées de degrés à radians
@@ -86,18 +92,21 @@ def compareCaptor(captor1, captor2):
                 return True
     return False
 
+# ======================================================================================================================
+# Main
+# ======================================================================================================================
 
-# Init sensors
-captors = []
-initCaptors(captors)
+def getSensorAndFireData():
+    # Get sensors
+    captors = []
+    initCaptors(captors)
 
-# Get fires
-fires = []
-getFireList(fires)
+    # Get fires
+    fires = []
+    getFireList(fires)
 
-#Calculate impact
-for fire in fires:
-    calculateFireImpact(captors, fire)
+    # Calculate impact
+    for fire in fires:
+        calculateFireImpact(captors, fire)
 
-for capt in captors:
-    print(capt)
+    return captors

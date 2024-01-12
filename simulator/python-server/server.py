@@ -2,6 +2,8 @@ import time
 import serial
 import threading
 import numpy as np
+import dataManager as dm
+import json
 
 LAST_VALS = ""
 REGEX_DATA = r"^\d+\.\d+\;\d+~$"
@@ -52,6 +54,10 @@ def sendUARTMessage(msg):
     time.sleep(1) # ensure that the microbit has some time to read the buffer
     mutex.release()
     print("Message <" + msg + "> sent to micro-controller.")
+
+def makeItJSON(captor):
+    return json.dumps(captor, default=lambda o: o.__dict__, sort_keys=True, indent=4)
+
 
 
 # Main program logic follows:
