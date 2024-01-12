@@ -89,15 +89,6 @@ def getFireList(list):
     for fire in data:
         list.append(Fire(fire.get("id"), fire.get("latitude"), fire.get("longitude"), fire.get("intensity")))
 
-
-# Compare two captor to detect update
-def compareCaptor(captor1, captor2):
-    for fire1 in captor1.values:
-        for fire2 in captor2.values:
-            if fire1.intensity == fire2.intensity and fire1.distance == fire2.distance:
-                return True
-    return False
-
 # ======================================================================================================================
 # Main
 # ======================================================================================================================

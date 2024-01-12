@@ -98,6 +98,14 @@ def compareCaptor(captor1, captor2):
                 return True
     return False
 
+def receivedFire(fire):
+    #TODO
+    print("Received fire: " + fire)
+
+def receivedSensor(sensor):
+    #TODO
+    print("Received sensor: " + sensor)
+
 # ======================================================================================================================
 # Main
 # ======================================================================================================================
