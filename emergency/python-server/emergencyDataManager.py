@@ -131,27 +131,9 @@ def getSensorAndFireData():
     
     # Return captors with data
     return returncaptors
-
-# Get sensors
-captors = []
-initCaptors(captors)
-
-# Get fires
-fires = []
-getFireList(fires)
-
-# Calculate impact
-for fire in fires:
-    calculateFireImpact(captors, fire)
-    
-# Remove empty captors
-returncaptors = []
-for captor in captors:
-    if len(captor.values) > 0:
-        returncaptors.append(captor)
-
-def makeItJSON(captor):
-    return json.dumps(captor, default=lambda o: o.__dict__, sort_keys=True, indent=4)
-
-for sensor in returncaptors:
-    print(makeItJSON(sensor))
+# test data
+data_str = b'{"id": 121, "latitude": 45.716812, "longitude": 4.83, "values": [{"distance": 781.5258540578316, "id": 36, "intensity": 1}]}'
+# parse the data
+data = json.loads(data_str.decode("utf-8"))
+sensor = Captor(data.get("id"), data.get("values"), data.get("latitude"), data.get("longitude"))
+print(str(sensor))
