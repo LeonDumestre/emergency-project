@@ -7,19 +7,21 @@ from collections import namedtuple
 from math import radians, sin, cos, sqrt, atan2
 
 # Variables
-semaphore = threading.Semaphore(1)
-sendingQueue = []
+tempFires = []  # Last fire list before update
+tempCaptors = [] # Last captor list before update
 
 # Class and decoder to get fire from simulator
 class Fire:
     def __init__(self, id, latitude, longitude, intensity):
         self.id, self.latitude, self.longitude, self.intensity = id, latitude, longitude, intensity
+    def __str__(self):
+        return "({}/{}/{}/{})".format(self.id, self.latitude, self.longitude, self.intensity)
         
 class FireByCaptor:
-    def __init__(self, intensity, distance):
-        self.intensity, self.distance = intensity, distance
+    def __init__(self, id, intensity, distance):
+        self.id, self.intensity, self.distance = id, intensity, distance
     def __str__(self):
-        return "{} -> {}".format(self.intensity, self.distance)
+        return "({}/{}/{})".format(self.id, self.intensity, self.distance)
         
 class Captor:
     def __init__(self, id, values, latitude, longitude):
@@ -65,7 +67,7 @@ def calculateFireImpact(captors, fire):
     captorRange = 0.9
     for captor in captors:
         if haversine_distance(fire.latitude, fire.longitude, captor.latitude, captor.longitude) < captorRange:
-            captor.values.append(FireByCaptor(testFire.intensity, haversine_distance(fire.latitude, fire.longitude, captor.latitude, captor.longitude)))
+            captor.values.append(FireByCaptor(fire.id, fire.intensity, haversine_distance(fire.latitude, fire.longitude, captor.latitude, captor.longitude) * 1000))
 
 # Get the list of fires
 def getFireList(list):
@@ -84,32 +86,18 @@ def compareCaptor(captor1, captor2):
                 return True
     return False
 
-# Thread reading the sendingQueue and sending data to the server 
-#TODO: Change destination as UART
-#TODO: Add JSON creation algo when multiple items in sendingQueue
-def sendThread():
-    while True:
-        semaphore.acquire()
-        if len(sendingQueue) > 0:
-            captor = sendingQueue.pop(0)
-            semaphore.release()
-            # API request
-            response = requests.put("http://localhost:3110/sensors/" + str(captor.id), json.dumps(captor.values))
-            print(response)
-        else:
-            semaphore.release()
 
-
-# Init
+# Init sensors
 captors = []
 initCaptors(captors)
 
-# Start the thread
-#thread = threading.Thread(target=sendThread)
-#thread.start()
+# Get fires
+fires = []
+getFireList(fires)
 
-testFire = Fire(1, 45.724328666666665, 4.810751, 6)
-calculateFireImpact(captors, testFire)
+#Calculate impact
+for fire in fires:
+    calculateFireImpact(captors, fire)
 
 for capt in captors:
     print(capt)
