@@ -11,7 +11,6 @@ public class Operation {
     private final int id;
     private final LocalDateTime start;
     private OperationStatus status;
-    private Fire fire;
     private Firefighter[] firefighters;
     private Truck[] trucks;
     private LocalDateTime returnStart;
@@ -22,11 +21,10 @@ public class Operation {
         this.status = status;
     }
 
-    public Operation(int id, LocalDateTime start, OperationStatus status, Fire fire, Firefighter[] firefighters, Truck[] trucks) {
+    public Operation(int id, LocalDateTime start, OperationStatus status, Firefighter[] firefighters, Truck[] trucks) {
         this.id = id;
         this.start = start;
         this.status = status;
-        this.fire = fire;
         this.firefighters = firefighters;
         this.trucks = trucks;
     }
@@ -41,13 +39,6 @@ public class Operation {
 
     public OperationStatus getStatus() {
         return status;
-    }
-
-    public Fire getFire() {
-        return fire;
-    }
-    public void setFire(Fire fire) {
-        this.fire = fire;
     }
 
     public Firefighter[] getFirefighters() {
@@ -65,14 +56,14 @@ public class Operation {
     }
 
     public void notifyOnSite() {
-        if (this.status == OperationStatus.ON_ROAD && this.start.plusMinutes(1).isAfter(LocalDateTime.now())) {
+        if (this.status == OperationStatus.ON_ROAD && LocalDateTime.now().plusMinutes(1).isAfter(this.start)) {
             this.status = OperationStatus.ON_SITE;
             OperationRepository.notifyOnSite(this.id);
         }
     }
 
-    public void notifyReturning() {
-        if (this.status == OperationStatus.ON_SITE && this.fire.getIntensity() == 0) {
+    public void notifyReturning(int intensity){
+        if (this.status == OperationStatus.ON_SITE && intensity == 0) {
             this.status = OperationStatus.RETURNING;
             this.returnStart = LocalDateTime.now();
             OperationRepository.notifyOnReturn(this.id);

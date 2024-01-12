@@ -98,7 +98,7 @@ public class FireRepository {
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            System.out.println("POST Fire Intensity Response: " + response.body());
+            System.out.println("POST Fire" + id + "Intensity Response: " + response.body());
 
         } catch (IOException | InterruptedException e) {
             System.out.println("POST Fire Intensity Response: " + e.getMessage());
