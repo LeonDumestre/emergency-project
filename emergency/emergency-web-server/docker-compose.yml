@@ -8,10 +8,11 @@ services:
     ports:
       - "3010:3010"
     environment:
-      NODE_ENV: production
+      NODE_ENV: development
+      POSTGRES_HOST: local_pgdb
     networks:
-      - nest-network
+      - external-emergency-network
 
 networks:
-  nest-network:
-    driver: bridge
+  external-emergency-network:
+    external: true
