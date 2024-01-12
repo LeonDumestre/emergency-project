@@ -127,6 +127,10 @@ public class Fire extends FireEmergencyExtension {
             return;
         }
 
+        if (this.hasOperation() && operation.getStatus() == OperationStatus.FINISHED) {
+            return;
+        }
+
         this.decreaseIntensity();
         operation.updateStatus();
     }
