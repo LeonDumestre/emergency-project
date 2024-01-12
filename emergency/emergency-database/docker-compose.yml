@@ -13,6 +13,8 @@ services:
       POSTGRES_PASSWORD: password
     volumes:
       - ./script.sql:/docker-entrypoint-initdb.d/script.sql
+    networks:
+      - external-emergency-network
 
   pgadmin:
     image: dpage/pgadmin4
@@ -30,7 +32,13 @@ services:
       PGADMIN_SERVER_HOST: local_pgdb  # Utilisez le nom du service du conteneur PostgreSQL comme hôte
     volumes:
       - pgadmin-data:/var/lib/pgadmin
+    networks:
+      - external-emergency-network
 
 volumes:
   local_pgdata:
   pgadmin-data:
+
+networks:
+  external-emergency-network:
+    external: true
