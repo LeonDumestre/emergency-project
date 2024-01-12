@@ -7,7 +7,7 @@ import sqlite3
 import re
 import json
 import paho.mqtt.client as mqtt
-import dataManager as dm
+import emergencyDataManager as dm
 
 # send serial message
 SERIALPORT = "/dev/ttyACM0"
@@ -85,7 +85,7 @@ if __name__ == '__main__':
                 data = json.loads(data_str.decode("utf-8"))
 
                 # create the sensor
-                sensor = Captor(data.get("id"), data.get("values"), data.get("latitude"), data.get("longitude"))
+                sensor = dm.Captor(data.get("id"), data.get("values"), data.get("latitude"), data.get("longitude"))
 
             except Exception as e:
                 print("Error while reading from serial port: {}".format(e))

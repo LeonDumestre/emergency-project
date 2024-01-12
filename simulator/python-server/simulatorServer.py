@@ -2,7 +2,7 @@ import time
 import serial
 import threading
 import numpy as np
-import dataManager as dm
+import simulatorDataManager as dm
 import json
 
 LAST_VALS = ""
