@@ -6,9 +6,6 @@ import threading
 import sqlite3
 import re
 
-LAST_VALS = ""
-REGEX_DATA = r"^\d+\.\d+\;\d+~$"
-
 # send serial message
 SERIALPORT = "/dev/ttyACM0"
 BAUDRATE = 115200
