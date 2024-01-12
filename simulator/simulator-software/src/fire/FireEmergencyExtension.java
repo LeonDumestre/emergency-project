@@ -41,4 +41,9 @@ public class FireEmergencyExtension {
     public boolean hasOperation() {
         return this.operation != null;
     }
+
+    public void clean() {
+        this.linkedEmergencyFireId = -1;
+        this.operation = null;
+    }
 }

@@ -2,6 +2,8 @@ import time
 import serial
 import threading
 import numpy as np
+import dataManager as dm
+import json
 
 LAST_VALS = ""
 REGEX_DATA = r"^\d+\.\d+\;\d+~$"
@@ -54,6 +56,9 @@ def sendUARTMessage(msg):
     print("Message <" + msg + "> sent to micro-controller.")
 
 
+def makeItJSON(captor):
+    return json.dumps(captor, default=lambda o: o.__dict__, sort_keys=True, indent=4)
+
 # Main program logic follows:
 if __name__ == '__main__':
     initUART()
@@ -63,7 +68,12 @@ if __name__ == '__main__':
         print("Server started")
         while ser.isOpen():
             try:
-                sendUARTMessage("a~")
+                sensors = dm.getSensorAndFireData()
+                for sensor in sensors:
+                    json_data = makeItJSON(sensors)
+                    sendUARTMessage(json_data + "~")
+                    time.sleep(1)
+                time.sleep(1)
 
             except Exception as e:
                 print("Error while reading from serial port: {}".format(e))
