@@ -22,6 +22,6 @@ export class Fire {
   intensity: number;
 
   @OneToOne(() => Operation, (operation) => operation.fire)
-  @JoinColumn({ name: "id_fire" })
+  @JoinColumn({ name: "id" })
   operation: Operation;
 }
