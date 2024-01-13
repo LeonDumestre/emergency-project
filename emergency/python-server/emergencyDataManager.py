@@ -89,6 +89,10 @@ def getFireList(list):
     for fire in data:
         list.append(Fire(fire.get("id"), fire.get("latitude"), fire.get("longitude"), fire.get("intensity")))
 
+def putFireList(fire):
+    #TODO: Make the request for the API
+    return True
+
 
 # Compare two captor to detect update
 def compareCaptor(captor1, captor2):
@@ -98,21 +102,50 @@ def compareCaptor(captor1, captor2):
                 return True
     return False
 
-def receivedFire(fire):
-    #TODO
-    print("Received fire: " + fire)
+# ======================================================================================================================
+# Fires functions
+# ======================================================================================================================
 
-def receivedSensor(sensor):
-    #TODO
-    print("Received sensor: " + sensor)
+def doesFireAlreadyExist(fire):
+    for fireInTemp in tempFires:
+        if fireInTemp.id == fire.id:
+            return True
+    return False
+
+def receivedFire(fire):
+    alreadyExist = doesFireAlreadyExist(fire)
+    if alreadyExist:
+        tryFindFire(tempFires)
+        return False
+    else:
+        tempFires.append(fire)
+        return True
+            
+    print("Received fire: " + fire)
 
 def tryFindFire(fires):
     for fire in fires:
         associatedCaptors = findAssociatedCaptors(fire)
         if len(associatedCaptors) > 3:
-            #TODO
+            points_gps = [] 
+            distances = []
+            for captor in associatedCaptors:
+                # Captor list
+                points_gps.append((captor.latitude, captor.longitude))
+                # Distance from captor list
+                distances.append(findDistanceInCaptorForFire(captor, fire))
+            # Find Fire
+            #TODO: Remake the function to find the fire with the actual data
+
             return True
         
+# ======================================================================================================================
+# Captors functions
+# ======================================================================================================================
+
+def receivedSensor(sensor):
+    #TODO: Treat sensor when received
+    print("Received sensor: " + sensor)
 
 def findAssociatedCaptors(fire):
     associatedCaptors = []
@@ -121,6 +154,12 @@ def findAssociatedCaptors(fire):
             if fireByCaptor.id == fire.id:
                 associatedCaptors.append(captor)
     return associatedCaptors
+
+def findDistanceInCaptorForFire(captor, fire):
+    for fireByCaptor in captor.values:
+        if fireByCaptor.id == fire.id:
+            return fireByCaptor.distance
+    return -1
 
 # ======================================================================================================================
 # Main
