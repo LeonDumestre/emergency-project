@@ -23,7 +23,7 @@ CREATE TABLE operation(
    start_date TIMESTAMP NOT NULL,
    status operation_status NOT NULL,
    id_fire INT UNIQUE,
-   FOREIGN KEY (id_fire) REFERENCES fire(id)
+   FOREIGN KEY (id_fire) REFERENCES fire(id) ON DELETE SET NULL
 );
 
 CREATE TABLE firefighter(
