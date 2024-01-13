@@ -19,8 +19,6 @@ export class FireService {
   constructor(
     @InjectRepository(Fire)
     private readonly fires: Repository<Fire>,
-    @InjectRepository(Operation)
-    private readonly operations: Repository<Operation>,
   ) {}
 
   async getFires(): Promise<FireResponse[]> {
@@ -72,17 +70,6 @@ export class FireService {
   }
 
   async deleteFire(id: number): Promise<void> {
-    const fire = await this.fires
-      .createQueryBuilder("fire")
-      .leftJoinAndSelect("fire.operation", "operation")
-      .where("fire.id = :id", { id })
-      .getOne();
-
-    if (fire.operation) {
-      const operation = this.operations.create(fire.operation);
-      operation.fire = null;
-      await this.operations.save(operation);
-    }
     await this.fires.delete(id);
   }
 }
