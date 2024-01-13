@@ -1,5 +1,6 @@
 package truck;
 
+import fire.Fire;
 import fireStation.FireStation;
 import org.apache.commons.text.StringEscapeUtils;
 import org.json.JSONArray;
@@ -9,12 +10,13 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class TruckInitializer {
 
-    public static Truck[] initialize(FireStation[] fireStations) {
-        if (fireStations.length != 0) {
+    public static Truck[] initialize(ArrayList<FireStation> fireStations) {
+        if (!fireStations.isEmpty()) {
             // Verify if trucks already exist
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request;
@@ -39,7 +41,7 @@ public class TruckInitializer {
                         int capacity = jsonTrucks.getJSONObject(i).getInt("capacity");
                         int idFireStation = jsonTrucks.getJSONObject(i).getJSONObject("fireStation").getInt("id");
 
-                        trucks[i] = new Truck(cleanLicensePlate, LocalDate.parse(cleanDate), cleanType, capacity, fireStations[idFireStation - 1]);
+                        trucks[i] = new Truck(cleanLicensePlate, LocalDate.parse(cleanDate), cleanType, capacity, fireStations.get(idFireStation - 1));
 
                         System.out.println("GET Truck: " + trucks[i].toString());
                     }

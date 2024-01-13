@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class OperationInitializer {
-    public static ArrayList<Operation> initialize(Fire[] fires, FireStation[] fireStations, Firefighter[] firefighters, Truck[] trucks) {
-        if (fires.length != 0 || fireStations.length != 0 || firefighters.length != 0 || trucks.length != 0) {
+    public static ArrayList<Operation> initialize(Fire[] fires, ArrayList<FireStation> fireStations, Firefighter[] firefighters, Truck[] trucks) {
+        if (fires.length != 0 || !fireStations.isEmpty() || firefighters.length != 0 || trucks.length != 0) {
 
             Operation[] operations = new Operation[0];
             HttpClient client = HttpClient.newHttpClient();

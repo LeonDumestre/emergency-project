@@ -18,7 +18,7 @@ import static java.lang.Thread.sleep;
 public class Main {
     public static void main(String[] args) throws Exception {
         //Get fire stations
-        FireStation[] fireStations = FireStationInitializer.initialize();
+        ArrayList<FireStation> fireStations = FireStationInitializer.initialize();
 
         //Get firefighters
         Firefighter[] firefighters = FirefighterInitializer.initialize(fireStations);

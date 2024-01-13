@@ -19,35 +19,50 @@ import static java.lang.Math.*;
 public class OperationRepository {
     private static final String url = "http://localhost:3010/operations";
 
-    public static Operation createOperation(Fire fire, ArrayList<Operation> operations, FireStation[] fireStations, Truck[] trucks, Firefighter[] firefighters) {
+    public static Operation createOperation(Fire fire, ArrayList<Operation> operations, ArrayList<FireStation> fireStations, Truck[] trucks, Firefighter[] firefighters) {
         HttpClient client = HttpClient.newHttpClient();
 
         try {
-            //Get nearest fire station
-            int nearestFireStationId = 0;
-            for (FireStation fireStation : fireStations) {
-                if (fireStation.getDistance(fire) < fireStations[nearestFireStationId].getDistance(fire)) {
-                    nearestFireStationId = fireStation.getId();
-                }
-            }
-            int fireStationId = nearestFireStationId;
+            int intensity = fire.getIntensity();
 
-            //Get available trucks
             ArrayList<String> availableTrucksId = new ArrayList<>();
-            for (int i = 0; i < fire.getIntensity(); i++) {
-                for (Truck truck : trucks) {
-                    if (truck.getFireStation().getId() == nearestFireStationId && truck.isAvailable(operations)) {
-                        availableTrucksId.add(truck.getPlateNumber());
-                    }
-                }
-            }
-
-            //Get available firefighters
             ArrayList<Integer> availableFirefightersId = new ArrayList<>();
-            for (int i = 0; i < availableTrucksId.size() * 4; i++) {
-                for (Firefighter firefighter : firefighters) {
-                    if (firefighter.getFireStation().getId() == nearestFireStationId && firefighter.isAvailable(operations)) {
-                        availableFirefightersId.add(firefighter.getId());
+
+            while (availableFirefightersId.size() < intensity * 4){
+
+                int nearestFireStationId = 0;
+
+                while(availableTrucksId.size() < intensity) {
+                    //Get nearest fire station
+                    for (int i = 0; i < fireStations.size(); i++) {
+                        if (fireStations.get(i).getDistance(fire) < fireStations.get(nearestFireStationId).getDistance(fire)) {
+                            nearestFireStationId = i;
+                            System.out.println("Nearest fire station: " + fireStations.get(i).getName());
+                        }
+                    }
+
+                    //Get trucks available in fire station
+                    for (Truck truck : trucks) {
+                        if (truck.getFireStation().getId() == nearestFireStationId && truck.isAvailable(operations) && !availableTrucksId.contains(truck.getPlateNumber()) && availableTrucksId.size() < intensity) {
+                            availableTrucksId.add(truck.getPlateNumber());
+                            System.out.println("Available truck: " + truck.getPlateNumber());
+                            //Get firefighters available in fire station
+                            for (Firefighter firefighter : firefighters) {
+                                if (firefighter.getFireStation().getId() == nearestFireStationId && firefighter.isAvailable(operations) && !availableFirefightersId.contains(firefighter.getId()) && availableFirefightersId.size() < 4) {
+                                    availableFirefightersId.add(firefighter.getId() + 1);
+                                    System.out.println("Available firefighter: " + firefighter.getId());
+                                    intensity--;
+                                }
+                            }
+                            //If there is not enough firefighters, remove truck and go to next fire station
+                            if (availableFirefightersId.size() < 4) {
+                                availableTrucksId.remove(truck.getPlateNumber());
+                                break;
+                            }
+                        }
+                    }
+                    if (availableTrucksId.size() < intensity) {
+                        fireStations.remove(nearestFireStationId);
                     }
                 }
             }
