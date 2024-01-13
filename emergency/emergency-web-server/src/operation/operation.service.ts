@@ -21,9 +21,7 @@ import {
   CompleteOperationResponse,
   CompleteOperationResponseDto,
 } from "./dto/complete-operation.response.dto";
-import { mapToBaseFirefighterResponseDto } from "src/firefighter/firefighter.service";
 import { mapToTruckResponseDto } from "src/truck/truck.service";
-import { mapToFireResponseDto } from "src/fire/fire.service";
 
 @Injectable()
 export class OperationService {
@@ -81,8 +79,17 @@ export class OperationService {
     };
     const newOperation = this.operations.create(newOperationInput);
     const savedOperation = await this.operations.save(newOperation);
+    const foundOperation = await this.operations
+      .createQueryBuilder("operation")
+      .leftJoinAndSelect("operation.fire", "fire")
+      .leftJoinAndSelect("operation.firefighters", "firefighters")
+      .leftJoinAndSelect("operation.trucks", "trucks")
+      .leftJoinAndSelect("trucks.type", "type")
+      .leftJoinAndSelect("trucks.fireStation", "fireStation")
+      .where("operation.id = :id", { id: savedOperation.id })
+      .getOne();
 
-    return mapToCompleteOperationResponseDto(savedOperation);
+    return mapToCompleteOperationResponseDto(foundOperation);
   }
 
   async onSite(id: number): Promise<OperationResponse> {
@@ -125,10 +132,8 @@ function mapToCompleteOperationResponseDto(
   responseDto.id = operation.id;
   responseDto.start = operation.start;
   responseDto.status = operation.status;
-  responseDto.fire = mapToFireResponseDto(operation.fire);
-  responseDto.firefighters = operation.firefighters.map((firefighter) =>
-    mapToBaseFirefighterResponseDto(firefighter),
-  );
+  responseDto.fire = operation.fire;
+  responseDto.firefighters = operation.firefighters;
   responseDto.trucks = operation.trucks.map((truck) =>
     mapToTruckResponseDto(truck),
   );
