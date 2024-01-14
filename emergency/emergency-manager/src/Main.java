@@ -10,8 +10,8 @@ import operation.OperationRepository;
 import truck.Truck;
 import truck.TruckInitializer;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import static java.lang.Thread.sleep;
 
@@ -33,6 +33,7 @@ public class Main {
             //Get operations
             ArrayList<Operation> operations = OperationInitializer.initialize(fires, fireStations, firefighters, trucks);
 
+            //Create operations for new fires
             for (Fire fire : fires) {
                 boolean operationExist = false;
 
@@ -50,6 +51,22 @@ public class Main {
                     }
                 }
             }
+
+//            //Delete operations for finished fires
+//            System.out.println(operations);
+//            for (Operation operation : operations) {
+//                boolean fireExist = false;
+//
+//                for (Fire fire : fires) {
+//                    if (operation.getFireId() == fire.getId()) {
+//                        fireExist = true;
+//                        break;
+//                    }
+//                }
+//                if (!fireExist && Objects.equals(operation.getStatus(), "FINISHED")) {
+//                    OperationRepository.removeOperation(operation.getId());
+//                }
+//            }
             sleep(3000);
         }
     }
