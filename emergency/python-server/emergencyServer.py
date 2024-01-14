@@ -79,13 +79,7 @@ if __name__ == '__main__':
                 ser.flush()
                 mutex.release()
 
-                # decode the data
-                print ("Received data: " + data_str.decode("utf-8"))
-                # parse the data
-                data = json.loads(data_str.decode("utf-8"))
-
-                # create the sensor
-                sensor = dm.Captor(data.get("id"), data.get("values"), data.get("latitude"), data.get("longitude"))
+                dm.receivedData(data_str)
 
             except Exception as e:
                 print("Error while reading from serial port: {}".format(e))

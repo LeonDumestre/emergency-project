@@ -91,7 +91,8 @@ def getFireList(list):
         list.append(Fire(fire.get("id"), fire.get("latitude"), fire.get("longitude"), fire.get("intensity")))
 
 def putFireList(fire):
-    #TODO: Make the request for the API
+    # API request
+    response = requests.put("http://localhost:3010/fires", data = fire)
     return True
 
 
@@ -108,13 +109,32 @@ def compareCaptor(captor1, captor2):
 # ======================================================================================================================
 
 def receivedFire(fire):
-    alreadyExist = doesFireAlreadyExist(fire)
-    if alreadyExist:
-        tryFindFire(tempFires)
-        return False
+    if doesFireAlreadyExist(fire):
+        if hasFirePosition(fire) != True:
+            findFire(fire).intensity = fire.intensity
+        else :
+            findFire(fire).intensity = fire.intensity
+            firePos = tryFindFire(tempFires)
+            if firePos != None:
+                fireToUpdate = findFire(fire)
+                fireToUpdate.latitude = firePos[0]
+                fireToUpdate.longitude = firePos[1]
+                putFireList(firePos)
+            return False
     else:
-        tempFires.append(fire)
+        tempFires.append(Fire(fire.id, 0, 0, fire.intensity))
         return True
+    
+def hasFirePosition(fire):
+    if fire.latitude != 0 and fire.longitude != 0:
+        return True
+    return False
+
+def findFire(fire):
+    for fireInTemp in tempFires:
+        if fireInTemp.id == fire.id:
+            return fireInTemp
+    return None
 
 def doesFireAlreadyExist(fire):
     for fireInTemp in tempFires:
@@ -144,8 +164,26 @@ def tryFindFire(fires):
 # ======================================================================================================================
 
 def receivedSensor(sensor):
-    #TODO: Treat sensor when received
-    print("Received sensor: " + sensor)
+    if doesCaptorAlreadyExist(sensor):
+        # Create the captor
+        tempCaptors.append(sensor)
+    else:
+        # Update the captor
+        for captor in tempCaptors:
+            if captor.id == sensor.id:
+                captor.values = sensor.values
+                captor.latitude = sensor.latitude
+                captor.longitude = sensor.longitude
+                break
+    
+    for fire in sensor.values:
+        receivedFire(fire)
+
+def doesCaptorAlreadyExist(captor):
+    for captorInTemp in tempCaptors:
+        if captorInTemp.id == captor.id:
+            return True
+    return False
 
 def findAssociatedCaptors(fire):
     associatedCaptors = []
@@ -165,6 +203,19 @@ def findDistanceInCaptorForFire(captor, fire):
 # Main
 # ======================================================================================================================
 
+def receivedData(data_str):
+    # parse the data
+    data = json.loads(data_str.decode("utf-8"))
+
+    firesInData = []
+    for fire in data.get("values"):
+        element = FireByCaptor(fire.get("id"), fire.get("intensity"), fire.get("distance"))
+        firesInData.append(element)
+
+    sensor = Captor(data.get("id"), firesInData, data.get("latitude"), data.get("longitude"))
+
+    receivedSensor(sensor)
+
 # test data
 data_str = b'{"id": 121, "latitude": 45.716812, "longitude": 4.83, "values": [{"distance": 781.5258540578316, "id": 36, "intensity": 1}]}'
 
@@ -177,5 +228,4 @@ for fire in data.get("values"):
     firesInData.append(element)
 
 sensor = Captor(data.get("id"), firesInData, data.get("latitude"), data.get("longitude"))
-
-print(str(sensor))
+print (sensor.values[0].id)
