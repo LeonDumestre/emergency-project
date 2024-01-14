@@ -5,14 +5,17 @@ import serial
 import threading
 import sqlite3
 import re
+import json
+import paho.mqtt.client as mqtt
+import emergencyDataManager as dm
 
 # send serial message
 SERIALPORT = "/dev/ttyACM0"
 BAUDRATE = 115200
 ser = serial.Serial()
 
-
 mutex = threading.Lock()
+mqqt_mutex = threading.Lock()
 
 def initUART():
     # ser = serial.Serial(SERIALPORT, BAUDRATE)
@@ -45,11 +48,26 @@ def sendUARTMessage(msg):
     mutex.release()
     print("Message <" + msg + "> sent to micro-controller.")
 
+# Publishing thread
+def MQTTSendSensor(sensor):
+    mqqt_mutex.acquire()
+    payload = {"id": sensor.id, "length": len(sensor.values),"values": sensor.values}
+    mqttc.publish(MQTT_PUBLISH_TOPIC, str(payload))
+    mqqt_mutex.release()
+    print("Message <" + sensor + "> sent to MQTT broker.")
+
 
 # Main program logic follows:
 if __name__ == '__main__':
     initUART()
     print('Press Ctrl-C to quit.')
+
+    # MQTT Setup
+    MQTT_BROKER_URL    = "mqtt.eclipseprojects.io"
+    MQTT_PUBLISH_TOPIC = "temperature"
+
+    mqttc = mqtt.Client()
+    mqttc.connect(MQTT_BROKER_URL)
 
     try:
         print("Server started")
@@ -63,6 +81,11 @@ if __name__ == '__main__':
 
                 # decode the data
                 print ("Received data: " + data_str.decode("utf-8"))
+                # parse the data
+                data = json.loads(data_str.decode("utf-8"))
+
+                # create the sensor
+                sensor = dm.Captor(data.get("id"), data.get("values"), data.get("latitude"), data.get("longitude"))
 
             except Exception as e:
                 print("Error while reading from serial port: {}".format(e))
