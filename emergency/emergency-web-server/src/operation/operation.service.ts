@@ -22,6 +22,7 @@ import {
   CompleteOperationResponseDto,
 } from "./dto/complete-operation.response.dto";
 import { mapToTruckResponseDto } from "src/truck/truck.service";
+import { mapToFirefighterResponseDto } from "src/firefighter/firefighter.service";
 
 @Injectable()
 export class OperationService {
@@ -44,6 +45,7 @@ export class OperationService {
       .leftJoinAndSelect("operation.trucks", "trucks")
       .leftJoinAndSelect("trucks.type", "type")
       .leftJoinAndSelect("trucks.fireStation", "fireStation")
+      .leftJoinAndSelect("firefighters.fireStation", "fireStation")
       .getMany();
 
     return operations.map((operation) =>
@@ -133,7 +135,9 @@ function mapToCompleteOperationResponseDto(
   responseDto.start = operation.start;
   responseDto.status = operation.status;
   responseDto.fire = operation.fire;
-  responseDto.firefighters = operation.firefighters;
+  responseDto.firefighters = operation.firefighters.map((firefighter) =>
+    mapToFirefighterResponseDto(firefighter),
+  );
   responseDto.trucks = operation.trucks.map((truck) =>
     mapToTruckResponseDto(truck),
   );

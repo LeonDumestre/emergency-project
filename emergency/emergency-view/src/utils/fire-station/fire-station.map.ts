@@ -1,7 +1,7 @@
 import L from "leaflet";
 import { FireStation } from "./fire-station.model";
 
-export function addFireStationMarker(map: L.Map, fireStation: FireStation) {
+export function addFireStationCircle(map: L.Map, fireStation: FireStation) {
   const circle = L.circle([fireStation.latitude, fireStation.longitude], {
     radius: 80,
     color: "green",

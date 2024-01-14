@@ -12,11 +12,14 @@ type Firefighter = {
   grade: string;
 };
 
-export type FireStation = {
+export type BaseFireStation = {
   id: number;
   name: string;
   latitude: number;
   longitude: number;
+};
+
+export type FireStation = BaseFireStation & {
   trucks: Truck[];
   firefighters: Firefighter[];
 };
