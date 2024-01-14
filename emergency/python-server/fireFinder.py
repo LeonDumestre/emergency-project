@@ -17,9 +17,9 @@ def cartesian_to_gps(coord):
     lon, lat = TRAN_3857_TO_4326.transform(coord[0], coord[1])
     return lat, lon
 
-def generate_distance_dict(distances_list):
+def generate_distance_dict(distances_list, coordinates_list):
     index = 0
-    num_coordinates = len(coordinates_list_example)
+    num_coordinates = len(coordinates_list)
     
     for i in range(num_coordinates - 1):
         for j in range(i + 1, num_coordinates):
@@ -58,7 +58,7 @@ def error_function(coordinates):
 # Fonction principale
 def calculateFirePosition(coordinates_list, distances_list):
 
-    generate_distance_dict(distances_list)
+    generate_distance_dict(distances_list, coordinates_list)
     liste_coords_to_dictionnaire(coordinates_list)
 
     # Initialisation des coordonnées du cinquième point (peut être ajusté selon votre connaissance initiale)
