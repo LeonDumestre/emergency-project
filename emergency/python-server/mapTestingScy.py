@@ -39,6 +39,8 @@ def error_function(coordinates):
         errors.append(np.abs(np.linalg.norm(gps_to_cartesian(points_gps[pair[0]]) - np.array([x, y])) - distances[pair] * 1000))
     return sum(errors)
 
+
+print(points_gps)
 # Initialisation des coordonnées du cinquième point (peut être ajusté selon votre connaissance initiale)
 initial_guess = np.array([0.0, 0.0])
 

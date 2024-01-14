@@ -5,6 +5,7 @@ import requests
 from collections import namedtuple
 from math import radians, sin, cos, sqrt, atan2
 import json
+import fireFinder as ff
 
 # ======================================================================================================================
 # Variables
@@ -106,12 +107,6 @@ def compareCaptor(captor1, captor2):
 # Fires functions
 # ======================================================================================================================
 
-def doesFireAlreadyExist(fire):
-    for fireInTemp in tempFires:
-        if fireInTemp.id == fire.id:
-            return True
-    return False
-
 def receivedFire(fire):
     alreadyExist = doesFireAlreadyExist(fire)
     if alreadyExist:
@@ -120,13 +115,17 @@ def receivedFire(fire):
     else:
         tempFires.append(fire)
         return True
-            
-    print("Received fire: " + fire)
+
+def doesFireAlreadyExist(fire):
+    for fireInTemp in tempFires:
+        if fireInTemp.id == fire.id:
+            return True
+    return False
 
 def tryFindFire(fires):
     for fire in fires:
         associatedCaptors = findAssociatedCaptors(fire)
-        if len(associatedCaptors) > 3:
+        if len(associatedCaptors) > 4:
             points_gps = [] 
             distances = []
             for captor in associatedCaptors:
@@ -136,8 +135,9 @@ def tryFindFire(fires):
                 distances.append(findDistanceInCaptorForFire(captor, fire))
             # Find Fire
             #TODO: Remake the function to find the fire with the actual data
-
-            return True
+            firePos = ff.calculateFirePosition(points_gps[:4], distances[:4])
+            return firePos
+    return None
         
 # ======================================================================================================================
 # Captors functions
@@ -164,29 +164,6 @@ def findDistanceInCaptorForFire(captor, fire):
 # ======================================================================================================================
 # Main
 # ======================================================================================================================
-
-def getSensorAndFireData():
-    # Get sensors
-    captors = []
-    initCaptors(captors)
-
-    # Get fires
-    fires = []
-    getFireList(fires)
-
-    # Calculate impact
-    for fire in fires:
-        calculateFireImpact(captors, fire)
-    
-    # Remove empty captors
-    returncaptors = []
-    for captor in captors:
-        if len(captor.values) > 0:
-            returncaptors.append(captor)
-    
-    # Return captors with data
-    return returncaptors
-
 
 # test data
 data_str = b'{"id": 121, "latitude": 45.716812, "longitude": 4.83, "values": [{"distance": 781.5258540578316, "id": 36, "intensity": 1}]}'

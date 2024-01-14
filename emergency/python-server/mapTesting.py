@@ -169,6 +169,20 @@ for coordonnee in list_cicrle:
     folium.Circle(location=(coordonnee[0], coordonnee[1]), radius=coordonnee[2], color='green', fill=True, fill_color='green', fill_opacity=0.2).add_to(carte) 
 folium.Marker(location=(45.74613679680273, 4.844549334228688), icon=folium.Icon(color='green')).add_to(carte)
 folium.Marker(location=(45.74639028682249, 4.843950271446717), icon=folium.Icon(color='green')).add_to(carte)
+
+folium.Marker(location=((45.74639028682249, 4.843950271446717)), icon=folium.Icon(color='orange')).add_to(carte)
+folium.Marker(location=((45.74486660215681, 4.844891222248104)), icon=folium.Icon(color='blue')).add_to(carte)
+#BFGS
+folium.Marker(location=((45.74502688079782, 4.845021685711291)), icon=folium.Icon(color='blue')).add_to(carte)
+#TNC
+folium.Marker(location=((45.78446946253697, 4.409419217258301)), icon=folium.Icon(color='lightred')).add_to(carte)
+#Powell
+folium.Marker(location=((45.74481200000009, 4.844848656901989)), icon=folium.Icon(color='lightred')).add_to(carte)
+#L-BFGS-B
+folium.Marker(location=((45.74589306997115, 4.8459025570605645)), icon=folium.Icon(color='pink')).add_to(carte)
+
+#New method
+folium.Marker(location=((45.74639028682249, 4.843950271446717)), icon=folium.Icon(color='red')).add_to(carte)
 # Convertir les cercles en objets Shapely
 
 # Sauvegarder la carte au format HTML
