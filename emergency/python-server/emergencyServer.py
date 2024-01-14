@@ -17,6 +17,10 @@ ser = serial.Serial()
 mutex = threading.Lock()
 mqqt_mutex = threading.Lock()
 
+# MQTT Setup
+MQTT_BROKER_URL    = "mqtt.eclipseprojects.io"
+MQTT_PUBLISH_TOPIC = "sensors"
+
 def initUART():
     # ser = serial.Serial(SERIALPORT, BAUDRATE)
     ser.port = SERIALPORT
@@ -49,7 +53,16 @@ def sendUARTMessage(msg):
     print("Message <" + msg + "> sent to micro-controller.")
 
 # Publishing thread
-def MQTTSendSensor(sensor):
+def MQTTSendSensor(data_str, mqqt_mutex):
+    data = json.loads(data_str.decode("utf-8"))
+
+    firesInData = []
+    for fire in data.get("values"):
+        element = dm.FireByCaptor(fire.get("id"), fire.get("intensity"), fire.get("distance"))
+        firesInData.append(element)
+
+    sensor = dm.Captor(data.get("id"), firesInData, data.get("latitude"), data.get("longitude"))
+
     mqqt_mutex.acquire()
     payload = {"id": sensor.id, "length": len(sensor.values),"values": sensor.values}
     mqttc.publish(MQTT_PUBLISH_TOPIC, str(payload))
@@ -61,10 +74,6 @@ def MQTTSendSensor(sensor):
 if __name__ == '__main__':
     initUART()
     print('Press Ctrl-C to quit.')
-
-    # MQTT Setup
-    MQTT_BROKER_URL    = "mqtt.eclipseprojects.io"
-    MQTT_PUBLISH_TOPIC = "temperature"
 
     mqttc = mqtt.Client()
     mqttc.connect(MQTT_BROKER_URL)
@@ -80,6 +89,9 @@ if __name__ == '__main__':
                 mutex.release()
 
                 dm.receivedData(data_str)
+
+                mqttthread = threading.Thread(target=MQTTSendSensor, args=(data_str, mqqt_mutex))
+                mqttthread.start()
 
             except Exception as e:
                 print("Error while reading from serial port: {}".format(e))
