@@ -9,16 +9,19 @@ import java.util.ArrayList;
 public class Operation {
     private int id;
     private int fireId;
+
+    private String status;
     private ArrayList<Integer> fireFighterId;
     private ArrayList<String> truckPlateNumber;
     private LocalDateTime startDate;
 
-    public Operation(int id, int fireId, ArrayList<Integer> fireFighterId, ArrayList<String> truckPlateNumber, LocalDateTime startDate) {
+    public Operation(int id, int fireId, String status, ArrayList<Integer> fireFighterId, ArrayList<String> truckPlateNumber, LocalDateTime start_date) {
         this.id = id;
         this.fireId = fireId;
+        this.status = status;
         this.fireFighterId = fireFighterId;
         this.truckPlateNumber = truckPlateNumber;
-        this.startDate = startDate;
+        this.startDate = start_date;
     }
 
     public int getId() {
@@ -26,6 +29,9 @@ public class Operation {
     }
     public int getFireId() {
         return fireId;
+    }
+    public String getStatus() {
+        return status;
     }
     public ArrayList<Integer> getFireFighterId() {
         return fireFighterId;
@@ -43,6 +49,9 @@ public class Operation {
     public void setFireId(int fireId) {
         this.fireId = fireId;
     }
+    public void setStatus(String status) {
+        this.status = status;
+    }
     public void setFireFighterId(ArrayList<Integer> fireFighterId) {
         this.fireFighterId = fireFighterId;
     }
@@ -58,6 +67,7 @@ public class Operation {
         return "Operation{" +
                 "id=" + id +
                 ", fireId=" + fireId +
+                ", status='" + status + '\'' +
                 ", fireFighterId=" + fireFighterId +
                 ", truckPlateNumber=" + truckPlateNumber +
                 ", start_date=" + startDate +

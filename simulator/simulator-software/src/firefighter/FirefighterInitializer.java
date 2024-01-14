@@ -51,7 +51,7 @@ public class FirefighterInitializer {
                     return firefighters;
                 }
                 else {
-                    int randomFirefighterNumber = (int) (Math.random() * 200);
+                    int randomFirefighterNumber = (int) (Math.random() * 300);
                     Firefighter[] firefighters = new Firefighter[randomFirefighterNumber];
                     for (int i = 1; i < firefighters.length; i++) {
                         request = HttpRequest.newBuilder()
