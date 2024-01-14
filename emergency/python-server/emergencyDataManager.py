@@ -4,6 +4,7 @@ import numpy as np
 import requests
 from collections import namedtuple
 from math import radians, sin, cos, sqrt, atan2
+import json
 
 # ======================================================================================================================
 # Variables
@@ -97,6 +98,30 @@ def compareCaptor(captor1, captor2):
                 return True
     return False
 
+def receivedFire(fire):
+    #TODO
+    print("Received fire: " + fire)
+
+def receivedSensor(sensor):
+    #TODO
+    print("Received sensor: " + sensor)
+
+def tryFindFire(fires):
+    for fire in fires:
+        associatedCaptors = findAssociatedCaptors(fire)
+        if len(associatedCaptors) > 3:
+            #TODO
+            return True
+        
+
+def findAssociatedCaptors(fire):
+    associatedCaptors = []
+    for captor in tempCaptors:
+        for fireByCaptor in captor.values:
+            if fireByCaptor.id == fire.id:
+                associatedCaptors.append(captor)
+    return associatedCaptors
+
 # ======================================================================================================================
 # Main
 # ======================================================================================================================
@@ -123,3 +148,18 @@ def getSensorAndFireData():
     # Return captors with data
     return returncaptors
 
+
+# test data
+data_str = b'{"id": 121, "latitude": 45.716812, "longitude": 4.83, "values": [{"distance": 781.5258540578316, "id": 36, "intensity": 1}]}'
+
+# parse the data
+data = json.loads(data_str.decode("utf-8"))
+
+firesInData = []
+for fire in data.get("values"):
+    element = FireByCaptor(fire.get("id"), fire.get("intensity"), fire.get("distance"))
+    firesInData.append(element)
+
+sensor = Captor(data.get("id"), firesInData, data.get("latitude"), data.get("longitude"))
+
+print(str(sensor))
