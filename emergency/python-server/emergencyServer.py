@@ -75,7 +75,7 @@ if __name__ == '__main__':
             try:
                 # lock the serial because we need it not to flush our input
                 mutex.acquire()
-                data_str = ser.read_until(b'~')
+                data_str = ser.read_until(b';')
                 ser.flush()
                 mutex.release()
 
