@@ -165,9 +165,6 @@ def tryFindFire(fires):
 
 def receivedSensor(sensor):
     if doesCaptorAlreadyExist(sensor):
-        # Create the captor
-        tempCaptors.append(sensor)
-    else:
         # Update the captor
         for captor in tempCaptors:
             if captor.id == sensor.id:
@@ -175,6 +172,9 @@ def receivedSensor(sensor):
                 captor.latitude = sensor.latitude
                 captor.longitude = sensor.longitude
                 break
+    else:
+        # Create the captor
+        tempCaptors.append(sensor)
     
     for fire in sensor.values:
         receivedFire(fire)
@@ -182,6 +182,7 @@ def receivedSensor(sensor):
 def doesCaptorAlreadyExist(captor):
     for captorInTemp in tempCaptors:
         if captorInTemp.id == captor.id:
+            print("Captor already exist")
             return True
     return False
 
@@ -228,4 +229,11 @@ for fire in data.get("values"):
     firesInData.append(element)
 
 sensor = Captor(data.get("id"), firesInData, data.get("latitude"), data.get("longitude"))
-print (sensor.values[0].id)
+receivedSensor(sensor)
+
+print("Captors:")
+for captor in tempCaptors:
+    print(captor)
+print("Fires:")
+for fire in tempFires:
+    print(fire)
