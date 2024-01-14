@@ -110,7 +110,7 @@ def compareCaptor(captor1, captor2):
 
 def receivedFire(fire):
     if doesFireAlreadyExist(fire):
-        if hasFirePosition(fire) != True:
+        if hasFirePosition(findFire(fire)):
             findFire(fire).intensity = fire.intensity
         else :
             findFire(fire).intensity = fire.intensity
@@ -182,7 +182,6 @@ def receivedSensor(sensor):
 def doesCaptorAlreadyExist(captor):
     for captorInTemp in tempCaptors:
         if captorInTemp.id == captor.id:
-            print("Captor already exist")
             return True
     return False
 
@@ -219,9 +218,21 @@ def receivedData(data_str):
 
 # test data
 data_str = b'{"id": 121, "latitude": 45.716812, "longitude": 4.83, "values": [{"distance": 781.5258540578316, "id": 36, "intensity": 1}]}'
+data_str2 = b'{"id": 121, "latitude": 10, "longitude": 4.83, "values": [{"distance": 781.5258540578316, "id": 36, "intensity": 1}]}'
 
 # parse the data
 data = json.loads(data_str.decode("utf-8"))
+
+firesInData = []
+for fire in data.get("values"):
+    element = FireByCaptor(fire.get("id"), fire.get("intensity"), fire.get("distance"))
+    firesInData.append(element)
+
+sensor = Captor(data.get("id"), firesInData, data.get("latitude"), data.get("longitude"))
+receivedSensor(sensor)
+
+# parse the data
+data = json.loads(data_str2.decode("utf-8"))
 
 firesInData = []
 for fire in data.get("values"):
