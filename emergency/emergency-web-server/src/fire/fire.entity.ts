@@ -1,15 +1,9 @@
 import { Operation } from "src/operation/operation.entity";
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  OneToOne,
-  JoinColumn,
-} from "typeorm";
+import { Entity, Column, OneToOne, JoinColumn, PrimaryColumn } from "typeorm";
 
 @Entity("fire")
 export class Fire {
-  @PrimaryGeneratedColumn()
+  @PrimaryColumn({ name: "id", type: "int", nullable: false })
   id: number;
 
   @Column({ name: "latitude", type: "double precision", nullable: false })
