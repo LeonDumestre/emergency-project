@@ -61,7 +61,7 @@ def MQTTSendSensor(data_str, mqqt_mutex):
         element = dm.FireByCaptor(fire.get("id"), fire.get("int"), fire.get("dist"))
         firesInData.append(element)
 
-    sensor = dm.Captor(data.get("id"), firesInData, data.get("lat"), data.get("lon"))
+    sensor = dm.Captor(data.get("id"), str(firesInData), data.get("lat"), data.get("lon"))
 
     mqqt_mutex.acquire()
     payload = {"id": sensor.id, "length": len(sensor.values),"values": sensor.values}
