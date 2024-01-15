@@ -1,6 +1,11 @@
 import L from "leaflet";
 import { formatDateWithHour } from "../date.utils";
-import { ON_ROAD, Operation, OperationWithLines } from "./operation.model";
+import {
+  ON_ROAD,
+  ON_SITE,
+  Operation,
+  OperationWithLines,
+} from "./operation.model";
 import { getOperations } from "./operation.request";
 import { BaseFireStation } from "../fire-station/fire-station.model";
 
@@ -85,7 +90,12 @@ function updateOperationLines(
 }
 
 function getPolylineOptions(operation: Operation): L.PolylineOptions {
-  const color = operation.status === ON_ROAD ? "purple" : "green";
+  const color =
+    operation.status === ON_ROAD
+      ? "purple"
+      : operation.status === ON_SITE
+      ? "transparent"
+      : "green";
   const dashArray = operation.status === ON_ROAD ? "20, 20" : "5, 5";
   return { color, opacity: 0.8, weight: 3, lineCap: "round", dashArray };
 }
