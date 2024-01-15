@@ -209,10 +209,10 @@ def receivedData(data_str):
 
     firesInData = []
     for fire in data.get("values"):
-        element = FireByCaptor(fire.get("id"), fire.get("intensity"), fire.get("distance"))
+        element = FireByCaptor(fire.get("id"), fire.get("i"), fire.get("d"))
         firesInData.append(element)
 
-    sensor = Captor(data.get("id"), firesInData, data.get("latitude"), data.get("longitude"))
+    sensor = Captor(data.get("id"), firesInData, data.get("lat"), data.get("lon"))
 
     receivedSensor(sensor)
 
