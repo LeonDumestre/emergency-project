@@ -39,6 +39,7 @@ public class FireRepository {
                 for (int i = 0; i < jsonFires.length(); i++) {
                     JSONObject jsonFire = jsonFires.getJSONObject(i);
                     int id = jsonFire.getInt("id");
+                    if (jsonFire.isNull("operation")) continue;
                     Operation operation = OperationRepository.parseOperation(jsonFire.getJSONObject("operation"));
                     emergencyFires.add(new FireEmergencyExtension(id, operation));
                 }

@@ -47,37 +47,35 @@ public class OperationInitializer {
                     for (int i = 0; i < jsonOperations.length(); i++) {
                         int id = jsonOperations.getJSONObject(i).getInt("id");
                         //verify if fire exist
-                        if (!Objects.equals(operations[i].getStatus(), "FINISHED")) {
-                            int fireId = jsonOperations.getJSONObject(i).getJSONObject("fire").get("id").hashCode();
+                        int fireId = jsonOperations.getJSONObject(i).getJSONObject("fire").get("id").hashCode();
 
-                            String status = jsonOperations.getJSONObject(i).getString("status");
+                        String status = jsonOperations.getJSONObject(i).getString("status");
 
-                            JSONArray fireFighterId = jsonOperations.getJSONObject(i).getJSONArray("firefighters");
-                            JSONArray truckId = jsonOperations.getJSONObject(i).getJSONArray("trucks");
+                        JSONArray fireFighterId = jsonOperations.getJSONObject(i).getJSONArray("firefighters");
+                        JSONArray truckId = jsonOperations.getJSONObject(i).getJSONArray("trucks");
 
-                            ArrayList<String> truckIdArrayList = new ArrayList<>();
-                            ArrayList<Integer> fireFighterIdArrayList = new ArrayList<>();
+                        ArrayList<String> truckIdArrayList = new ArrayList<>();
+                        ArrayList<Integer> fireFighterIdArrayList = new ArrayList<>();
 
-                            for (int j = 0; j < truckId.length(); j++) {
-                                JSONObject truck = truckId.getJSONObject(j);
-                                truckIdArrayList.add(truck.getString("plate"));
-                            }
+                        for (int j = 0; j < truckId.length(); j++) {
+                            JSONObject truck = truckId.getJSONObject(j);
+                            truckIdArrayList.add(truck.getString("plate"));
+                        }
 
-                            for (int j = 0; j < fireFighterId.length(); j++) {
-                                JSONObject firefighter = fireFighterId.getJSONObject(j);
-                                fireFighterIdArrayList.add(firefighter.getInt("id"));
-                            }
+                        for (int j = 0; j < fireFighterId.length(); j++) {
+                            JSONObject firefighter = fireFighterId.getJSONObject(j);
+                            fireFighterIdArrayList.add(firefighter.getInt("id"));
+                        }
 
-                            String startDate = jsonOperations.getJSONObject(i).getString("start");
-                            System.out.println(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-                            LocalDateTime startDateTime = LocalDateTime.parse(startDate, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX"));
+                        String startDate = jsonOperations.getJSONObject(i).getString("start");
+                        System.out.println(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+                        LocalDateTime startDateTime = LocalDateTime.parse(startDate, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX"));
 
+                        if (!Objects.equals(status, "FINISHED")){
                             operations[i] = new Operation(id, fireId, status, fireFighterIdArrayList, truckIdArrayList, startDateTime);
 
                             System.out.println("GET Operation: " + operations[i].toString());
-                        }
-                        //Delete operation if fire doesn't exist
-                        else {
+                        } else {
                             request = HttpRequest.newBuilder()
                                     .uri(URI.create("http://localhost:3010/operations/" + id))
                                     .header("Content-Type", "application/json")
