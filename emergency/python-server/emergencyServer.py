@@ -10,7 +10,7 @@ import paho.mqtt.client as mqtt
 import emergencyDataManager as dm
 
 # send serial message
-SERIALPORT = "/dev/ttyACM0"
+SERIALPORT = "/dev/tty.usbmodem1202"
 BAUDRATE = 115200
 ser = serial.Serial()
 
@@ -88,10 +88,10 @@ if __name__ == '__main__':
                 ser.flush()
                 mutex.release()
 
-                dm.receivedData(data_str)
+                dm.receivedData(json.loads(data_str[:-1].decode("utf-8")))
 
-                mqttthread = threading.Thread(target=MQTTSendSensor, args=(data_str, mqqt_mutex))
-                mqttthread.start()
+                # mqttthread = threading.Thread(target=MQTTSendSensor, args=(data_str, mqqt_mutex))
+                # mqttthread.start()
 
             except Exception as e:
                 print("Error while reading from serial port: {}".format(e))

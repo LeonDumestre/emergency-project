@@ -9,7 +9,7 @@ LAST_VALS = ""
 REGEX_DATA = r"^\d+\.\d+\;\d+~$"
 
 # send serial message
-SERIALPORT = "/dev/ttyACM0"
+SERIALPORT = "/dev/tty.usbmodem1402"
 BAUDRATE = 115200
 ser = serial.Serial()
 
