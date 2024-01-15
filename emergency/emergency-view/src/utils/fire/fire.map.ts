@@ -21,7 +21,7 @@ export async function setFiresOnMap(
       updateFireCircle(fireWithCircle, fire);
     }
     // Add fire circle if it doesn't exist
-    else if (!fireWithCircle) {
+    else if (!fireWithCircle && fire.intensity > 0) {
       firesWithCircle.push(addFireCircle(map, fire));
     }
   });
@@ -32,8 +32,11 @@ export async function setFiresOnMap(
       (fireWithCircle) => !fires.find((fire) => fire.id === fireWithCircle.id)
     )
     .forEach((fireWithCircle) => {
-      removeFireCircle(fireWithCircle);
-      firesWithCircle.splice(firesWithCircle.indexOf(fireWithCircle), 1);
+      const fire = fires.find((fire) => fire.id === fireWithCircle.id);
+      if (!fire || fire.intensity === 0) {
+        removeFireCircle(fireWithCircle);
+        firesWithCircle.splice(firesWithCircle.indexOf(fireWithCircle), 1);
+      }
     });
 
   return firesWithCircle;
