@@ -10,7 +10,7 @@ CREATE TABLE fire_station(
 );
 
 CREATE TABLE fire(
-   id SERIAL PRIMARY KEY,
+   id INT PRIMARY KEY,
    latitude double precision NOT NULL,
    longitude double precision NOT NULL,
    intensity INT NOT NULL
