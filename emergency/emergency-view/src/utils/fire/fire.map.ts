@@ -35,7 +35,11 @@ export async function setFiresOnMap(
       firesWithCircle.splice(firesWithCircle.indexOf(fireWithCircle), 1);
     }
     // Update fire circle if it exists and the intensity has changed
-    else if (fireWithCircle && fireWithCircle.intensity != fire.intensity) {
+    else if (
+      fireWithCircle &&
+      (fireWithCircle.operation?.status !== fire.operation?.status ||
+        fireWithCircle.intensity !== fire.intensity)
+    ) {
       updateFireCircle(fireWithCircle, fire);
     }
     // Add fire circle if it doesn't exist
@@ -82,8 +86,12 @@ function updateFireCircle(fire: FireWithCircle, newFire: Fire): FireWithCircle {
 }
 
 function removeFireCircle(fire: FireWithCircle) {
-  console.log("REMOVE FIRE: " + fire.id);
-  fire.circle.remove();
+  try {
+    console.log("REMOVE FIRE: " + fire.id);
+    fire.circle.remove();
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 function getPopupContent(fire: Fire): string {
