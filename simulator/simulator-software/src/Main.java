@@ -1,5 +1,4 @@
 import fire.Fire;
-import fire.FireEmergencyExtension;
 import fire.FireRepository;
 import fireStation.FireStation;
 import fireStation.FireStationInitializer;
@@ -36,8 +35,7 @@ public class Main {
         List<Fire> fires = new ArrayList<>();
 
         while (true) {
-            List<FireEmergencyExtension> emergencyFires = FireRepository.getEmergencyFires();
-            fires = Fire.completeWithEmergencyFires(fires, emergencyFires);
+            fires = FireRepository.getEmergencyFires();
             fires = Fire.generate(fires);
             fires = Fire.updateAll(fires);
 

@@ -20,7 +20,7 @@ public class FireRepository {
     private static final String simulatorUrl = "http://localhost:3110/fires";
     private static final String emergencyUrl = "http://localhost:3010/fires";
 
-    public static List<FireEmergencyExtension> getEmergencyFires() {
+    public static List<Fire> getEmergencyFires() {
         HttpClient client = HttpClient.newHttpClient();
 
         try {
@@ -35,13 +35,19 @@ public class FireRepository {
             System.out.println("GET Emergency Fires Response: " + response.body());
             if (response.statusCode() == 200) {
                 JSONArray jsonFires = new JSONArray(response.body());
-                List<FireEmergencyExtension> emergencyFires = new ArrayList<>();
+                List<Fire> emergencyFires = new ArrayList<>();
                 for (int i = 0; i < jsonFires.length(); i++) {
                     JSONObject jsonFire = jsonFires.getJSONObject(i);
                     int id = jsonFire.getInt("id");
-                    if (jsonFire.isNull("operation")) continue;
+                    double latitude = jsonFire.getInt("latitude");
+                    double longitude = jsonFire.getInt("longitude");
+                    int intensity = jsonFire.getInt("intensity");
+                    if (jsonFire.isNull("operation")) {
+                        emergencyFires.add(new Fire(id, latitude, longitude, intensity));
+                        continue;
+                    }
                     Operation operation = OperationRepository.parseOperation(jsonFire.getJSONObject("operation"));
-                    emergencyFires.add(new FireEmergencyExtension(id, operation));
+                    emergencyFires.add(new Fire(id, latitude, longitude, intensity, operation));
                 }
                 return emergencyFires;
             }
