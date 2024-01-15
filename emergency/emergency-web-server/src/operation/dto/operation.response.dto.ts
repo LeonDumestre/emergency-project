@@ -7,7 +7,10 @@ import {
   FINISHED,
 } from "../operation.entity";
 
-export type OperationResponse = Pick<Operation, "id" | "start"> & {
+export type OperationResponse = Pick<
+  Operation,
+  "id" | "start" | "returnStart"
+> & {
   status: string;
 };
 
@@ -20,4 +23,7 @@ export class OperationResponseDto implements OperationResponse {
 
   @IsEnum([RETURNING, ON_ROAD, ON_SITE, FINISHED])
   status: string;
+
+  @IsDate()
+  returnStart?: Date;
 }
