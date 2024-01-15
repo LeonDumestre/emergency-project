@@ -13,8 +13,6 @@ public class Operation {
     private OperationStatus status;
     private Firefighter[] firefighters;
     private Truck[] trucks;
-    private LocalDateTime returnStart;
-    private int counter = 0;
 
     public Operation(int id, LocalDateTime start, OperationStatus status) {
         this.id = id;
@@ -59,7 +57,7 @@ public class Operation {
     public void notifyOnSite() {
         System.out.println("START+ : " + this.start.plusMinutes(3));
         System.out.println("NOW : " + LocalDateTime.now());
-        if (this.status == OperationStatus.ON_ROAD && this.start.plusMinutes(3).getSecond() < LocalDateTime.now().getSecond()) {
+        if (this.status == OperationStatus.ON_ROAD && this.start.plusHours(1).plusMinutes(2).getSecond() < LocalDateTime.now().getSecond()) {
             this.status = OperationStatus.ON_SITE;
             OperationRepository.notifyOnSite(this.id);
         }
@@ -68,13 +66,12 @@ public class Operation {
     public void notifyReturning(int intensity){
         if (this.status == OperationStatus.ON_SITE && intensity == 0) {
             this.status = OperationStatus.RETURNING;
-            this.returnStart = LocalDateTime.now();
             OperationRepository.notifyOnReturn(this.id);
         }
     }
 
     public void notifyOnFinished() {
-        if (this.status == OperationStatus.RETURNING && LocalDateTime.now().isAfter(this.start.plusMinutes(5))) {
+        if (this.status == OperationStatus.RETURNING && LocalDateTime.now().isAfter(this.start.plusHours(1).plusMinutes(4))) {
             OperationRepository.notifyFinished(this.id);
             FireRepository.remove(this.id);
         }
