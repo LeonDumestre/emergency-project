@@ -57,6 +57,8 @@ public class Operation {
     }
 
     public void notifyOnSite() {
+        System.out.println("START+ : " + this.start.plusMinutes(3));
+        System.out.println("NOW : " + LocalDateTime.now());
         if (this.status == OperationStatus.ON_ROAD && this.start.plusMinutes(3).getSecond() < LocalDateTime.now().getSecond()) {
             this.status = OperationStatus.ON_SITE;
             OperationRepository.notifyOnSite(this.id);
