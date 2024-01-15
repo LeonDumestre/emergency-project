@@ -78,10 +78,12 @@ export function addFireCircle(map: L.Map, fire: Fire): FireWithCircle {
 
 function updateFireCircle(fire: FireWithCircle, newFire: Fire): FireWithCircle {
   fire.intensity = newFire.intensity;
-
-  fire.circle.setRadius(fire.intensity * 50);
-  fire.circle.setPopupContent(getPopupContent(fire));
-
+  try {
+    fire.circle.setRadius(fire.intensity * 50);
+    fire.circle.setPopupContent(getPopupContent(fire));
+  } catch (error) {
+    console.error(error);
+  }
   return fire;
 }
 
