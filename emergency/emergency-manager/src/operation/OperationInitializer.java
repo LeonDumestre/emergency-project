@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 public class OperationInitializer {
     public static ArrayList<Operation> initialize(Fire[] fires, ArrayList<FireStation> fireStations, Firefighter[] firefighters, Truck[] trucks) {
@@ -46,7 +47,7 @@ public class OperationInitializer {
                     for (int i = 0; i < jsonOperations.length(); i++) {
                         int id = jsonOperations.getJSONObject(i).getInt("id");
                         //verify if fire exist
-                        if (jsonOperations.getJSONObject(i).get("fire").getClass().equals(JSONObject.class)) {
+                        if (!Objects.equals(operations[i].getStatus(), "FINISHED")) {
                             int fireId = jsonOperations.getJSONObject(i).getJSONObject("fire").get("id").hashCode();
 
                             String status = jsonOperations.getJSONObject(i).getString("status");
