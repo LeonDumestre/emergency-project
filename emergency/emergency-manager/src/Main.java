@@ -37,7 +37,7 @@ public class Main {
             for (Fire fire : fires) {
                 boolean operationExist = false;
 
-                if (operations.isEmpty()) {
+                if (operations.isEmpty() && fire.getIntensity() > 0) {
                     operations.add(OperationRepository.createOperation(fire, operations, fireStations, trucks, firefighters));
                 } else {
                     for (Operation operation : operations) {
