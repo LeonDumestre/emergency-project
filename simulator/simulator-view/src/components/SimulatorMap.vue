@@ -13,13 +13,18 @@ import { getSensors } from "@/utils/sensor/sensor.request";
 import { Sensor } from "@/utils/sensor/sensor.model";
 import { FireWithCircle } from "@/utils/fire/fire.model";
 
+type SimulatorMapData = {
+  sensors: Sensor[];
+  fires: FireWithCircle[];
+};
+
 export default defineComponent({
   name: "SimulatorMap",
 
-  data() {
+  data(): SimulatorMapData {
     return {
-      sensors: [] as Sensor[],
-      fires: [] as FireWithCircle[],
+      sensors: [],
+      fires: [],
     };
   },
 
