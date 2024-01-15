@@ -40,6 +40,7 @@ export async function setFiresOnMap(
       (fireWithCircle.operation?.status !== fire.operation?.status ||
         fireWithCircle.intensity !== fire.intensity)
     ) {
+      console.log("UPDATE FIRE: " + fireWithCircle, fire);
       updateFireCircle(fireWithCircle, fire);
     }
     // Add fire circle if it doesn't exist
