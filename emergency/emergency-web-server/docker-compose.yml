@@ -5,11 +5,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    ports:
-      - "3010:3010"
     environment:
       NODE_ENV: development
       POSTGRES_HOST: local_pgdb
+    ports:
+      - "3010:3010"
     networks:
       - external-emergency-network
 
