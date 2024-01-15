@@ -90,17 +90,18 @@ def getFireList(list):
     for fire in data:
         list.append(Fire(fire.get("id"), fire.get("latitude"), fire.get("longitude"), fire.get("intensity")))
 
-def putFireList(fire):
+def postFireList(fire):
     # API request
     print("POST")
-    print(json.dumps(fire, default=lambda o: o.__dict__, sort_keys=True, indent=4))
-    response = requests.post("http://localhost:3010/fires", data = json.dumps(fire, default=lambda o: o.__dict__, sort_keys=True, indent=4))
-    print(response)
+    print(json.dumps(fire, default=lambda o: o.__dict__))
+    response = requests.post("http://localhost:3010/fires", json.dumps(fire, default=lambda o: o.__dict__), headers={'Content-type': 'application/json', 'Accept': 'text/plain'})
+    print(response.json())
     return True
 
 def putFireList(fire):
     # API request
-    response = requests.put("http://localhost:3010/fires", data = json.dumps(fire, default=lambda o: o.__dict__, sort_keys=True, indent=4))
+    print("PUT")
+    response = requests.post("http://localhost:3010/fires", data = json.dumps(fire, default=lambda o: o.__dict__, sort_keys=True, indent=4), headers={'Content-type': 'application/json', 'Accept': 'text/plain'})
     print(response)
     return True
 
