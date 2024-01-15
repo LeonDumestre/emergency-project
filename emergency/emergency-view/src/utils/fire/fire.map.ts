@@ -1,6 +1,5 @@
 import L from "leaflet";
 import { Fire, FireWithCircle } from "./fire.model";
-import { formatDateWithHour } from "../date.utils";
 import { getFires } from "./fire.request";
 import { ON_ROAD } from "../operation/operation.model";
 
@@ -65,10 +64,8 @@ function removeFireCircle(fire: FireWithCircle) {
 }
 
 function getPopupContent(fire: Fire): string {
-  const triggerAt = formatDateWithHour(fire.triggerAt);
   return `<h3>Feu n°${fire.id}</h3>
-  Intensité: ${fire.intensity}<br />
-  Déclenchement: ${triggerAt}`;
+  Intensité: ${fire.intensity}`;
 }
 
 function getFireColor({ operation }: Fire): string {
