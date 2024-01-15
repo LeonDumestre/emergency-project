@@ -55,16 +55,18 @@ def sendUARTMessage(msg):
 # Publishing thread
 def MQTTSendSensor(data_str, mqqt_mutex):
     data = json.loads(data_str[:-1].decode("utf-8"))
+    size = 0
 
     firesInData = []
     for fire in data.get("vals"):
+        size += 1
         element = dm.FireByCaptor(fire.get("id"), fire.get("int"), fire.get("dist"))
         firesInData.append(element)
 
     sensor = dm.Captor(data.get("id"), firesInData, data.get("lat"), data.get("lon"))
 
     mqqt_mutex.acquire()
-    payload = {"id": sensor.id, "length": len(firesInData),"values": firesInData}
+    payload = {"id": sensor.id, "length": size,"values": json.dump(firesInData)}
     mqttc.publish(MQTT_PUBLISH_TOPIC, str(payload))
     mqqt_mutex.release()
     print("Message <" + sensor + "> sent to MQTT broker.")
