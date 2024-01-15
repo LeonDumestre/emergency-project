@@ -12,8 +12,6 @@ public class Operation {
     private final LocalDateTime start;
     private OperationStatus status;
     private LocalDateTime returnStart;
-    private Firefighter[] firefighters;
-    private Truck[] trucks;
 
     public Operation(int id, LocalDateTime start, OperationStatus status) {
         this.id = id;
@@ -28,14 +26,6 @@ public class Operation {
         this.returnStart = returnStart;
     }
 
-    public Operation(int id, LocalDateTime start, OperationStatus status, Firefighter[] firefighters, Truck[] trucks) {
-        this.id = id;
-        this.start = start;
-        this.status = status;
-        this.firefighters = firefighters;
-        this.trucks = trucks;
-    }
-
     public int getId() {
         return id;
     }
@@ -46,14 +36,6 @@ public class Operation {
 
     public OperationStatus getStatus() {
         return status;
-    }
-
-    public Firefighter[] getFirefighters() {
-        return firefighters;
-    }
-
-    public Truck[] getTrucks() {
-        return trucks;
     }
 
     public void updateStatus(Fire fire) {

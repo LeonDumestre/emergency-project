@@ -101,10 +101,11 @@ export class OperationService {
     return this.operations.save(operation);
   }
 
-  async returning(id: number, returnStart: Date): Promise<OperationResponse> {
+  async returning(id: number): Promise<OperationResponse> {
     const operation = await this.operations.findOneOrFail({ where: { id } });
     operation.status = RETURNING;
-    operation.returnStart = returnStart;
+    operation.returnStart = new Date();
+    console.log("returning operation: " + operation);
     return this.operations.save(operation);
   }
 
