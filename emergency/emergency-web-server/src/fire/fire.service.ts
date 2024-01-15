@@ -10,7 +10,7 @@ import {
   FireWithOperationResponse,
   FireWithOperationResponseDto,
 } from "./dto/fire-with-operation.dto";
-import { mapToBaseFirefighterResponseDto } from "src/firefighter/firefighter.service";
+import { mapToFirefighterResponseDto } from "src/firefighter/firefighter.service";
 import { mapToTruckResponseDto } from "src/truck/truck.service";
 import { Operation } from "src/operation/operation.entity";
 
@@ -34,6 +34,7 @@ export class FireService {
       .createQueryBuilder("fire")
       .leftJoinAndSelect("fire.operation", "operation")
       .leftJoinAndSelect("operation.firefighters", "firefighters")
+      .leftJoinAndSelect("firefighters.fireStation", "fireStation")
       .leftJoinAndSelect("operation.trucks", "trucks")
       .leftJoinAndSelect("trucks.type", "type")
       .leftJoinAndSelect("trucks.fireStation", "fireStation")
@@ -103,7 +104,7 @@ function mapOperationForFireResponseDto(
     start: operation.start,
     status: operation.status,
     firefighters: operation.firefighters.map((firefighter) =>
-      mapToBaseFirefighterResponseDto(firefighter),
+      mapToFirefighterResponseDto(firefighter),
     ),
     trucks: operation.trucks.map((truck) => mapToTruckResponseDto(truck)),
   };
