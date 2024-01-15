@@ -79,7 +79,7 @@ if __name__ == '__main__':
                 sensors = dm.getSensorAndFireData()
                 for sensor in sensors:
                     json_data = makeItJSON(sensor)
-                    sendUARTMessage(json_data + "~")
+                    sendUARTMessage(json_data + ";")
                     time.sleep(1)
                 time.sleep(1)
 
