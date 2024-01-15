@@ -57,7 +57,7 @@ public class Operation {
     public void notifyOnSite() {
         System.out.println("START+ : " + this.start.plusMinutes(3));
         System.out.println("NOW : " + LocalDateTime.now());
-        if (this.status == OperationStatus.ON_ROAD && this.start.plusHours(1).plusMinutes(2).isAfter(LocalDateTime.now())) {
+        if (this.status == OperationStatus.ON_ROAD && this.start.plusHours(1).plusMinutes(1).isBefore(LocalDateTime.now())) {
             this.status = OperationStatus.ON_SITE;
             OperationRepository.notifyOnSite(this.id);
         }
@@ -71,7 +71,7 @@ public class Operation {
     }
 
     public void notifyOnFinished() {
-        if (this.status == OperationStatus.RETURNING && this.start.plusHours(1).plusMinutes(4).isAfter(LocalDateTime.now())) {
+        if (this.status == OperationStatus.RETURNING && this.start.plusHours(1).plusMinutes(3).isBefore(LocalDateTime.now())) {
             OperationRepository.notifyFinished(this.id);
             FireRepository.remove(this.id);
         }
