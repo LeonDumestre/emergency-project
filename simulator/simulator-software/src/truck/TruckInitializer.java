@@ -48,7 +48,7 @@ public class TruckInitializer {
                     return trucks;
                 } else {
                     // Generate random trucks
-                    int randomTruckNumber = (int) (Math.random() * 30);
+                    int randomTruckNumber = (int) (Math.random() * 50);
                     Truck[] trucks = new Truck[randomTruckNumber];
 
                     for (int i = 0; i < trucks.length; i++) {
@@ -57,9 +57,8 @@ public class TruckInitializer {
                         long randomDay = ThreadLocalRandom.current().nextLong(minDay, maxDay);
                         LocalDate randomDate = LocalDate.ofEpochDay(randomDay);
                         String licensePlate = "AA-" + (int) ((i + 10) * (999 - 100)) + 100 + "-BB";
-                        int capacity = (int) (Math.random() * (100 - 1)) + 1;
 
-                        trucks[i] = new Truck(licensePlate, randomDate, TruckType.values()[(int) (Math.random() * (3))].toString(), capacity , fireStations[(int) (Math.random() * (6 - 1)) + 1]);
+                        trucks[i] = new Truck(licensePlate, randomDate, TruckType.FPT.toString(), 4 , fireStations[(int) (Math.random() * (6 - 1)) + 1]);
                         trucks[i].postTruck();
                     }
                     return trucks;

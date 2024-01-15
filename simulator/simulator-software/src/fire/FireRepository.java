@@ -98,7 +98,7 @@ public class FireRepository {
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            System.out.println("POST Fire" + id + "Intensity Response: " + response.body());
+            System.out.println("POST Fire " + id + " Intensity Response: " + response.body());
 
         } catch (IOException | InterruptedException e) {
             System.out.println("POST Fire Intensity Response: " + e.getMessage());
@@ -128,14 +128,14 @@ public class FireRepository {
 
         try {
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(simulatorUrl + "/all"))
+                    .uri(URI.create(simulatorUrl))
                     .header("Content-Type", "application/json")
                     .DELETE()
                     .build();
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            System.out.println("DELETE All Fires");
+            System.out.println("DELETE All Fires " + response.body());
 
         } catch (IOException | InterruptedException e) {
             System.out.println("DELETE All Fires Response: " + e.getMessage());

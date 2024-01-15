@@ -7,14 +7,11 @@ import {
   Param,
   ParseIntPipe,
   Post,
-  Sse,
 } from "@nestjs/common";
-import { Observable } from "rxjs";
 import { FireService } from "./fire.service";
 import { CreateFireRequestDto } from "./dto/create-fire.request.dto";
 import { FireResponseDto } from "./dto/fire.response.dto";
 import { UpdateIntensityRequestDto } from "./dto/update-intensity.request.dto";
-import { FireEvent } from "src/event/event.service";
 
 @Controller("fires")
 export class FireController {
@@ -49,14 +46,9 @@ export class FireController {
     return this.fireService.deleteFire(id);
   }
 
-  @Delete("all")
+  @Delete()
   @HttpCode(204)
   deleteAllFires(): Promise<void> {
     return this.fireService.deleteAllFires();
-  }
-
-  @Sse("live")
-  liveFires(): Observable<FireEvent> {
-    return this.fireService.inLive();
   }
 }

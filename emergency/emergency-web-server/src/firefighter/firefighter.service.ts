@@ -47,7 +47,7 @@ export class FirefighterService {
   }
 }
 
-function mapToFirefighterResponseDto(
+export function mapToFirefighterResponseDto(
   firefighter: Firefighter,
 ): FirefighterResponseDto {
   const responseDto = new FirefighterResponseDto();

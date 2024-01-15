@@ -1,5 +1,8 @@
-import { IsArray, IsObject } from "class-validator";
-import { BaseFirefighterResponse } from "src/firefighter/dto/firefighter.response.dto";
+import { IsArray, IsObject, IsOptional } from "class-validator";
+import {
+  FirefighterResponse,
+  FirefighterResponseDto,
+} from "src/firefighter/dto/firefighter.response.dto";
 import {
   TruckResponse,
   TruckResponseDto,
@@ -10,9 +13,9 @@ import { OperationResponseDto } from "./operation.response.dto";
 
 export type CompleteOperationResponse = Pick<Operation, "id" | "start"> & {
   status: string;
-  fire: FireResponse;
+  fire?: FireResponse;
   trucks: TruckResponse[];
-  firefighters: BaseFirefighterResponse[];
+  firefighters: FirefighterResponse[];
 };
 
 export class CompleteOperationResponseDto
@@ -20,11 +23,12 @@ export class CompleteOperationResponseDto
   implements CompleteOperationResponse
 {
   @IsObject()
-  fire: FireResponseDto;
+  @IsOptional()
+  fire?: FireResponseDto;
 
   @IsArray()
   trucks: TruckResponseDto[];
 
   @IsArray()
-  firefighters: BaseFirefighterResponse[];
+  firefighters: FirefighterResponseDto[];
 }

@@ -5,3 +5,7 @@ export type Fire = {
   intensity: number;
   triggerAt: Date;
 };
+
+export type FireWithCircle = Fire & {
+  circle: L.Circle;
+};

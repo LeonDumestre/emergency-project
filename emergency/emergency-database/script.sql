@@ -23,7 +23,7 @@ CREATE TABLE operation(
    start_date TIMESTAMP NOT NULL,
    status operation_status NOT NULL,
    id_fire INT UNIQUE,
-   FOREIGN KEY (id_fire) REFERENCES fire(id)
+   FOREIGN KEY (id_fire) REFERENCES fire(id) ON DELETE SET NULL
 );
 
 CREATE TABLE firefighter(
@@ -34,7 +34,7 @@ CREATE TABLE firefighter(
    id_fire_station INT,
    id_operation INT,
    FOREIGN KEY(id_fire_station) REFERENCES fire_station(id),
-   FOREIGN KEY(id_operation) REFERENCES operation(id)
+   FOREIGN KEY(id_operation) REFERENCES operation(id) ON DELETE SET NULL
 );
 
 CREATE TABLE truck_type(
@@ -50,7 +50,7 @@ CREATE TABLE truck(
    id_operation INT,
    FOREIGN KEY(truck_type) REFERENCES truck_type(truck_type),
    FOREIGN KEY(id_fire_station) REFERENCES fire_station(id),
-   FOREIGN KEY(id_operation) REFERENCES operation(id)
+   FOREIGN KEY(id_operation) REFERENCES operation(id) ON DELETE SET NULL
 );
 
 -- Création d'un trigger pour envoyer une notification lors de l'insertion dans la table operation

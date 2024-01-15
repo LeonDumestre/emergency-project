@@ -11,11 +11,12 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class FirefighterInitializer {
 
-    public static Firefighter[] initialize(FireStation[] fireStations) {
-        if (fireStations.length != 0) {
+    public static Firefighter[] initialize(ArrayList<FireStation> fireStations) {
+        if (!fireStations.isEmpty()) {
             HttpClient client = HttpClient.newHttpClient();
             HttpRequest request;
             HttpResponse<String> response;
@@ -44,7 +45,7 @@ public class FirefighterInitializer {
                         String cleanName = StringEscapeUtils.unescapeJava(name);
                         String cleanGrade = StringEscapeUtils.unescapeJava(grade);
 
-                        firefighters[i] = new Firefighter(i, cleanName, cleanDateOfBirth, cleanGrade, fireStations[fireStationId - 1]);
+                        firefighters[i] = new Firefighter(i, cleanName, cleanDateOfBirth, cleanGrade, fireStations.get(fireStationId - 1));
                         System.out.println("GET Firefighter: " + firefighters[i]);
                     }
                     return firefighters;
