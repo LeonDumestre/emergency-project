@@ -92,11 +92,13 @@ def getFireList(list):
 
 def postFireList(fire):
     # API request
+    print("POST")
+    print(json.dumps(fire, default=lambda o: o.__dict__, sort_keys=True, indent=4))
     response = requests.post("http://localhost:3010/fires", data = json.dumps(fire, default=lambda o: o.__dict__, sort_keys=True, indent=4))
     print(response)
     return True
 
-def postFireList(fire):
+def putFireList(fire):
     # API request
     response = requests.put("http://localhost:3010/fires", data = json.dumps(fire, default=lambda o: o.__dict__, sort_keys=True, indent=4))
     print(response)
