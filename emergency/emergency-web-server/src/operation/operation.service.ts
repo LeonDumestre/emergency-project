@@ -108,12 +108,14 @@ export class OperationService {
   }
 
   async finished(id: number): Promise<OperationResponse> {
+    console.log("finish operation " + id);
     const operation = await this.operations.findOneOrFail({ where: { id } });
     operation.status = FINISHED;
     return this.operations.save(operation);
   }
 
   remove(id: number) {
+    console.log("remove operation " + id);
     this.operations.delete(id);
   }
 }
