@@ -92,17 +92,13 @@ def getFireList(list):
 
 def postFireList(fire):
     # API request
-    print("POST")
     print(json.dumps(fire, default=lambda o: o.__dict__))
     response = requests.post("http://localhost:3010/fires", json.dumps(fire, default=lambda o: o.__dict__), headers={'Content-type': 'application/json', 'Accept': 'text/plain'})
-    print(response.json())
     return True
 
 def putFireList(fire):
     # API request
-    print("PUT")
-    response = requests.post("http://localhost:3010/fires", data = json.dumps(fire, default=lambda o: o.__dict__, sort_keys=True, indent=4), headers={'Content-type': 'application/json', 'Accept': 'text/plain'})
-    print(response)
+    response = requests.post("http://localhost:3010/fires/".str(fire.id), data = json.dumps(fire.intensity, default=lambda o: o.__dict__, sort_keys=True, indent=4), headers={'Content-type': 'application/json', 'Accept': 'text/plain'})
     return True
 
 
@@ -126,8 +122,9 @@ def receivedFire(fire):
                 for element in findAssociatedCaptors(fire):
                     element.values.remove(fire)
             else:
-                findFire(fire).intensity = fire.intensity
-                putFireList(fire)
+                if(findFire(fire).intensity != fire.intensity):
+                    findFire(fire).intensity = fire.intensity
+                    putFireList(fire)
         else :
             findFire(fire).intensity = fire.intensity
             firePos = tryFindFire(tempFires)
