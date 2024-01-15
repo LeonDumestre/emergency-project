@@ -14,6 +14,7 @@ public class Operation {
     private Firefighter[] firefighters;
     private Truck[] trucks;
     private LocalDateTime returnStart;
+    private int counter = 0;
 
     public Operation(int id, LocalDateTime start, OperationStatus status) {
         this.id = id;
@@ -56,9 +57,12 @@ public class Operation {
     }
 
     public void notifyOnSite() {
-        if (this.status == OperationStatus.ON_ROAD && LocalDateTime.now().isAfter(this.start.plusMinutes(1))) {
+        if (this.status == OperationStatus.ON_ROAD) {
+            this.counter++;
+            if (this.counter < 30) return;
             this.status = OperationStatus.ON_SITE;
             OperationRepository.notifyOnSite(this.id);
+            this.counter = 0;
         }
     }
 
@@ -71,7 +75,9 @@ public class Operation {
     }
 
     public void notifyOnFinished() {
-        if (this.status == OperationStatus.RETURNING && this.returnStart.plusMinutes(1).isAfter(LocalDateTime.now())) {
+        if (this.status == OperationStatus.RETURNING) {
+            this.counter++;
+            if (this.counter < 30) return;
             OperationRepository.notifyFinished(this.id);
             FireRepository.remove(this.id);
         }
