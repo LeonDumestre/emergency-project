@@ -24,28 +24,6 @@ import {
 import { mapToTruckResponseDto } from "src/truck/truck.service";
 import { mapToFirefighterResponseDto } from "src/firefighter/firefighter.service";
 
-/*type DatabaseTruck = Omit<
-  CompleteOperationResponse["trucks"],
-  "fireStation"
-> & {
-  truckFireStation: Truck["fireStation"];
-};
-
-type DatabaseFirefighter = Omit<
-  CompleteOperationResponse["firefighters"],
-  "fireStation"
-> & {
-  firefighterFireStation: Firefighter["fireStation"];
-};
-
-type DatabaseOperation = Omit<
-  CompleteOperationResponse,
-  "trucks" | "firefighters"
-> & {
-  trucks: DatabaseTruck[];
-  firefighters: DatabaseFirefighter[];
-};*/
-
 @Injectable()
 export class OperationService {
   constructor(
@@ -153,25 +131,15 @@ export function mapToOperationResponseDto(
 function mapToCompleteOperationResponseDto(
   operation: Operation,
 ): CompleteOperationResponse {
-  const fixedTrucks = operation.trucks.map((truck) => {
-    const { truckFireStation, ...rest } = truck as any;
-    return { ...rest, fireStation: truckFireStation };
-  });
-
-  const fixedFirefigters = operation.firefighters.map((firefighter) => {
-    const { firefighterFireStation, ...rest } = firefighter as any;
-    return { ...rest, fireStation: firefighterFireStation };
-  });
-
   const responseDto = new CompleteOperationResponseDto();
   responseDto.id = operation.id;
   responseDto.start = operation.start;
   responseDto.status = operation.status;
   responseDto.fire = operation.fire;
-  responseDto.firefighters = fixedFirefigters.map((firefighter) =>
+  responseDto.firefighters = operation.firefighters.map((firefighter) =>
     mapToFirefighterResponseDto(firefighter as any),
   );
-  responseDto.trucks = fixedTrucks.map((truck) =>
+  responseDto.trucks = operation.trucks.map((truck) =>
     mapToTruckResponseDto(truck as any),
   );
   return responseDto;
