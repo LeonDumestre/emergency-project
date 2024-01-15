@@ -54,7 +54,7 @@ def sendUARTMessage(msg):
 
 # Publishing thread
 def MQTTSendSensor(data_str, mqqt_mutex):
-    data = json.loads(data_str.decode("utf-8"))
+    data = json.loads(data_str[:-1].decode("utf-8"))
 
     firesInData = []
     for fire in data.get("values"):
@@ -90,8 +90,8 @@ if __name__ == '__main__':
 
                 dm.receivedData(json.loads(data_str[:-1].decode("utf-8")))
 
-                # mqttthread = threading.Thread(target=MQTTSendSensor, args=(data_str, mqqt_mutex))
-                # mqttthread.start()
+                mqttthread = threading.Thread(target=MQTTSendSensor, args=(data_str, mqqt_mutex))
+                mqttthread.start()
 
             except Exception as e:
                 print("Error while reading from serial port: {}".format(e))
