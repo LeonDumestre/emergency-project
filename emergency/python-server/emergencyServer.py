@@ -64,7 +64,7 @@ def MQTTSendSensor(data_str, mqqt_mutex):
     sensor = dm.Captor(data.get("id"), firesInData, data.get("lat"), data.get("lon"))
 
     mqqt_mutex.acquire()
-    payload = {"id": sensor.id, "length": len(sensor.values),"values": sensor.values}
+    payload = {"id": sensor.id, "length": len(firesInData),"values": firesInData}
     mqttc.publish(MQTT_PUBLISH_TOPIC, str(payload))
     mqqt_mutex.release()
     print("Message <" + sensor + "> sent to MQTT broker.")
