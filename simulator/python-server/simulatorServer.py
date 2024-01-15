@@ -15,6 +15,13 @@ ser = serial.Serial()
 
 mutex = threading.Lock()
 
+class CaptorSimplified:
+    def __init__(self, id, latitude, longitude, values):
+        self.id = id
+        self.lat = latitude
+        self.lon = longitude
+        self.vals = values
+
 def initUART():
     # ser = serial.Serial(SERIALPORT, BAUDRATE)
     ser.port = SERIALPORT
@@ -48,6 +55,7 @@ def sendUARTMessage(msg):
 
 
 def makeItJSON(captor):
+    captor = CaptorSimplified(**captor)
     return json.dumps(captor, default=lambda o: o.__dict__, sort_keys=True, indent=4)
 
 # Main program logic follows:
