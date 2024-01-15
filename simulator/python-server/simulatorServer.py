@@ -61,10 +61,10 @@ def sendUARTMessage(msg):
 
 
 def makeItJSON(captor):
-    simpCaptor = CaptorSimplified(captor)
+    simpCaptor = CaptorSimplified(captor.id, captor.latitude, captor.longitude, captor.values)
     for fire in captor.values:
-        fire = FireSimplified(fire)
-        simpCaptor.vals.append(fire)
+        simpfire = FireSimplified(fire.id, fire.intensity, fire.distance)
+        simpCaptor.vals.append(simpfire)
     return json.dumps(simpCaptor, default=lambda o: o.__dict__, sort_keys=True)
 
 # Main program logic follows:
