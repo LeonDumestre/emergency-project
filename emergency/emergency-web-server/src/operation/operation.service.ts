@@ -24,6 +24,28 @@ import {
 import { mapToTruckResponseDto } from "src/truck/truck.service";
 import { mapToFirefighterResponseDto } from "src/firefighter/firefighter.service";
 
+/*type DatabaseTruck = Omit<
+  CompleteOperationResponse["trucks"],
+  "fireStation"
+> & {
+  truckFireStation: Truck["fireStation"];
+};
+
+type DatabaseFirefighter = Omit<
+  CompleteOperationResponse["firefighters"],
+  "fireStation"
+> & {
+  firefighterFireStation: Firefighter["fireStation"];
+};
+
+type DatabaseOperation = Omit<
+  CompleteOperationResponse,
+  "trucks" | "firefighters"
+> & {
+  trucks: DatabaseTruck[];
+  firefighters: DatabaseFirefighter[];
+};*/
+
 @Injectable()
 export class OperationService {
   constructor(
@@ -44,8 +66,8 @@ export class OperationService {
       .leftJoinAndSelect("operation.firefighters", "firefighters")
       .leftJoinAndSelect("operation.trucks", "trucks")
       .leftJoinAndSelect("trucks.type", "type")
-      .leftJoinAndSelect("trucks.fireStation", "fireStation")
-      .leftJoinAndSelect("firefighters.fireStation", "fireStation")
+      .leftJoinAndSelect("trucks.fireStation", "truckFireStation")
+      .leftJoinAndSelect("firefighters.fireStation", "firefighterFireStation")
       .getMany();
 
     return operations.map((operation) =>
@@ -87,7 +109,8 @@ export class OperationService {
       .leftJoinAndSelect("operation.firefighters", "firefighters")
       .leftJoinAndSelect("operation.trucks", "trucks")
       .leftJoinAndSelect("trucks.type", "type")
-      .leftJoinAndSelect("trucks.fireStation", "fireStation")
+      .leftJoinAndSelect("trucks.fireStation", "truckFireStation")
+      .leftJoinAndSelect("firefighters.fireStation", "firefighterFireStation")
       .where("operation.id = :id", { id: savedOperation.id })
       .getOne();
 
@@ -130,16 +153,26 @@ export function mapToOperationResponseDto(
 function mapToCompleteOperationResponseDto(
   operation: Operation,
 ): CompleteOperationResponse {
+  const fixedTrucks = operation.trucks.map((truck) => {
+    const { truckFireStation, ...rest } = truck as any;
+    return { ...rest, fireStation: truckFireStation };
+  });
+
+  const fixedFirefigters = operation.firefighters.map((firefighter) => {
+    const { firefighterFireStation, ...rest } = firefighter as any;
+    return { ...rest, fireStation: firefighterFireStation };
+  });
+
   const responseDto = new CompleteOperationResponseDto();
   responseDto.id = operation.id;
   responseDto.start = operation.start;
   responseDto.status = operation.status;
   responseDto.fire = operation.fire;
-  responseDto.firefighters = operation.firefighters.map((firefighter) =>
-    mapToFirefighterResponseDto(firefighter),
+  responseDto.firefighters = fixedFirefigters.map((firefighter) =>
+    mapToFirefighterResponseDto(firefighter as any),
   );
-  responseDto.trucks = operation.trucks.map((truck) =>
-    mapToTruckResponseDto(truck),
+  responseDto.trucks = fixedTrucks.map((truck) =>
+    mapToTruckResponseDto(truck as any),
   );
   return responseDto;
 }
