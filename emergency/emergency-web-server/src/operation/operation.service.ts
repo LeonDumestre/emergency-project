@@ -44,8 +44,8 @@ export class OperationService {
       .leftJoinAndSelect("operation.firefighters", "firefighters")
       .leftJoinAndSelect("operation.trucks", "trucks")
       .leftJoinAndSelect("trucks.type", "type")
-      .leftJoinAndSelect("trucks.fireStation", "fireStation")
-      .leftJoinAndSelect("firefighters.fireStation", "fireStation")
+      .leftJoinAndSelect("trucks.fireStation", "truckFireStation")
+      .leftJoinAndSelect("firefighters.fireStation", "firefighterFireStation")
       .getMany();
 
     return operations.map((operation) =>
@@ -87,7 +87,8 @@ export class OperationService {
       .leftJoinAndSelect("operation.firefighters", "firefighters")
       .leftJoinAndSelect("operation.trucks", "trucks")
       .leftJoinAndSelect("trucks.type", "type")
-      .leftJoinAndSelect("trucks.fireStation", "fireStation")
+      .leftJoinAndSelect("trucks.fireStation", "truckFireStation")
+      .leftJoinAndSelect("firefighters.fireStation", "firefighterFireStation")
       .where("operation.id = :id", { id: savedOperation.id })
       .getOne();
 
@@ -136,10 +137,10 @@ function mapToCompleteOperationResponseDto(
   responseDto.status = operation.status;
   responseDto.fire = operation.fire;
   responseDto.firefighters = operation.firefighters.map((firefighter) =>
-    mapToFirefighterResponseDto(firefighter),
+    mapToFirefighterResponseDto(firefighter as any),
   );
   responseDto.trucks = operation.trucks.map((truck) =>
-    mapToTruckResponseDto(truck),
+    mapToTruckResponseDto(truck as any),
   );
   return responseDto;
 }
