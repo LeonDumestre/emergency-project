@@ -8,7 +8,7 @@ type Operation = Omit<CompleteOperationResponse, "fire" | "firefighters"> & {
 };
 
 export type FireWithOperationResponse = FireResponse & {
-  operation: Operation;
+  operation?: Operation;
 };
 
 export class FireWithOperationResponseDto
@@ -16,5 +16,5 @@ export class FireWithOperationResponseDto
   implements FireWithOperationResponse
 {
   @IsObject()
-  operation: Operation;
+  operation?: Operation;
 }

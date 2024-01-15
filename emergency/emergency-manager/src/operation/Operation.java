@@ -9,7 +9,6 @@ import java.util.ArrayList;
 public class Operation {
     private int id;
     private int fireId;
-
     private String status;
     private ArrayList<Integer> fireFighterId;
     private ArrayList<String> truckPlateNumber;

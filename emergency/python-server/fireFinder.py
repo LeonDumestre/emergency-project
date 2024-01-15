@@ -58,6 +58,9 @@ def error_function(coordinates):
 # Fonction principale
 def calculateFirePosition(coordinates_list, distances_list):
 
+    #Convert distance from meters to kilometers
+    distances_list = [distance/1000 for distance in distances_list]
+
     generate_distance_dict(distances_list, coordinates_list)
     liste_coords_to_dictionnaire(coordinates_list)
 

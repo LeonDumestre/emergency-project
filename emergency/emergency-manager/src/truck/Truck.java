@@ -63,31 +63,6 @@ public class Truck {
         this.capacity = capacity;
     }
 
-    public void setFireStation(FireStation fireStation) {
-        this.fireStation = fireStation;
-    }
-
-    public void postTruck(){
-        HttpClient client = HttpClient.newHttpClient();
-
-        try {
-            String json = "{\"plate\":\"" + this.getPlateNumber() + "\",\"acquisition\":\"" + this.getDateOfAcquisition() + "\",\"type\":\"" + this.getTruckType() + "\",\"fireStationId\":" + this.getFireStation().getId() + "}";
-            System.out.println("POST Truck: " + json);
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("http://localhost:3010/trucks"))
-                    .header("Content-Type", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(json))
-                    .build();
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-            System.out.println("Response Code: " + response.statusCode());
-            System.out.println("Response Body: " + response.body());
-
-        } catch (IOException | InterruptedException e) {
-            System.out.println("POST Truck: " + e.getMessage());
-        }
-    }
-
     public boolean isAvailable(ArrayList<Operation> operations){
         if (!this.truckType.equals("FPT")) {
             return false;

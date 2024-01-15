@@ -91,6 +91,7 @@ function mapToFireWithOperationResponseDto(
   responseDto.latitude = fire.latitude;
   responseDto.longitude = fire.longitude;
   responseDto.intensity = fire.intensity;
+  if (!fire.operation) return responseDto;
   responseDto.operation = mapOperationForFireResponseDto(fire.operation);
   return responseDto;
 }

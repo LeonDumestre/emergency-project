@@ -39,6 +39,7 @@ public class Main {
 
                 if (operations.isEmpty() && fire.getIntensity() > 0) {
                     operations.add(OperationRepository.createOperation(fire, operations, fireStations, trucks, firefighters));
+                    break;
                 } else {
                     for (Operation operation : operations) {
                         if (operation.getFireId() == fire.getId()) {
