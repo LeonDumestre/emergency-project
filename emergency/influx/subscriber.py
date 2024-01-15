@@ -57,13 +57,12 @@ def on_message(client, userdata, msg):
             # Extract ID and temperature from the payload
             fire_id = data.get("id")
             intensity = data.get("intensity")
-            distance = data.get("distance")
 
-            if fire_id is not None and intensity is not None and distance is not None:
+            if fire_id is not None and intensity is not None:
                 ## InfluxDB logic
-                point = Point(MQTT_PUBLISH_TOPIC).tag("idFire", fire_id).field("intensity", intensity).field("distance", distance)
+                point = Point(MQTT_PUBLISH_TOPIC).tag("idFire", fire_id).field("intensity", intensity)
                 write_api.write(bucket=BUCKET, record=point)
-                print(f"Data written to InfluxDB - ID: {fire_id}, Intensity: {intensity}, Distance: {distance}")
+                print(f"Data written to InfluxDB - ID: {fire_id}, Intensity: {intensity}")
             else:
                 print("Invalid payload format. Missing 'id' or 'temperature'.")
     except json.JSONDecodeError as e:
