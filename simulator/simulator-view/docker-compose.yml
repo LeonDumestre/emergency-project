@@ -9,3 +9,9 @@ services:
       NODE_ENV: development
     ports:
       - "3120:3120"
+    networks:
+      - external-emergency-network
+
+networks:
+  external-emergency-network:
+    external: true

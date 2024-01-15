@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  emergency-view-1:
+  emergency-view:
     build:
       context: .
       dockerfile: Dockerfile
