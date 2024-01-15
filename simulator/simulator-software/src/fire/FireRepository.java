@@ -25,12 +25,21 @@ public class FireRepository {
 
         try {
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(java.net.URI.create(emergencyUrl + "/with-operation"))
+                    .uri(java.net.URI.create(simulatorUrl))
                     .header("Content-Type", "application/json")
                     .GET()
                     .build();
 
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            HttpRequest requestOp = HttpRequest.newBuilder()
+                    .uri(java.net.URI.create(emergencyUrl + "/with-operation"))
+                    .header("Content-Type", "application/json")
+                    .GET()
+                    .build();
+
+            HttpResponse<String> responseOp = client.send(requestOp, HttpResponse.BodyHandlers.ofString());
+            JSONArray jsonFiresOp = new JSONArray(response.body());
 
             System.out.println("GET Emergency Fires Response: " + response.body());
             if (response.statusCode() == 200) {
@@ -42,12 +51,14 @@ public class FireRepository {
                     double latitude = jsonFire.getInt("latitude");
                     double longitude = jsonFire.getInt("longitude");
                     int intensity = jsonFire.getInt("intensity");
-                    if (jsonFire.isNull("operation")) {
-                        emergencyFires.add(new Fire(id, latitude, longitude, intensity));
-                        continue;
+
+                    for (int j = 0; j < jsonFiresOp.length(); j++) {
+                        if (jsonFiresOp.getJSONObject(j).getInt("fireId") == id) {
+                            Operation operation = OperationRepository.parseOperation(jsonFiresOp.getJSONObject(j).getJSONObject("operation"));
+                            emergencyFires.add(new Fire(id, latitude, longitude, intensity, operation));
+                            continue;
+                        }
                     }
-                    Operation operation = OperationRepository.parseOperation(jsonFire.getJSONObject("operation"));
-                    emergencyFires.add(new Fire(id, latitude, longitude, intensity, operation));
                 }
                 return emergencyFires;
             }
