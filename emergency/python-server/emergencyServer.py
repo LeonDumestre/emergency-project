@@ -54,6 +54,7 @@ def sendUARTMessage(msg):
 
 # Publishing thread
 def MQTTSendSensor(data_str, mqqt_mutex):
+    print("Sending data to MQTT broker...")
     data = json.loads(data_str[:-1].decode("utf-8"))
 
     firesInData = []
@@ -70,7 +71,7 @@ def MQTTSendSensor(data_str, mqqt_mutex):
         payload = {"type": "fire", "id": fire.id, "intensity": fire.intensity}
         mqttc.publish(MQTT_PUBLISH_TOPIC, str(payload))
     mqqt_mutex.release()
-    print("Message <" + sensor + "> sent to MQTT broker.")
+    # print("Message <" + sensor + "> sent to MQTT broker.")
 
 
 # Main program logic follows:

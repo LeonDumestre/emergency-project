@@ -55,6 +55,7 @@ public class OperationRepository {
                             System.out.println("Available truck: " + truck.getPlateNumber());
                             //Get firefighters available in fire station
                             for (Firefighter firefighter : firefighters) {
+                                if (operations == null) continue;
                                 if (firefighter.getFireStation().getId() == nearestFireStationId && firefighter.isAvailable(operations) && !firefightersInTruck.contains(firefighter.getId()) && firefightersInTruck.size() < 4) {
                                     firefightersInTruck.add(firefighter.getId() + 1);
                                     System.out.println("Available firefighter: " + firefighter.getId());

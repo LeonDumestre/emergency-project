@@ -71,7 +71,7 @@ public class Operation {
     }
 
     public void notifyOnFinished() {
-        if (this.status == OperationStatus.RETURNING && LocalDateTime.now().isAfter(this.returnStart.plusMinutes(1))) {
+        if (this.status == OperationStatus.RETURNING && this.returnStart.plusMinutes(1).isAfter(LocalDateTime.now())) {
             OperationRepository.notifyFinished(this.id);
             FireRepository.remove(this.id);
         }
