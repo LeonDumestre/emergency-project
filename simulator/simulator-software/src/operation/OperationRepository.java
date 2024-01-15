@@ -63,7 +63,7 @@ public class OperationRepository {
         try {
             System.out.println("PUT Operation RETURNING");
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(emergencyUrl + "/" + id + "/live/returning"))
+                    .uri(URI.create(emergencyUrl + "/" + id + "/live/returning/" + LocalDateTime.now()))
                     .header("Content-Type", "application/json")
                     .PUT(HttpRequest.BodyPublishers.noBody())
                     .build();
