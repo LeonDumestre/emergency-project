@@ -1,189 +1,49 @@
-import folium
-from shapely.geometry import Point
-from shapely.ops import unary_union
+import numpy as np
+from scipy.optimize import minimize
 from geopy.distance import geodesic
-from math import radians, sin, cos, sqrt, atan2, degrees
 
-# Liste de coordonnées GPS (latitude, longitude)
-coordonnees = [(45.748812, 4.840000072457361),
-(45.748812, 4.84999991883929),
-(45.74881192754264, 4.84),
-(45.74081210820078, 4.84),
-(45.74881195473625, 4.840000056579693),
-(45.740812071348245, 4.8499999108146925),
-(45.74881194929931, 4.849999936624133),
-(45.740812067592486, 4.840000084490612),
-(45.748811918839294, 4.85),
-(45.74081211421292, 4.85),
-(45.740812, 4.840000108200776),
-(45.740812, 4.84999988578708)]  # Exemple, remplacez par vos coordonnées
+def distance(point1, point2):
+    """
+    Calcule la distance géodésique entre deux points en utilisant geopy.
+    """
+    return geodesic(point1, point2).meters  # La distance en mètres
 
-coordonnees_liste2 = [(45.788812, 4.8),
-(45.788812, 4.81),
-(45.788812, 4.819999999999999),
-(45.788812, 4.83),
-(45.788812, 4.84),
-(45.788812, 4.85),
-(45.788812, 4.859999999999999),
-(45.788812, 4.87),
-(45.788812, 4.88),
-(45.788812, 4.89),
-(45.788812, 4.8999999999999995),
-(45.788812, 4.91),
-(45.788812, 4.92),
-(45.780812, 4.8),
-(45.780812, 4.81),
-(45.780812, 4.819999999999999),
-(45.780812, 4.83),
-(45.780812, 4.84),
-(45.780812, 4.85),
-(45.780812, 4.859999999999999),
-(45.780812, 4.87),
-(45.780812, 4.88),
-(45.780812, 4.89),
-(45.780812, 4.8999999999999995),
-(45.780812, 4.91),
-(45.780812, 4.92),
-(45.772812, 4.8),
-(45.772812, 4.81),
-(45.772812, 4.819999999999999),
-(45.772812, 4.83),
-(45.772812, 4.84),
-(45.772812, 4.85),
-(45.772812, 4.859999999999999),
-(45.772812, 4.87),
-(45.772812, 4.88),
-(45.772812, 4.89),
-(45.772812, 4.8999999999999995),
-(45.772812, 4.91),
-(45.772812, 4.92),
-(45.764812, 4.8),
-(45.764812, 4.81),
-(45.764812, 4.819999999999999),
-(45.764812, 4.83),
-(45.764812, 4.84),
-(45.764812, 4.85),
-(45.764812, 4.859999999999999),
-(45.764812, 4.87),
-(45.764812, 4.88),
-(45.764812, 4.89),
-(45.764812, 4.8999999999999995),
-(45.764812, 4.91),
-(45.764812, 4.92),
-(45.756812, 4.8),
-(45.756812, 4.81),
-(45.756812, 4.819999999999999),
-(45.756812, 4.83),
-(45.756812, 4.84),
-(45.756812, 4.85),
-(45.756812, 4.859999999999999),
-(45.756812, 4.87),
-(45.756812, 4.88),
-(45.756812, 4.89),
-(45.756812, 4.8999999999999995),
-(45.756812, 4.91),
-(45.756812, 4.92),
-(45.748812, 4.8),
-(45.748812, 4.81),
-(45.748812, 4.819999999999999),
-(45.748812, 4.83),
-(45.748812, 4.84),
-(45.748812, 4.85),
-(45.748812, 4.859999999999999),
-(45.748812, 4.87),
-(45.748812, 4.88),
-(45.748812, 4.89),
-(45.748812, 4.8999999999999995),
-(45.748812, 4.91),
-(45.748812, 4.92),
-(45.740812, 4.8),
-(45.740812, 4.81),
-(45.740812, 4.819999999999999),
-(45.740812, 4.83),
-(45.740812, 4.84),
-(45.740812, 4.85),
-(45.740812, 4.859999999999999),
-(45.740812, 4.87),
-(45.740812, 4.88),
-(45.740812, 4.89),
-(45.740812, 4.8999999999999995),
-(45.740812, 4.91),
-(45.740812, 4.92),
-(45.732812, 4.8),
-(45.732812, 4.81),
-(45.732812, 4.819999999999999),
-(45.732812, 4.83),
-(45.732812, 4.84),
-(45.732812, 4.85),
-(45.732812, 4.859999999999999),
-(45.732812, 4.87),
-(45.732812, 4.88),
-(45.732812, 4.89),
-(45.732812, 4.8999999999999995),
-(45.732812, 4.91),
-(45.732812, 4.92),
-(45.724812, 4.8),
-(45.724812, 4.81),
-(45.724812, 4.819999999999999),
-(45.724812, 4.83),
-(45.724812, 4.84),
-(45.724812, 4.85),
-(45.724812, 4.859999999999999),
-(45.724812, 4.87),
-(45.724812, 4.88),
-(45.724812, 4.89),
-(45.724812, 4.8999999999999995),
-(45.724812, 4.91),
-(45.724812, 4.92),
-(45.716812, 4.8),
-(45.716812, 4.81),
-(45.716812, 4.819999999999999),
-(45.716812, 4.83),
-(45.716812, 4.84),
-(45.716812, 4.85),
-(45.716812, 4.859999999999999),
-(45.716812, 4.87),
-(45.716812, 4.88),
-(45.716812, 4.89),
-(45.716812, 4.8999999999999995),
-(45.716812, 4.91),
-(45.716812, 4.92)]
+def objective_function(coords, known_points, distances):
+    """
+    Fonction objectif à minimiser lors de l'optimisation.
+    """
+    error = 0
+    for i in range(len(known_points)):
+        error += (distance(coords, known_points[i]) - distances[i]) ** 2
+    return error
 
-list_cicrle = [(45.748812,4.84, 461.6258449977258),
-(45.748812,4.85, 517.0748761910181),
-(45.740812,4.84, 689.3471472452194),
-(45.740812,4.85, 727.6505161804316)]
+def trilaterate(known_points, distances):
+    """
+    Trilatération pour trouver les coordonnées du point inconnu.
+    """
+    initial_guess = np.mean(known_points, axis=0)  # Utilisation de la moyenne comme point de départ
+    result = minimize(objective_function, initial_guess, args=(known_points, distances), method='L-BFGS-B')
 
-# Créer une carte centrée sur la première coordonnée
-carte = folium.Map(location=coordonnees[0], zoom_start=10)
+    if result.success:
+        return result.x
+    else:
+        raise Exception("La trilatération a échoué.")
 
-# Ajouter des marqueurs pour chaque coordonnée
-for coordonnee in coordonnees:
-    folium.Marker(location=coordonnee).add_to(carte)
+# Exemple d'utilisation
+known_points = [
+    (45.732812, 4.85),
+    (45.732812, 4.859999999999999),
+    (45.724812, 4.85),
+    (45.724812, 4.859999999999999)
+]
+distances = [0.8478932939166581, 0.6941171867907997, 0.5903494779296076, 0.3336977272080253]  # Distances par rapport au point inconnu
+unknown_point = trilaterate(known_points, distances)
+print("Coordonnées du point inconnu:", unknown_point)
 
-# Ajouter des marqueurs pour la deuxième liste de coordonnées
-for coordonnee in coordonnees_liste2:
-    folium.Marker(location=coordonnee, popup='Marqueur Liste 2', icon=folium.Icon(color='red')).add_to(carte)
+# Fonction principale
+def calculateFirePosition(coordinates_list, distances_list):
 
-for coordonnee in list_cicrle:
-    folium.Circle(location=(coordonnee[0], coordonnee[1]), radius=coordonnee[2], color='green', fill=True, fill_color='green', fill_opacity=0.2).add_to(carte) 
-folium.Marker(location=(45.74613679680273, 4.844549334228688), icon=folium.Icon(color='green')).add_to(carte)
-folium.Marker(location=(45.74639028682249, 4.843950271446717), icon=folium.Icon(color='green')).add_to(carte)
+    #Convert distance from meters to kilometers
+    distances_list = [distance/1000 for distance in distances_list]
 
-folium.Marker(location=((45.74639028682249, 4.843950271446717)), icon=folium.Icon(color='orange')).add_to(carte)
-folium.Marker(location=((45.74486660215681, 4.844891222248104)), icon=folium.Icon(color='blue')).add_to(carte)
-#BFGS
-folium.Marker(location=((45.74502688079782, 4.845021685711291)), icon=folium.Icon(color='blue')).add_to(carte)
-#TNC
-folium.Marker(location=((45.78446946253697, 4.409419217258301)), icon=folium.Icon(color='lightred')).add_to(carte)
-#Powell
-folium.Marker(location=((45.74481200000009, 4.844848656901989)), icon=folium.Icon(color='lightred')).add_to(carte)
-#L-BFGS-B
-folium.Marker(location=((45.74589306997115, 4.8459025570605645)), icon=folium.Icon(color='pink')).add_to(carte)
-
-#New method
-folium.Marker(location=((45.74639028682249, 4.843950271446717)), icon=folium.Icon(color='red')).add_to(carte)
-# Convertir les cercles en objets Shapely
-
-# Sauvegarder la carte au format HTML
-carte.save('carte_points.html')
+    return trilaterate(coordinates_list, distances)
