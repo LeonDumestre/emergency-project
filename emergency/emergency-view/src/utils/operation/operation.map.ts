@@ -1,6 +1,7 @@
 import L from "leaflet";
 import { formatDateWithHour } from "../date.utils";
 import {
+  FINISHED,
   ON_ROAD,
   ON_SITE,
   Operation,
@@ -27,7 +28,7 @@ export async function setOperationsOnMap(
       updateOperationLines(operationWithLines, operation);
     }
     // add operation lines if it doesn't exist
-    else {
+    else if (operation.status !== FINISHED) {
       operationsWithLines.push(addOperationLines(map, operation));
     }
   });
@@ -38,7 +39,7 @@ export async function setOperationsOnMap(
       (operation) => operation.id === operationWithLines.id
     );
 
-    if (!operation) {
+    if (!operation || operation.status === FINISHED) {
       operationWithLines.lines.forEach((line) => line.remove());
     }
   });

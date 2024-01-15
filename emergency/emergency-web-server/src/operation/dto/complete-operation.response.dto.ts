@@ -1,4 +1,4 @@
-import { IsArray, IsObject, IsOptional } from "class-validator";
+import { IsArray, IsDate, IsObject, IsOptional } from "class-validator";
 import {
   FirefighterResponse,
   FirefighterResponseDto,
@@ -14,6 +14,7 @@ import { OperationResponseDto } from "./operation.response.dto";
 export type CompleteOperationResponse = Pick<Operation, "id" | "start"> & {
   status: string;
   fire?: FireResponse;
+  returnStart?: Date;
   trucks: TruckResponse[];
   firefighters: FirefighterResponse[];
 };
@@ -25,6 +26,10 @@ export class CompleteOperationResponseDto
   @IsObject()
   @IsOptional()
   fire?: FireResponseDto;
+
+  @IsDate()
+  @IsOptional()
+  returnStart?: Date;
 
   @IsArray()
   trucks: TruckResponseDto[];

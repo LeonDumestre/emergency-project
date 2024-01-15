@@ -11,8 +11,6 @@ public class Operation {
     private final int id;
     private final LocalDateTime start;
     private OperationStatus status;
-    private Firefighter[] firefighters;
-    private Truck[] trucks;
     private LocalDateTime returnStart;
 
     public Operation(int id, LocalDateTime start, OperationStatus status) {
@@ -21,12 +19,11 @@ public class Operation {
         this.status = status;
     }
 
-    public Operation(int id, LocalDateTime start, OperationStatus status, Firefighter[] firefighters, Truck[] trucks) {
+    public Operation(int id, LocalDateTime start, OperationStatus status, LocalDateTime returnStart) {
         this.id = id;
         this.start = start;
         this.status = status;
-        this.firefighters = firefighters;
-        this.trucks = trucks;
+        this.returnStart = returnStart;
     }
 
     public int getId() {
@@ -41,14 +38,6 @@ public class Operation {
         return status;
     }
 
-    public Firefighter[] getFirefighters() {
-        return firefighters;
-    }
-
-    public Truck[] getTrucks() {
-        return trucks;
-    }
-
     public void updateStatus(Fire fire) {
         this.notifyOnSite();
         this.notifyReturning(fire.getIntensity());
@@ -56,7 +45,9 @@ public class Operation {
     }
 
     public void notifyOnSite() {
-        if (this.status == OperationStatus.ON_ROAD && LocalDateTime.now().isAfter(this.start.plusMinutes(1))) {
+        System.out.println("START+ : " + this.start.plusHours(1).plusMinutes(1));
+        System.out.println("NOW    : " + LocalDateTime.now());
+        if (this.status == OperationStatus.ON_ROAD && this.start.plusHours(1).plusMinutes(1).isBefore(LocalDateTime.now())) {
             this.status = OperationStatus.ON_SITE;
             OperationRepository.notifyOnSite(this.id);
         }
@@ -65,13 +56,14 @@ public class Operation {
     public void notifyReturning(int intensity){
         if (this.status == OperationStatus.ON_SITE && intensity == 0) {
             this.status = OperationStatus.RETURNING;
-            this.returnStart = LocalDateTime.now();
             OperationRepository.notifyOnReturn(this.id);
         }
     }
 
     public void notifyOnFinished() {
-        if (this.status == OperationStatus.RETURNING && this.returnStart.plusMinutes(1).isAfter(LocalDateTime.now())) {
+        System.out.println("RETURN+ : " + this.returnStart.plusHours(1).plusMinutes(1));
+        System.out.println("NOW     : " + LocalDateTime.now());
+        if (this.status == OperationStatus.RETURNING && this.returnStart.plusHours(1).plusMinutes(3).isBefore(LocalDateTime.now())) {
             OperationRepository.notifyFinished(this.id);
             FireRepository.remove(this.id);
         }

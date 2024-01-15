@@ -108,7 +108,16 @@ public class OperationRepository {
         LocalDateTime start = LocalDateTime.parse(jsonOperation.getString("start"), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX"));
         OperationStatus status = OperationStatus.valueOf(jsonOperation.getString("status"));
 
-        Operation operation = new Operation(id, start, status);
+        Operation operation = null;
+        LocalDateTime returnStart = null;
+        System.out.println("RETURN START: " + jsonOperation.isNull("returnStart"));
+        if (jsonOperation.isNull("returnStart")) {
+            operation = new Operation(id, start, status);
+        } else {
+            returnStart = LocalDateTime.parse(jsonOperation.getString("returnStart"), DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX"));
+            operation = new Operation(id, start, status, returnStart);
+        }
+
         System.out.println("GET Operation: " + operation);
 
         return operation;

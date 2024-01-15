@@ -37,6 +37,9 @@ export class Operation {
   @Column({ name: "start_date", type: "timestamp", nullable: false })
   start: Date;
 
+  @Column({ name: "return_date", type: "timestamp", nullable: true })
+  returnStart?: Date;
+
   @Column({
     name: "status",
     enum: [ON_ROAD, ON_SITE, RETURNING, FINISHED],

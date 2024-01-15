@@ -22,6 +22,7 @@ CREATE TABLE operation(
    id SERIAL PRIMARY KEY,
    start_date TIMESTAMP NOT NULL,
    status operation_status NOT NULL,
+   return_date TIMESTAMP,
    id_fire INT UNIQUE,
    FOREIGN KEY (id_fire) REFERENCES fire(id) ON DELETE CASCADE
 );

@@ -9,6 +9,7 @@ export async function setFiresOnMap(
 ): Promise<FireWithCircle[]> {
   // Get fires from the API
   const fires = await getFires();
+  console.log(fires);
 
   // Update fires that are in the response
   fires.forEach((fire) => {
@@ -16,12 +17,29 @@ export async function setFiresOnMap(
       (fireWithCircle) => fireWithCircle.id === fire.id
     );
 
+    const sameFire = firesWithCircle.find(
+      (fireWithCircle) =>
+        fireWithCircle.latitude === fire.latitude &&
+        fireWithCircle.longitude === fire.longitude &&
+        fireWithCircle.id !== fire.id
+    );
+
+    if (sameFire) {
+      removeFireCircle(sameFire);
+      firesWithCircle.splice(firesWithCircle.indexOf(sameFire), 1);
+    }
+
+    // Remove fire circle if it doesn't exist and the intensity is 0
+    if (fireWithCircle && fire.intensity === 0) {
+      removeFireCircle(fireWithCircle);
+      firesWithCircle.splice(firesWithCircle.indexOf(fireWithCircle), 1);
+    }
     // Update fire circle if it exists and the intensity has changed
-    if (fireWithCircle && fireWithCircle.intensity != fire.intensity) {
+    else if (fireWithCircle && fireWithCircle.intensity != fire.intensity) {
       updateFireCircle(fireWithCircle, fire);
     }
     // Add fire circle if it doesn't exist
-    else if (!fireWithCircle) {
+    else if (!fireWithCircle && fire.intensity > 0) {
       firesWithCircle.push(addFireCircle(map, fire));
     }
   });
@@ -32,14 +50,18 @@ export async function setFiresOnMap(
       (fireWithCircle) => !fires.find((fire) => fire.id === fireWithCircle.id)
     )
     .forEach((fireWithCircle) => {
-      removeFireCircle(fireWithCircle);
-      firesWithCircle.splice(firesWithCircle.indexOf(fireWithCircle), 1);
+      const fire = fires.find((fire) => fire.id === fireWithCircle.id);
+      if (!fire || fire.intensity === 0) {
+        removeFireCircle(fireWithCircle);
+        firesWithCircle.splice(firesWithCircle.indexOf(fireWithCircle), 1);
+      }
     });
 
   return firesWithCircle;
 }
 
 export function addFireCircle(map: L.Map, fire: Fire): FireWithCircle {
+  console.log("NEW FIRE: " + fire.id);
   const circle = L.circle([fire.latitude, fire.longitude], {
     radius: fire.intensity * 50,
     color: getFireColor(fire),
@@ -60,6 +82,7 @@ function updateFireCircle(fire: FireWithCircle, newFire: Fire): FireWithCircle {
 }
 
 function removeFireCircle(fire: FireWithCircle) {
+  console.log("REMOVE FIRE: " + fire.id);
   fire.circle.remove();
 }
 
@@ -69,8 +92,6 @@ function getPopupContent(fire: Fire): string {
 }
 
 function getFireColor({ operation }: Fire): string {
-  if (!operation || operation?.status === ON_ROAD) {
-    return "red";
-  }
+  if (!operation || operation?.status === ON_ROAD) return "red";
   return "blue";
 }

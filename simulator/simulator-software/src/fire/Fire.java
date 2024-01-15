@@ -6,11 +6,12 @@ import java.util.List;
 import operation.Operation;
 import operation.OperationStatus;
 
-public class Fire extends FireEmergencyExtension {
+public class Fire {
     private final int id;
     private final double latitude;
     private final double longitude;
     private int intensity;
+    private Operation operation;
 
     private static float generationProbability = 0.2f;
     private final static float increaseProbability = 0.15f;
@@ -27,15 +28,14 @@ public class Fire extends FireEmergencyExtension {
         this.latitude = latitude;
         this.longitude = longitude;
         this.intensity = intensity;
-        this.linkedEmergencyFireId = -1;
     }
 
-    public Fire(int id, double latitude, double longitude, int intensity, int linkedEmergencyFireId, Operation operation) {
-        super(linkedEmergencyFireId, operation);
+    public Fire(int id, double latitude, double longitude, int intensity, Operation operation) {
         this.id = id;
         this.latitude = latitude;
         this.longitude = longitude;
         this.intensity = intensity;
+        this.operation = operation;
     }
 
     public int getId() {
@@ -48,6 +48,10 @@ public class Fire extends FireEmergencyExtension {
     
     public void setIntensity(int intensity) {
         this.intensity = intensity;
+    }
+
+    public boolean hasOperation() {
+        return operation != null;
     }
 
     public static List<Fire> generate(List<Fire> fires) {
@@ -67,52 +71,6 @@ public class Fire extends FireEmergencyExtension {
             generationProbability = 0.05f;
         }
         return fires;
-    }
-
-    public static List<Fire> completeWithEmergencyFires(List<Fire> fires, List<FireEmergencyExtension> emergencyFires) {
-        if (fires == null) fires = new ArrayList<>();
-        if (fires.isEmpty() || emergencyFires == null || emergencyFires.isEmpty()) return fires;
-
-        List<Fire> unlinkedFires = new ArrayList<>();
-        List<FireEmergencyExtension> unlinkedEmergencyFires = new ArrayList<>(emergencyFires);
-
-        List<Fire> firesToReturn = new ArrayList<>(fires);
-
-        for (Fire fire : fires) {
-            // Add fire to unlinkedFires if it is not linked to an emergency fire
-            if (!fire.isLinkedToEmergencyFire()) {
-                unlinkedFires.add(fire);
-                firesToReturn.remove(fire);
-                continue;
-            }
-
-            // Remove emergency fire from unlinkedEmergencyFires if it is linked to a fire
-            // Set operation to fire if it is linked to an emergency fire
-            for (FireEmergencyExtension emergencyFire : emergencyFires) {
-                boolean isLinkedWith = emergencyFire.getLinkedEmergencyFireId() == fire.linkedEmergencyFireId;
-                if (isLinkedWith) {
-                    fire.setOperation(emergencyFire.getOperation());
-                    unlinkedEmergencyFires.remove(emergencyFire);
-                    break;
-                }
-            }
-        }
-
-        if (unlinkedFires.isEmpty() || unlinkedEmergencyFires.isEmpty()) return fires;
-        for (Fire fire : unlinkedFires) {
-            for (FireEmergencyExtension emergencyFire : unlinkedEmergencyFires) {
-                if (!emergencyFire.isLinkedToEmergencyFire() || emergencyFire.getOperation().getStatus() == OperationStatus.FINISHED) continue;
-                fire.setLinkedEmergencyFireId(emergencyFire.getLinkedEmergencyFireId());
-                fire.setOperation(emergencyFire.getOperation());
-                emergencyFire.clean();
-                System.out.println("NEW LINK");
-                break;
-            }
-        }
-
-        firesToReturn.addAll(unlinkedFires);
-
-        return firesToReturn;
     }
 
     public static List<Fire> updateAll(List<Fire> fires) {

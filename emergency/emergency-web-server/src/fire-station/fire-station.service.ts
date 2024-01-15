@@ -23,9 +23,11 @@ export class FireStationService {
       .leftJoinAndSelect("trucks.type", "type")
       .getMany();
 
-    return fireStations.map((fireStation) =>
+    const mappedFireStations = fireStations.map((fireStation) =>
       mapToFireStationResponseDto(fireStation),
     );
+
+    return mappedFireStations.sort((a, b) => a.name.localeCompare(b.name));
   }
 
   async createFireStation(

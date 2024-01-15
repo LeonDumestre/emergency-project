@@ -104,6 +104,7 @@ export class OperationService {
   async returning(id: number): Promise<OperationResponse> {
     const operation = await this.operations.findOneOrFail({ where: { id } });
     operation.status = RETURNING;
+    operation.returnStart = new Date();
     return this.operations.save(operation);
   }
 
@@ -127,6 +128,7 @@ export function mapToOperationResponseDto(
   responseDto.id = operation.id;
   responseDto.start = operation.start;
   responseDto.status = operation.status;
+  if (operation.returnStart) responseDto.returnStart = operation.returnStart;
   return responseDto;
 }
 
@@ -137,6 +139,7 @@ function mapToCompleteOperationResponseDto(
   responseDto.id = operation.id;
   responseDto.start = operation.start;
   responseDto.status = operation.status;
+  if (operation.returnStart) responseDto.returnStart = operation.returnStart;
   responseDto.fire = operation.fire;
   responseDto.firefighters = operation.firefighters.map((firefighter) =>
     mapToFirefighterResponseDto(firefighter as any),
