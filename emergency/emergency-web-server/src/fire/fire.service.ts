@@ -99,6 +99,10 @@ function mapToFireWithOperationResponseDto(
 function mapOperationForFireResponseDto(
   operation: Operation,
 ): FireWithOperationResponseDto["operation"] {
+  const returnStart = operation.returnStart
+    ? { returnStart: operation.returnStart }
+    : {};
+
   return {
     id: operation.id,
     start: operation.start,
@@ -107,5 +111,6 @@ function mapOperationForFireResponseDto(
       mapToBaseFirefighterResponseDto(firefighter),
     ),
     trucks: operation.trucks.map((truck) => mapToTruckResponseDto(truck)),
+    ...returnStart,
   };
 }

@@ -105,7 +105,6 @@ export class OperationService {
     const operation = await this.operations.findOneOrFail({ where: { id } });
     operation.status = RETURNING;
     operation.returnStart = new Date();
-    console.log("returning operation: " + operation);
     return this.operations.save(operation);
   }
 
