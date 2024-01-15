@@ -1,8 +1,23 @@
 #include "MicroBit.h"
 #include "aes.hpp"
 
+#define MICROBIT_ID 0001
+#define MICROBIT_DEST 1000
+
 MicroBit uBit;
 uint8_t key[16] = "LaCleAES";
+
+/**
+ * Ajoute la source est la destination au message passé en paramètre.
+ */
+void addHeader(uint8_t *data)
+{
+    string str_id = to_string(MICROBIT_ID);
+    string str_dest = to_string(MICROBIT_DEST);
+
+    string s = str_id + ":" + str_dest + (char *)data;
+    memcpy(data, s.c_str(), 240);
+}
 
 int main()
 {
@@ -28,6 +43,9 @@ int main()
             // Réception du message passé via UART et copie dans une châine de charactère.
             ManagedString s = uBit.serial.readUntil(";");
             strcat((char *)data, (char *)s.toCharArray());
+
+            // Ajoute le header au message
+            addHeader(data, strlen((char *)data));
 
             // Chiffre puis envoie le code reçu
             for (int i = 0; i < 15; ++i)

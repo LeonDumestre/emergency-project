@@ -1,6 +1,8 @@
 #include "MicroBit.h"
 #include "aes.hpp"
 
+#define MICROBIT_ID 1000
+
 MicroBit uBit;
 uint8_t key[16] = "LaCleAES";
 
@@ -18,7 +20,7 @@ void decrypt(uint8_t *encrypted_text)
 }
 
 /**
- * Fonction appelé lors de la réception de detagram via radio.
+ * Fonction appelée lors de la réception de datagram via radio.
  */
 void onRadioReceive(MicroBitEvent)
 {
@@ -33,9 +35,27 @@ void onRadioReceive(MicroBitEvent)
     // Déchiffrement du texte
     decrypt(myjson);
 
+    // Suppression du header et vérification de la destination du message.
+    string s = removeHeader((char *)myjson);
+
     // Envoi du texte déchiffré en serial à la passerelle.
-    uBit.serial.send(((char *)myjson));
+    uBit.serial.send(s);
     free(myjson);
+}
+
+/*
+ * Fonction supprimant le début de la chaîne et vérifiant si le message est bien destiné à la passerelle.
+ */
+string removeHeader(string s)
+{
+    // use MICROBIT_ID variable to string to compare with
+    string str_id = to_string(MICROBIT_ID);
+
+    if (s.substr(6, 9) == str_id)
+    {
+        return s.substr(9) + ";";
+    }
+    return "";
 }
 
 int main()
