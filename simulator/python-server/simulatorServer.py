@@ -9,11 +9,24 @@ LAST_VALS = ""
 REGEX_DATA = r"^\d+\.\d+\;\d+~$"
 
 # send serial message
-SERIALPORT = "/dev/ttyACM0"
+SERIALPORT = "/dev/tty.usbmodem1402"
 BAUDRATE = 115200
 ser = serial.Serial()
 
 mutex = threading.Lock()
+
+class CaptorSimplified:
+    def __init__(self, id, latitude, longitude, values):
+        self.id = id
+        self.lat = latitude
+        self.lon = longitude
+        self.vals = []
+
+class FireSimplified:
+    def __init__(self, id, intensity, distance):
+        self.id = id
+        self.int = intensity
+        self.dist = distance
 
 def initUART():
     # ser = serial.Serial(SERIALPORT, BAUDRATE)
@@ -48,7 +61,11 @@ def sendUARTMessage(msg):
 
 
 def makeItJSON(captor):
-    return json.dumps(captor, default=lambda o: o.__dict__, sort_keys=True, indent=4)
+    simpCaptor = CaptorSimplified(captor.id, captor.latitude, captor.longitude, captor.values)
+    for fire in captor.values:
+        simpfire = FireSimplified(fire.id, fire.intensity, fire.distance)
+        simpCaptor.vals.append(simpfire)
+    return json.dumps(simpCaptor, default=lambda o: o.__dict__, sort_keys=True)
 
 # Main program logic follows:
 if __name__ == '__main__':

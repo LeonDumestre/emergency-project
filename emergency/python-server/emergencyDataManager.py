@@ -92,7 +92,8 @@ def getFireList(list):
 
 def putFireList(fire):
     # API request
-    response = requests.put("http://localhost:3010/fires", data = fire)
+    response = requests.post("http://localhost:3010/fires", data = fire)
+    print(response)
     return True
 
 
@@ -145,7 +146,7 @@ def doesFireAlreadyExist(fire):
 def tryFindFire(fires):
     for fire in fires:
         associatedCaptors = findAssociatedCaptors(fire)
-        if len(associatedCaptors) > 4:
+        if len(associatedCaptors) >= 4:
             points_gps = [] 
             distances = []
             for captor in associatedCaptors:
@@ -203,18 +204,25 @@ def findDistanceInCaptorForFire(captor, fire):
 # Main
 # ======================================================================================================================
 
-def receivedData(data_str):
+def receivedData(data):
     # parse the data
-    data = json.loads(data_str.decode("utf-8"))
+    # data = json.loads(data_str.decode("utf-8"))
 
     firesInData = []
-    for fire in data.get("values"):
-        element = FireByCaptor(fire.get("id"), fire.get("intensity"), fire.get("distance"))
+    for fire in data.get("vals"):
+        element = FireByCaptor(fire.get("id"), fire.get("int"), fire.get("dist"))
         firesInData.append(element)
 
-    sensor = Captor(data.get("id"), firesInData, data.get("latitude"), data.get("longitude"))
+    sensor = Captor(data.get("id"), firesInData, data.get("lat"), data.get("lon"))
 
     receivedSensor(sensor)
+
+    print("Captors:")
+    for captor in tempCaptors:
+        print(captor)
+    print("Fires:")
+    for fire in tempFires:
+        print(fire)
 
 # test data
 data_str = b'{"id": 121, "latitude": 45.716812, "longitude": 4.83, "values": [{"distance": 781.5258540578316, "id": 36, "intensity": 1}]}'
@@ -241,10 +249,3 @@ for fire in data.get("values"):
 
 sensor = Captor(data.get("id"), firesInData, data.get("latitude"), data.get("longitude"))
 receivedSensor(sensor)
-
-print("Captors:")
-for captor in tempCaptors:
-    print(captor)
-print("Fires:")
-for fire in tempFires:
-    print(fire)
