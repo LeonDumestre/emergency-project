@@ -40,7 +40,7 @@ def on_message(client, userdata, msg):
         # Decode the JSON payload
         ready = str(msg.payload.decode('utf-8')).replace("'", "\"")
         data = json.loads(ready)
-        
+
         if(data.get("type") == "sensor"):
             # Extract ID and temperature from the payload
             sensor_id = data.get("id")
@@ -48,7 +48,7 @@ def on_message(client, userdata, msg):
 
             if sensor_id is not None and number_of_fire is not None:
                 ## InfluxDB logic
-                point = Point(MQTT_PUBLISH_TOPIC).tag("id", sensor_id).field("fire", number_of_fire)
+                point = Point(MQTT_PUBLISH_TOPIC).tag("idSensor", sensor_id).field("fire", number_of_fire)
                 write_api.write(bucket=BUCKET, record=point)
                 print(f"Data written to InfluxDB - ID: {sensor_id}, Number of fire: {number_of_fire}")
             else:
@@ -61,7 +61,7 @@ def on_message(client, userdata, msg):
 
             if fire_id is not None and intensity is not None and distance is not None:
                 ## InfluxDB logic
-                point = Point(MQTT_PUBLISH_TOPIC).tag("id", fire_id).field("intensity", intensity).field("distance", distance)
+                point = Point(MQTT_PUBLISH_TOPIC).tag("idFire", fire_id).field("intensity", intensity).field("distance", distance)
                 write_api.write(bucket=BUCKET, record=point)
                 print(f"Data written to InfluxDB - ID: {fire_id}, Intensity: {intensity}, Distance: {distance}")
             else:
