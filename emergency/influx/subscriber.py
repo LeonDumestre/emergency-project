@@ -20,7 +20,6 @@ write_api = client.write_api()
 # MQTT broker config
 MQTT_BROKER_URL    = "mqtt.eclipseprojects.io"
 MQTT_PUBLISH_TOPIC = "sensors"
-MQTT_PUBLISH_TOPIC = "fires"
 
 mqttc = mqtt.Client()
 mqttc.connect(MQTT_BROKER_URL)
