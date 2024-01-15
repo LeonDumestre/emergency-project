@@ -59,6 +59,7 @@ public class Operation {
     public void notifyOnSite() {
         if (this.status == OperationStatus.ON_ROAD) {
             this.counter++;
+            System.out.println("COUNTER: " + this.counter);
             if (this.counter < 30) return;
             this.status = OperationStatus.ON_SITE;
             OperationRepository.notifyOnSite(this.id);
@@ -77,6 +78,7 @@ public class Operation {
     public void notifyOnFinished() {
         if (this.status == OperationStatus.RETURNING) {
             this.counter++;
+            System.out.println("COUNTER: " + this.counter);
             if (this.counter < 30) return;
             OperationRepository.notifyFinished(this.id);
             FireRepository.remove(this.id);
