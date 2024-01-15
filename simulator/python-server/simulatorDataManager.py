@@ -84,6 +84,10 @@ def vincenty_distance(lat1, lon1, lat2, lon2):
     # Distance en mètres
     distance = a * A * (sigma - deltaSigma)
 
+    # Correction pour éviter les distances négatives
+    if distance < 0:
+        distance = 0
+
     return distance
 
 
