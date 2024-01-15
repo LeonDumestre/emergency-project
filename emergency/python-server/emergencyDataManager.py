@@ -90,9 +90,15 @@ def getFireList(list):
     for fire in data:
         list.append(Fire(fire.get("id"), fire.get("latitude"), fire.get("longitude"), fire.get("intensity")))
 
-def putFireList(fire):
+def postFireList(fire):
     # API request
     response = requests.post("http://localhost:3010/fires", data = json.dumps(fire, default=lambda o: o.__dict__, sort_keys=True, indent=4))
+    print(response)
+    return True
+
+def postFireList(fire):
+    # API request
+    response = requests.put("http://localhost:3010/fires", data = json.dumps(fire, default=lambda o: o.__dict__, sort_keys=True, indent=4))
     print(response)
     return True
 
@@ -112,7 +118,13 @@ def compareCaptor(captor1, captor2):
 def receivedFire(fire):
     if doesFireAlreadyExist(fire):
         if hasFirePosition(findFire(fire)):
-            findFire(fire).intensity = fire.intensity
+            if fire.intensity <= 1:
+                tempFires.remove(findFire(fire))
+                for element in findAssociatedCaptors(fire):
+                    element.values.remove(fire)
+            else:
+                findFire(fire).intensity = fire.intensity
+                postFireList(fire)
         else :
             findFire(fire).intensity = fire.intensity
             firePos = tryFindFire(tempFires)
@@ -120,7 +132,7 @@ def receivedFire(fire):
                 fireToUpdate = findFire(fire)
                 fireToUpdate.latitude = firePos[0]
                 fireToUpdate.longitude = firePos[1]
-                putFireList(fireToUpdate)
+                postFireList(fireToUpdate)
             return False
     else:
         tempFires.append(Fire(fire.id, 0, 0, fire.intensity))
