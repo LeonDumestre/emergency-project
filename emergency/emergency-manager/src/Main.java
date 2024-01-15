@@ -42,6 +42,7 @@ public class Main {
                     break;
                 } else {
                     for (Operation operation : operations) {
+                        if (operation == null) continue;
                         if (operation.getFireId() == fire.getId()) {
                             operationExist = true;
                             break;

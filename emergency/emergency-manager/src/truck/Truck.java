@@ -68,6 +68,7 @@ public class Truck {
             return false;
         }
         for (Operation operation : operations) {
+            if (operation == null) continue;
             if (Objects.equals(operation.getTruckPlateNumber(), this.getPlateNumber())) {
                 return false;
             }

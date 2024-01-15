@@ -12,8 +12,8 @@ public class Fire extends FireEmergencyExtension {
     private final double longitude;
     private int intensity;
 
-    private final static float generationProbability = 0.2f;
-    private final static float increaseProbability = 0.1f;
+    private static float generationProbability = 0.2f;
+    private final static float increaseProbability = 0.15f;
     private final static float decreaseProbability = 0.4f;
 
     private final static double topLeftCornerLatitude = 45.788812;
@@ -63,6 +63,8 @@ public class Fire extends FireEmergencyExtension {
             Fire newFire = FireRepository.createFire(latitude, longitude, 1);
             if (newFire == null) return fires;
             fires.add(newFire);
+
+            generationProbability = 0.05f;
         }
         return fires;
     }

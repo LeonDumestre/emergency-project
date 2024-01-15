@@ -68,6 +68,7 @@ public class Firefighter {
 
     public boolean isAvailable(ArrayList<Operation> operations) {
         for (Operation operation : operations) {
+            if (operation == null) continue;
             ArrayList<Integer> firefightersId = operation.getFireFighterId();
             for (int id : firefightersId) {
                 if (id == this.id) {
