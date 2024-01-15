@@ -92,7 +92,7 @@ def getFireList(list):
 
 def putFireList(fire):
     # API request
-    response = requests.post("http://localhost:3010/fires", data = fire)
+    response = requests.post("http://localhost:3010/fires", data = json.dumps(fire, default=lambda o: o.__dict__, sort_keys=True, indent=4))
     print(response)
     return True
 
@@ -120,7 +120,7 @@ def receivedFire(fire):
                 fireToUpdate = findFire(fire)
                 fireToUpdate.latitude = firePos[0]
                 fireToUpdate.longitude = firePos[1]
-                putFireList(firePos)
+                putFireList(fireToUpdate)
             return False
     else:
         tempFires.append(Fire(fire.id, 0, 0, fire.intensity))
