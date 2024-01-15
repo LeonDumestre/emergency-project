@@ -55,6 +55,33 @@ def error_function(coordinates):
     return sum(errors)
 
 
+def distance(point1, point2):
+    """
+    Calcule la distance euclidienne entre deux points.
+    """
+    return np.linalg.norm(np.array(point1) - np.array(point2))
+
+def objective_function(coords, known_points, distances):
+    """
+    Fonction objectif à minimiser lors de l'optimisation.
+    """
+    error = 0
+    for i in range(len(known_points)):
+        error += (distance(coords, known_points[i]) - distances[i]) ** 2
+    return error
+
+def trilaterate(known_points, distances):
+    """
+    Trilatération pour trouver les coordonnées du point inconnu.
+    """
+    initial_guess = np.mean(known_points, axis=0)  # Utilisation de la moyenne comme point de départ
+    result = minimize(objective_function, initial_guess, args=(known_points, distances), method='L-BFGS-B')
+
+    if result.success:
+        return result.x
+    else:
+        raise Exception("La trilatération a échoué.")
+
 # Fonction principale
 def calculateFirePosition(coordinates_list, distances_list):
 
